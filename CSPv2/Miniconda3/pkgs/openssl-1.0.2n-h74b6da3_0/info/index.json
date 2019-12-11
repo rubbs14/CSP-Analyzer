@@ -1,0 +1,16 @@
+{
+  "arch": "x86",
+  "build": "h74b6da3_0",
+  "build_number": 0,
+  "depends": [
+    "ca-certificates",
+    "vc 14.*"
+  ],
+  "license": "OpenSSL",
+  "license_family": "Apache",
+  "name": "openssl",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1512663097270,
+  "version": "1.0.2n"
+}

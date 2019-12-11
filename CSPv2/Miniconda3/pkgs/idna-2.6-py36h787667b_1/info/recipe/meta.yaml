@@ -1,0 +1,56 @@
+# This file created by conda-build 3.0.15+56.gd43c51d4
+# meta.yaml template originally from:
+# C:\Users\builder\conda-win32\aggregate\idna-feedstock\recipe, last modified Tue Sep 19 18:19:13 2017
+# ------------------------------------------------
+
+package:
+    name: idna
+    version: '2.6'
+source:
+    fn: idna-2.6.tar.gz
+    sha256: 2c6a5de3089009e3da7c5dde64a141dbc8551d5b7f6cf4ed7c2568d0cc520a8f
+    url: https://pypi.io/packages/source/i/idna/idna-2.6.tar.gz
+build:
+    number: '1'
+    script: python setup.py install --single-version-externally-managed --record=record.txt
+    string: py36h787667b_1
+requirements:
+    build:
+        - certifi 2017.7.27.1 py36h8287e07_0
+        - python 3.6.2 h21b614c_11
+        - setuptools 36.2.2 py36h3c0eabd_0
+        - vc 14 h2379b0c_1
+        - vs2015_runtime 14.0.25123 h98fd7d1_1
+        - wincertstore 0.2 py36hcdd9a18_0
+    host:
+        - certifi 2017.7.27.1 py36h8287e07_0
+        - python 3.6.2 h21b614c_11
+        - setuptools 36.2.2 py36h3c0eabd_0
+        - vc 14 h2379b0c_1
+        - vs2015_runtime 14.0.25123 h98fd7d1_1
+        - wincertstore 0.2 py36hcdd9a18_0
+    run:
+        - python >=3.6,<3.7.0a0
+test:
+    imports:
+        - idna
+about:
+    description: 'A library to support the Internationalised Domain Names in Applications
+
+        (IDNA) protocol as specified in RFC 5891. This version of the protocol
+
+        is often referred to as "IDNA2008".
+
+        '
+    dev_source: https://github.com/kjd/idna
+    home: https://github.com/kjd/idna
+    license: BSD Like
+    license_file: LICENSE.rst
+    summary: Internationalized Domain Names in Applications (IDNA).
+extra:
+    copy_test_source_files: true
+    final: true
+    recipe-maintainers:
+        - goanpeca
+        - jschueller
+        - mingwandroid

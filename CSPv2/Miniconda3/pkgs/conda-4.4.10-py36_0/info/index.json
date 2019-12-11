@@ -1,0 +1,25 @@
+{
+  "arch": "x86",
+  "build": "py36_0",
+  "build_number": 0,
+  "constrains": [
+    "conda-build >=2.1",
+    "cytoolz >=0.8.1",
+    "setuptools >=31.0.1"
+  ],
+  "depends": [
+    "conda-env >=2.6",
+    "menuinst",
+    "pycosat >=0.6.3",
+    "pyopenssl >=16.2.0",
+    "python >=3.6,<3.7.0a0",
+    "requests >=2.12.4,<3",
+    "ruamel_yaml >=0.11.14"
+  ],
+  "license": "BSD 3-Clause",
+  "name": "conda",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1518214458916,
+  "version": "4.4.10"
+}

@@ -1,0 +1,26 @@
+{
+  "arch": "x86",
+  "build": "py36h6b5aef5_1",
+  "build_number": 1,
+  "depends": [
+    "python >=3.6,<3.7.0a0"
+  ],
+  "files": [
+    "Lib/site-packages/__pycache__/win_inet_pton.cpython-36.pyc",
+    "Lib/site-packages/win_inet_pton-1.0.1-py3.6.egg-info",
+    "Lib/site-packages/win_inet_pton.py"
+  ],
+  "installed_by": "Miniconda3-4.4.10-Windows-x86.exe",
+  "license": "PUBLIC-DOMAIN",
+  "link": {
+    "source": "C:\\Miniconda3\\pkgs\\win_inet_pton-1.0.1-py36h6b5aef5_1",
+    "type": "hard-link"
+  },
+  "md5": "af0bb547177eb79f89135f7bcf4fef93",
+  "name": "win_inet_pton",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1505977277451,
+  "url": "https://repo.continuum.io/pkgs/main/win-32/win_inet_pton-1.0.1-py36h6b5aef5_1.tar.bz2",
+  "version": "1.0.1"
+}

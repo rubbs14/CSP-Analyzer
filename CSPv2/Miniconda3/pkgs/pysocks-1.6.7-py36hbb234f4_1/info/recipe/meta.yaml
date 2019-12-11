@@ -1,0 +1,51 @@
+# This file created by conda-build 3.0.15+56.gd43c51d4
+# meta.yaml template originally from:
+# C:\Users\builder\conda-win32\aggregate\pysocks-feedstock\recipe, last modified Tue Sep 19 18:20:07 2017
+# ------------------------------------------------
+
+package:
+    name: pysocks
+    version: 1.6.7
+source:
+    fn: PySocks-1.6.7.tar.gz
+    sha256: d00329f27efa157db7efe3ca26fcd69033cd61f83822461ee3f8a353b48e33cf
+    url: https://pypi.io/packages/source/P/PySocks/PySocks-1.6.7.tar.gz
+build:
+    number: '1'
+    script: python setup.py install --single-version-externally-managed --record=record.txt
+    string: py36hbb234f4_1
+requirements:
+    build:
+        - certifi 2017.7.27.1 py36h8287e07_0
+        - python 3.6.2 h21b614c_11
+        - setuptools 36.2.2 py36h3c0eabd_0
+        - vc 14 h2379b0c_1
+        - vs2015_runtime 14.0.25123 h98fd7d1_1
+        - wincertstore 0.2 py36hcdd9a18_0
+    host:
+        - certifi 2017.7.27.1 py36h8287e07_0
+        - python 3.6.2 h21b614c_11
+        - setuptools 36.2.2 py36h3c0eabd_0
+        - vc 14 h2379b0c_1
+        - vs2015_runtime 14.0.25123 h98fd7d1_1
+        - wincertstore 0.2 py36hcdd9a18_0
+    run:
+        - python >=3.6,<3.7.0a0
+        - win_inet_pton
+test:
+    imports:
+        - socks
+about:
+    dev_url: https://github.com/Anorov/PySocks
+    doc_url: https://github.com/Anorov/PySocks/blob/master/README.md
+    home: https://github.com/Anorov/PySocks
+    license: BSD 3-Clause
+    license_family: BSD
+    license_file: LICENSE
+    summary: A Python SOCKS client module. See https://github.com/Anorov/PySocks for
+        more information.
+extra:
+    copy_test_source_files: true
+    final: true
+    recipe-maintainers:
+        - pmlandwehr

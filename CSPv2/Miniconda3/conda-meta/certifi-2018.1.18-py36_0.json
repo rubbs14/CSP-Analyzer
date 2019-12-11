@@ -1,0 +1,31 @@
+{
+  "arch": "x86",
+  "build": "py36_0",
+  "build_number": 0,
+  "depends": [
+    "python >=3.6,<3.7.0a0"
+  ],
+  "files": [
+    "Lib/site-packages/certifi-2018.01.18-py3.6.egg-info",
+    "Lib/site-packages/certifi/__init__.py",
+    "Lib/site-packages/certifi/__main__.py",
+    "Lib/site-packages/certifi/__pycache__/__init__.cpython-36.pyc",
+    "Lib/site-packages/certifi/__pycache__/__main__.cpython-36.pyc",
+    "Lib/site-packages/certifi/__pycache__/core.cpython-36.pyc",
+    "Lib/site-packages/certifi/cacert.pem",
+    "Lib/site-packages/certifi/core.py"
+  ],
+  "installed_by": "Miniconda3-4.4.10-Windows-x86.exe",
+  "license": "ISC",
+  "link": {
+    "source": "C:\\Miniconda3\\pkgs\\certifi-2018.1.18-py36_0",
+    "type": "hard-link"
+  },
+  "md5": "ab9b81d83171dffa4ee40927db1546ab",
+  "name": "certifi",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1516980865044,
+  "url": "https://repo.continuum.io/pkgs/main/win-32/certifi-2018.1.18-py36_0.tar.bz2",
+  "version": "2018.1.18"
+}

@@ -1,0 +1,50 @@
+# This file created by conda-build 0+unknown
+# meta.yaml template originally from:
+# C:\ci\containers\000035alhra\tmp\build\80754af9\rsync-recipes\openssl-1.0.2n-c_compilervs2015target-win-32-on-winbuilder, last modified Thu Dec  7 07:57:34 2017
+# ------------------------------------------------
+
+package:
+    name: openssl
+    version: 1.0.2n
+source:
+    fn: openssl-1.0.2n.tar.gz
+    patches:
+        - 0001-win32-Fix-yasm-compatibility.patch
+    sha256: 370babb75f278c39e0c50e8c4e7493bc0f18db6867478341a832a982fd15a8fe
+    url: http://www.openssl.org/source/openssl-1.0.2n.tar.gz
+build:
+    number: '0'
+    run_exports:
+        - openssl >=1.0.2n,<1.0.3a
+    string: h74b6da3_0
+requirements:
+    build:
+        - perl 5.26.0.1 hbb76ec5_0
+        - vc 14 h2379b0c_2
+        - vs2015_runtime 14.0.25123 hd4c4e62_2
+        - vs2015_win-32 14.0.25123 hf5d5b87_2
+        - yasm 1.3.0 hca58724_2
+    run:
+        - ca-certificates
+        - vc 14.*
+test:
+    commands:
+        - copy NUL checksum.txt
+        - openssl sha256 checksum.txt
+about:
+    dev_url: https://github.com/openssl/openssl
+    doc_url: https://www.openssl.org/docs/man1.0.2/
+    home: http://www.openssl.org/
+    license: OpenSSL
+    license_family: Apache
+    license_file: LICENSE
+    summary: OpenSSL is an open-source implementation of the SSL and TLS protocols
+extra:
+    copy_test_source_files: true
+    final: true
+    recipe-maintainers:
+        - jakirkham
+        - jjhelmus
+        - msarahan
+        - ocefpaf
+        - pelson

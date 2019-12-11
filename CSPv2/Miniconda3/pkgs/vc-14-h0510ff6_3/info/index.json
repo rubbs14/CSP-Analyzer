@@ -1,0 +1,16 @@
+{
+  "arch": "x86",
+  "build": "h0510ff6_3",
+  "build_number": 3,
+  "depends": [
+    "vs2015_runtime >=14.0.25123,<15.0a0"
+  ],
+  "license": "Modified BSD License (3-clause)",
+  "license_family": "BSD",
+  "name": "vc",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1516068910819,
+  "track_features": "vc14",
+  "version": "14"
+}

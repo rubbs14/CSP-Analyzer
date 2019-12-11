@@ -1,0 +1,12 @@
+{
+  "arch": "x86",
+  "build": "h36134e3_1",
+  "build_number": 1,
+  "depends": [],
+  "license": "BSD 3-Clause",
+  "name": "conda-env",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1505924277529,
+  "version": "2.6.0"
+}

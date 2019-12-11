@@ -1,0 +1,12 @@
+{
+  "arch": "x86",
+  "build": "h94faf87_0",
+  "build_number": 0,
+  "depends": [],
+  "license": "ISC",
+  "name": "ca-certificates",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1505905825264,
+  "version": "2017.08.26"
+}

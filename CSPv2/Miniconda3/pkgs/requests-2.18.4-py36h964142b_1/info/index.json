@@ -1,0 +1,18 @@
+{
+  "arch": "x86",
+  "build": "py36h964142b_1",
+  "build_number": 1,
+  "depends": [
+    "certifi >=2017.4.17",
+    "chardet >=3.0.2,<3.1.0",
+    "idna >=2.5,<2.7",
+    "python >=3.6,<3.7.0a0",
+    "urllib3 >=1.21.1,<1.23"
+  ],
+  "license": "Apache 2.0",
+  "name": "requests",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1505980873552,
+  "version": "2.18.4"
+}

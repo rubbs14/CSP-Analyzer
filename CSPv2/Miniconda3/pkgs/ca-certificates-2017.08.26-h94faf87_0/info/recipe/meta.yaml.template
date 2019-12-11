@@ -1,0 +1,46 @@
+{% set version = "2017.08.26" %}
+
+package:
+  name: ca-certificates
+  version: {{ version }}
+
+source:
+  url: http://anduin.linuxfromscratch.org/BLFS/other/make-ca.sh-20170514
+  sha256: c882ab8b5a67389fc556852bd44081d8b376e8bf44cd4c7afcbdac8e940a69c3
+  patches:
+    - 0001-Add-macOS-mktemp-compatibility.patch
+
+requirements:
+  build:
+    - posix       # [win]
+    - m2-openssl  # [win]
+
+build:
+  commands:
+    # Verify the certificates are there.
+    - test -f "${PREFIX}/ssl/cacert.pem"                                      # [unix]
+    - test -f "${PREFIX}/ssl/cert.pem"                                        # [unix]
+    - if not exist %LIBRARY_PREFIX%\\ssl\\cacert.pem exit 1                   # [win]
+    - if not exist %LIBRARY_PREFIX%\\ssl\\cert.pem exit 1                     # [win]
+
+    # Use the certificates to download something.
+    - /usr/bin/openssl -CAfile "${PREFIX}/ssl/cacert.pem" -CApath nosuchdir s_client -showcerts -connect www.google.com:443  # [unix]
+
+    - /usr/bin/curl --cacert "${PREFIX}/ssl/cacert.pem" https://www.google.com         # [unix]
+    - /usr/bin/curl --cacert %LIBRARY_PREFIX%\\ssl\\cacert.pem https://www.google.com  # [win]
+
+about:
+  home: https://github.com/conda-forge/ca-certificates-feedstock
+  license: ISC
+  summary: Certificates for use with other packages.
+
+extra:
+  recipe-maintainers:
+     - jakirkham
+     - jjhelmus
+     - msarahan
+     - mwcraig
+     - ocefpaf
+     - patricksnape
+     - pelson
+     - scopatz

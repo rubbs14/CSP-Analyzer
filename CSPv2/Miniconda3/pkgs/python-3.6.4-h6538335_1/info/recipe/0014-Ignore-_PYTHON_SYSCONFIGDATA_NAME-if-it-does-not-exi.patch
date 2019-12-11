@@ -1,0 +1,64 @@
+From e580158b9779b421f1c2232cfa1144786f79fd71 Mon Sep 17 00:00:00 2001
+From: Ray Donnelly <mingw.android@gmail.com>
+Date: Sun, 3 Dec 2017 17:31:27 +0000
+Subject: [PATCH 14/15] Ignore _PYTHON_SYSCONFIGDATA_NAME if it does not exist
+
+This is important when bootstrapping a Miniconda (however if you are using
+a Python that pre-dates this change then you will need to apply this patch
+manually).
+---
+ Lib/sysconfig.py | 24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
+
+diff --git a/Lib/sysconfig.py b/Lib/sysconfig.py
+index 9314e71..422034e 100644
+--- a/Lib/sysconfig.py
++++ b/Lib/sysconfig.py
+@@ -342,13 +342,19 @@ def get_makefile_filename():
+     return os.path.join(get_path('stdlib'), config_dir_name, 'Makefile')
+ 
+ 
+-def _get_sysconfigdata_name():
+-    return os.environ.get('_PYTHON_SYSCONFIGDATA_NAME',
+-        '_sysconfigdata_{abi}_{platform}_{multiarch}'.format(
+-        abi=sys.abiflags,
+-        platform=sys.platform,
+-        multiarch=getattr(sys.implementation, '_multiarch', ''),
+-    ))
++def _get_sysconfigdata_name(check_exists):
++    res = os.environ.get('_PYTHON_SYSCONFIGDATA_NAME', None)
++    if res and check_exists:
++        try:
++            loader = importlib.util.find_spec(res)
++        except:
++            res = None
++    if res:
++        return res
++    return '_sysconfigdata_{abi}_{platform}_{multiarch}'.format(
++            abi=sys.abiflags,
++            platform=sys.platform,
++            multiarch=getattr(sys.implementation, '_multiarch', ''))
+ 
+ 
+ def _generate_posix_vars():
+@@ -391,7 +397,7 @@ def _generate_posix_vars():
+     # _sysconfigdata module manually and populate it with the build vars.
+     # This is more than sufficient for ensuring the subsequent call to
+     # get_platform() succeeds.
+-    name = _get_sysconfigdata_name()
++    name = _get_sysconfigdata_name(False)
+     if 'darwin' in sys.platform:
+         import types
+         module = types.ModuleType(name)
+@@ -417,7 +423,7 @@ def _generate_posix_vars():
+ def _init_posix(vars):
+     """Initialize the module as appropriate for POSIX systems."""
+     # _sysconfigdata is generated at build time, see _generate_posix_vars()
+-    name = _get_sysconfigdata_name()
++    name = _get_sysconfigdata_name(True)
+     _temp = __import__(name, globals(), locals(), ['build_time_vars'], 0)
+     build_time_vars = _temp.build_time_vars
+     vars.update(build_time_vars)
+-- 
+2.11.1
+

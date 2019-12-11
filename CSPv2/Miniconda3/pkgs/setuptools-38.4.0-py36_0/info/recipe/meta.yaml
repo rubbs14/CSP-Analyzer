@@ -1,0 +1,61 @@
+# This file created by conda-build 3.2.1
+# meta.yaml template originally from:
+# C:\ci\containers\00003hp9nlj\tmp\build\80754af9\rsync-recipes\setuptools-38.4.0-python3.6target-win-32-on-winbuilder, last modified Fri Jan 12 13:19:09 2018
+# ------------------------------------------------
+
+package:
+    name: setuptools
+    version: 38.4.0
+source:
+    patches:
+        - 0001-Remove-exact-pinning-on-certifi-and-wincertstore.patch
+        - nodownload.patch
+    sha256: 6501fc32f505ec5b3ed36ec65ba48f1b975f52cf2ea101c7b73a08583fd12f75
+    url: https://pypi.io/packages/source/s/setuptools/setuptools-38.4.0.zip
+build:
+    entry_points:
+        - easy_install = setuptools.command.easy_install:main
+    number: '0'
+    string: py36_0
+requirements:
+    host:
+        - certifi 2017.11.5 py36h2c9f8ed_0
+        - python 3.6.3 h52e1c9f_4
+        - vc 14 h2379b0c_2
+        - vs2015_runtime 14.0.25123 hd4c4e62_2
+        - wincertstore 0.2 py36hcdd9a18_0
+    run:
+        - certifi       >=2016.09
+        - python >=3.6,<3.7.0a0
+        - wincertstore  >=0.2
+test:
+    commands:
+        - easy_install --help
+    imports:
+        - easy_install
+        - pkg_resources
+        - setuptools
+about:
+    description: 'Setuptools is a fully-featured, actively-maintained, and stable
+        library
+
+        designed to facilitate packaging Python projects.
+
+        '
+    dev_source_url: https://github.com/pypa/setuptools/tree/master/docs
+    dev_url: https://github.com/pypa/setuptools
+    doc_url: http://pythonhosted.org/setuptools/
+    home: https://github.com/pypa/setuptools
+    license: MIT
+    license_family: MIT
+    license_file: LICENSE
+    summary: Download, build, install, upgrade, and uninstall Python packages
+extra:
+    copy_test_source_files: true
+    final: true
+    recipe-maintainers:
+        - jakirkham
+        - mingwandroid
+        - msarahan
+        - nicoddemus
+        - ocefpaf

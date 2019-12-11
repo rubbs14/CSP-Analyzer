@@ -1,0 +1,14 @@
+{
+  "arch": "x86",
+  "build": "py36_0",
+  "build_number": 0,
+  "depends": [
+    "python >=3.6,<3.7.0a0"
+  ],
+  "license": "ISC",
+  "name": "certifi",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1516980865044,
+  "version": "2018.1.18"
+}

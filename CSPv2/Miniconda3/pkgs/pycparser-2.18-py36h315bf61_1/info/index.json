@@ -1,0 +1,15 @@
+{
+  "arch": "x86",
+  "build": "py36h315bf61_1",
+  "build_number": 1,
+  "depends": [
+    "python >=3.6,<3.7.0a0"
+  ],
+  "license": "BSD 3-clause",
+  "license_family": "BSD",
+  "name": "pycparser",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1506114271910,
+  "version": "2.18"
+}

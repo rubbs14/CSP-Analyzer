@@ -1,0 +1,29 @@
+{"_url": "https://repo.continuum.io/pkgs/r/noarch", "_etag": "\"6648f0267381023f39384656f7e0a013\"", "_mod": "Wed, 28 Mar 2018 08:13:14 GMT", "_cache_control": "public, max-age=30", 
+  "info": {
+    "arch": null,
+    "platform": null,
+    "subdir": "noarch"
+  },
+  "packages": {
+    "r-mrclient-mlm-3.4.3-mro343_0.tar.bz2": {
+      "arch": null,
+      "build": "mro343_0",
+      "build_number": 0,
+      "depends": [
+        "mro-base 3.4.3.*",
+        "r-mrclient-mml >=3.4.3,<3.4.4.0a0"
+      ],
+      "has_prefix": false,
+      "license": "Proprietary",
+      "license_family": "Proprietary",
+      "md5": "8d4a9c114c9741e2990d39b83834ec90",
+      "name": "r-mrclient-mlm",
+      "noarch": "generic",
+      "platform": null,
+      "size": 539643200,
+      "subdir": "noarch",
+      "timestamp": 1519727474730,
+      "version": "3.4.3"
+    }
+  }
+}

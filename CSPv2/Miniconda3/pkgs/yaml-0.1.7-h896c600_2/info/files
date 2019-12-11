@@ -1,0 +1,4 @@
+Library/bin/yaml.dll
+Library/include/yaml.h
+Library/lib/yaml.lib
+Library/lib/yaml_static.lib

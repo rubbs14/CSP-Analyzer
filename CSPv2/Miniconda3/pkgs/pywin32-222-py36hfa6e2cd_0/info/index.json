@@ -1,0 +1,15 @@
+{
+  "arch": "x86",
+  "build": "py36hfa6e2cd_0",
+  "build_number": 0,
+  "depends": [
+    "python >=3.6,<3.7.0a0",
+    "vc 14.*"
+  ],
+  "license": "PSF",
+  "name": "pywin32",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1516981369893,
+  "version": "222"
+}

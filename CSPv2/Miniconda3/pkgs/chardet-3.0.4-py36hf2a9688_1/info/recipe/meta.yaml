@@ -1,0 +1,68 @@
+# This file created by conda-build 3.0.15+56.gd43c51d4
+# meta.yaml template originally from:
+# C:\Users\builder\conda-win32\aggregate\chardet-feedstock\recipe, last modified Tue Sep 19 18:18:41 2017
+# ------------------------------------------------
+
+package:
+    name: chardet
+    version: 3.0.4
+source:
+    fn: chardet-3.0.4.tar.gz
+    sha256: 84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae
+    url: https://pypi.io/packages/source/c/chardet/chardet-3.0.4.tar.gz
+build:
+    entry_points:
+        - chardetect = chardet.cli.chardetect:main
+    number: '1'
+    script: python setup.py install --single-version-externally-managed --record=record.txt
+    string: py36hf2a9688_1
+requirements:
+    build:
+        - certifi 2017.7.27.1 py36h8287e07_0
+        - colorama 0.3.9 py36he9a059a_0
+        - py 1.4.34 py36h5d7abe8_1
+        - pytest 3.2.1 py36h842b08d_1
+        - pytest-runner 2.11.1 py36h984893c_0
+        - python 3.6.2 h21b614c_11
+        - setuptools 36.2.2 py36h3c0eabd_0
+        - vc 14 h2379b0c_1
+        - vs2015_runtime 14.0.25123 h98fd7d1_1
+        - wincertstore 0.2 py36hcdd9a18_0
+    host:
+        - certifi 2017.7.27.1 py36h8287e07_0
+        - colorama 0.3.9 py36he9a059a_0
+        - py 1.4.34 py36h5d7abe8_1
+        - pytest 3.2.1 py36h842b08d_1
+        - pytest-runner 2.11.1 py36h984893c_0
+        - python 3.6.2 h21b614c_11
+        - setuptools 36.2.2 py36h3c0eabd_0
+        - vc 14 h2379b0c_1
+        - vs2015_runtime 14.0.25123 h98fd7d1_1
+        - wincertstore 0.2 py36hcdd9a18_0
+    run:
+        - python >=3.6,<3.7.0a0
+test:
+    commands:
+        - chardetect --help
+    imports:
+        - chardet
+about:
+    description: 'chardet is a character encoding auto-detector in Python.
+
+        '
+    dev_url: https://github.com/chardet/chardet
+    doc_source_url: https://github.com/chardet/chardet/blob/master/docs/index.rst
+    doc_url: http://chardet.readthedocs.org/
+    home: https://github.com/chardet/chardet
+    license: LGPL2
+    license_family: GPL
+    license_file: LICENSE
+    summary: Universal character encoding detector
+extra:
+    copy_test_source_files: true
+    final: true
+    recipe-maintainers:
+        - dan-blanchard
+        - jschueller
+        - nehaljwani
+        - sigmavirus24

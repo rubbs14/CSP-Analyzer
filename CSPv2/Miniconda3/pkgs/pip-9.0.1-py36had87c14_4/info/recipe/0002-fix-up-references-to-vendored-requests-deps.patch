@@ -1,0 +1,50 @@
+From e606882cecf77a1fd77fdff9aee67cf37707c559 Mon Sep 17 00:00:00 2001
+From: Michael Sarahan <msarahan@gmail.com>
+Date: Tue, 24 Oct 2017 09:23:42 -0500
+Subject: [PATCH 2/2] fix up references to vendored requests deps
+
+---
+ pip/__init__.py | 6 ++----
+ pip/download.py | 2 +-
+ 2 files changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/pip/__init__.py b/pip/__init__.py
+index 9c1d8f96..a6670035 100755
+--- a/pip/__init__.py
++++ b/pip/__init__.py
+@@ -18,7 +18,7 @@ import re
+ # to add socks as yet another dependency for pip, nor do I want to allow-stder
+ # in the DEP-8 tests, so just suppress the warning.  pdb tells me this has to
+ # be done before the import of pip.vcs.
+-from pip._vendor.requests.packages.urllib3.exceptions import DependencyWarning
++from pip._vendor.urllib3.exceptions import DependencyWarning
+ warnings.filterwarnings("ignore", category=DependencyWarning)  # noqa
+ 
+ 
+@@ -29,9 +29,7 @@ from pip.vcs import git, mercurial, subversion, bazaar  # noqa
+ from pip.baseparser import ConfigOptionParser, UpdatingDefaultsHelpFormatter
+ from pip.commands import get_summaries, get_similar_commands
+ from pip.commands import commands_dict
+-from pip._vendor.requests.packages.urllib3.exceptions import (
+-    InsecureRequestWarning,
+-)
++from pip._vendor.urllib3.exceptions import InsecureRequestWarning
+ 
+ 
+ # assignment for flake8 to be happy
+diff --git a/pip/download.py b/pip/download.py
+index 54d3131d..039e55ae 100644
+--- a/pip/download.py
++++ b/pip/download.py
+@@ -43,7 +43,7 @@ from pip._vendor.requests.auth import AuthBase, HTTPBasicAuth
+ from pip._vendor.requests.models import CONTENT_CHUNK_SIZE, Response
+ from pip._vendor.requests.utils import get_netrc_auth
+ from pip._vendor.requests.structures import CaseInsensitiveDict
+-from pip._vendor.requests.packages import urllib3
++from pip._vendor import urllib3
+ from pip._vendor.cachecontrol import CacheControlAdapter
+ from pip._vendor.cachecontrol.caches import FileCache
+ from pip._vendor.lockfile import LockError
+-- 
+2.11.1
+

@@ -1,0 +1,30 @@
+{
+  "arch": "x86",
+  "build": "py36h7f2c006_1",
+  "build_number": 1,
+  "depends": [
+    "python >=3.6,<3.7.0a0"
+  ],
+  "files": [
+    "Lib/site-packages/__pycache__/six.cpython-36.pyc",
+    "Lib/site-packages/six-1.11.0-py3.6.egg-info/PKG-INFO",
+    "Lib/site-packages/six-1.11.0-py3.6.egg-info/SOURCES.txt",
+    "Lib/site-packages/six-1.11.0-py3.6.egg-info/dependency_links.txt",
+    "Lib/site-packages/six-1.11.0-py3.6.egg-info/top_level.txt",
+    "Lib/site-packages/six.py"
+  ],
+  "installed_by": "Miniconda3-4.4.10-Windows-x86.exe",
+  "license": "MIT",
+  "license_family": "MIT",
+  "link": {
+    "source": "C:\\Miniconda3\\pkgs\\six-1.11.0-py36h7f2c006_1",
+    "type": "hard-link"
+  },
+  "md5": "1fa7f16aa476e1096d0b823f986e1a91",
+  "name": "six",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1508610524662,
+  "url": "https://repo.continuum.io/pkgs/main/win-32/six-1.11.0-py36h7f2c006_1.tar.bz2",
+  "version": "1.11.0"
+}

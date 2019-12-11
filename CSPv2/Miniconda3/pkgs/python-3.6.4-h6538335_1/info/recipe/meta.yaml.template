@@ -1,0 +1,123 @@
+{% set version = "3.6.4" %}
+{% set sha256 = "7dc453e1a93c083388eb1a23a256862407f8234a96dc4fae0fc7682020227486" %}
+
+package:
+  name: python
+  version: {{ version }}
+
+source:
+  - url: https://www.python.org/ftp/python/{{ version }}/Python-{{ version }}.tgz
+    sha256: {{ sha256 }}
+    patches:
+      - 0001-Add-Anaconda-Distribution-version-logic.patch
+      - 0002-Darwin-Omit-PYTHONFRAMEWORK-site-packages.patch
+      - 0003-Darwin-Add-arch-x86_64-to-UnicCCompiler-ld_args.patch
+      - 0004-Win32-distutils-Also-look-for-executable.bat.patch
+      # TODO :: This breaks conda activate and deactivate.
+      - 0005-Win32-Ensure-Library-bin-is-in-os.environ-PATH.patch
+      - 0006-Win32-Change-FD_SETSIZE-from-512-to-2048.patch
+      - 0007-Win32-distutils-Add-support-to-cygwinccompiler-for-V.patch
+      - 0008-Do-not-pass-g-to-GCC-when-not-Py_DEBUG.patch
+      - 0009-Support-cross-compiling-byte-code.patch
+      - 0010-Win32-Fixes-for-Windows-GCC-interop-needed-by-RPy2-a.patch
+      - 0011-Darwin-Look-in-sysroot-usr-lib-include-if-sysroot-is.patch
+      - 0012-runtime_library_dir_option-Use-1st-word-of-CC-as-com.patch
+      - 0013-Win32-Do-not-download-externals.patch
+      - 0014-Ignore-_PYTHON_SYSCONFIGDATA_NAME-if-it-does-not-exi.patch
+      - 0015-Fix-find_library-so-that-it-looks-in-sys.prefix-lib-.patch
+  # TODO :: Depend on our own packages for these:
+  - url: https://github.com/python/cpython-source-deps/archive/xz-5.2.2.zip          # [win]
+    folder: externals/xz-5.2.2                                                       # [win]
+    sha256: 02b6d6f1e0369940e7e1f0d324992e069d09f5f3d32d86e2d22cd8b82ac3fb3f         # [win]
+  - url: https://github.com/python/cpython-source-deps/archive/tcl-core-8.6.6.0.zip  # [win]
+    folder: externals/tcl-core-8.6.6.0                                               # [win]
+    sha256: fdb503d5facf337fe23e30c6b15f1e64b148c6156747c20d01c1f1e90f3693c5         # [win]
+  - url: https://github.com/python/cpython-source-deps/archive/tk-8.6.6.0.zip        # [win]
+    folder: externals/tk-8.6.6.0                                                     # [win]
+    sha256: 22c782693dc82e47385ffee80282daeb5e16f32aab306d100511f0be2243d764         # [win]
+  - url: https://github.com/python/cpython-source-deps/archive/tix-8.4.3.6.zip       # [win]
+    folder: externals/tix-8.4.3.6                                                    # [win]
+    sha256: e558e3dc5e67ac0942f8fceafce00ca46b177da9ebeaf38ec7fafd9b9913ac56         # [win]
+  - url: https://github.com/python/cpython-source-deps/archive/sqlite-3.21.0.0.zip   # [win]
+    folder: externals/sqlite-3.21.0.0                                                # [win]
+    sha256: 95a4f2d76aeeb68b51239340e3de26e5714ecfb7c8ad82a67b17af82213a8c20         # [win]
+  - url: https://github.com/python/cpython-source-deps/archive/openssl-1.0.2k.zip    # [win]
+    folder: externals/openssl-1.0.2k                                                 # [win]
+    sha256: e6b8b9293b597df13fb699cdaffe4fbc81c5e8197c044e7c123918bbe7142ece         # [win]
+  - url: https://github.com/python/cpython-source-deps/archive/bzip2-1.0.6.zip       # [win]
+    folder: externals/bzip2-1.0.6                                                    # [win]
+    sha256: c42fd1432a2667b964a74bc423bb7485059c4a6d5dc92946d59dbf9a6bdb988d         # [win]
+  - url: https://github.com/python/cpython-bin-deps/archive/nasm-2.11.06.zip         # [win]
+    folder: externals/nasm-2.11.06                                                   # [win]
+    sha256: de3c87b26a80e789986d8e6950c6304175d3829afe9c6c7211eb7257266ab0ac         # [win]
+
+build:
+  number: 1
+  # Windows has issues updating python if conda is using files itself.
+  # Copy rather than link.
+  no_link:
+    - DLLs/_ctypes.pyd  # [win]
+    - bin/python3.6     # [unix]
+  # script_env:
+  #   - python_branding
+  # We delete the shared libraries.
+  ignore_run_exports:   # [unix]
+    - bzip2             # [unix]
+  # match python.org compiler standard
+  skip: True            # [win and vc != 14]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    - {{ cdt('xorg-x11-proto-devel') }}  # [linux]
+    - {{ cdt('libx11-devel') }}          # [linux]
+    - make                               # [unix]
+    - pkg-config                         # [unix]
+  host:
+    - bzip2                              # [unix]
+    - sqlite                             # [unix]
+    - xz                                 # [unix]
+    - zlib                               # [unix]
+    - openssl                            # [unix]
+    - readline                           # [unix]
+    - tk                                 # [unix]
+    - ncurses                            # [linux]
+    - libffi                             # [unix]
+
+test:
+  commands:
+    - python -V
+    - python3 -V            # [unix]
+    - 2to3 -h
+    - pydoc -h
+    - python3-config --help  # [unix]
+    - python -c "import sysconfig; print(sysconfig.get_config_var('CC'))"
+    -  _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata_x86_64_conda_cos6_linux_gnu python -c "import sysconfig; print(sysconfig.get_config_var('CC'))"  # [linux64]
+    - conda inspect linkages -p $PREFIX python  # [not win]
+    - conda inspect objects -p $PREFIX python  # [osx]
+
+about:
+  home: http://www.python.org/
+  license: PSF
+  license_file: LICENSE
+  summary: General purpose programming language
+  description: |
+    Python is a widely used high-level, general-purpose, interpreted, dynamic
+    programming language. Its design philosophy emphasizes code
+    readability, and its syntax allows programmers to express concepts in
+    fewer lines of code than would be possible in languages such as C++ or
+    Java. The language provides constructs intended to enable clear programs
+    on both a small and large scale.
+  doc_url: https://www.python.org/doc/versions/
+  doc_source_url: https://github.com/python/pythondotorg/blob/master/docs/source/index.rst
+  dev_url: https://docs.python.org/devguide/
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - jjhelmus
+    - mingwandroid
+    - msarahan
+    - pelson
+    - ocefpaf

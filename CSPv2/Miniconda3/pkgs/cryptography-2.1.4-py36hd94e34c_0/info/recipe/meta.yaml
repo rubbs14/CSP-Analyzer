@@ -1,0 +1,96 @@
+# This file created by conda-build 0+unknown
+# meta.yaml template originally from:
+# C:\ci\containers\000035alhn2\tmp\build\80754af9\rsync-recipes\cryptography-2.1.4-python3.6c_compilervs2015target-win-32-on-nwani-win-64, last modified Sat Dec  2 01:10:42 2017
+# ------------------------------------------------
+
+package:
+    name: cryptography
+    version: 2.1.4
+source:
+    fn: cryptography-2.1.4.tar.gz
+    sha256: e4d967371c5b6b2e67855066471d844c5d52d210c36c28d49a8507b96e2c5291
+    url: https://pypi.io/packages/source/c/cryptography/cryptography-2.1.4.tar.gz
+build:
+    number: '0'
+    script:
+        - set CRYPTOGRAPHY_WINDOWS_LINK_LEGACY_OPENSSL=1
+        - python setup.py install --single-version-externally-managed --record=record.txt
+    string: py36hd94e34c_0
+requirements:
+    build:
+        - vs2015_win-32 14.0.25123 hf5d5b87_2
+    host:
+        - ca-certificates 2017.08.26 h94faf87_0
+        - certifi 2017.11.5 py36h2c9f8ed_0
+        - cffi 1.11.2 py36h3166483_0
+        - openssl 1.0.2m hc51d9ed_1
+        - pycparser 2.18 py36h315bf61_1
+        - python 3.6.3 h52e1c9f_4
+        - setuptools 36.5.0 py36h7f22f53_0
+        - vc 14 h2379b0c_2
+        - vs2015_runtime 14.0.25123 hd4c4e62_2
+        - wincertstore 0.2 py36hcdd9a18_0
+    run:
+        - asn1crypto >=0.21.0
+        - cffi >=1.7
+        - idna >=2.1
+        - openssl 1.0.*
+        - openssl >=1.0.2m,<1.0.3a
+        - python >=3.6,<3.7.0a0
+        - six >=1.4.1
+        - vc 14.*
+test:
+    commands:
+        - pytest
+    imports:
+        - cryptography
+        - cryptography.fernet
+        - cryptography.hazmat
+        - cryptography.hazmat.backends
+        - cryptography.hazmat.backends.openssl
+        - cryptography.hazmat.bindings
+        - cryptography.hazmat.bindings.openssl
+        - cryptography.hazmat.primitives
+        - cryptography.hazmat.primitives.asymmetric
+        - cryptography.hazmat.primitives.ciphers
+        - cryptography.hazmat.primitives.kdf
+        - cryptography.hazmat.primitives.twofactor
+        - cryptography.x509
+    requires:
+        - cryptography-vectors 2.1.4.*
+        - hypothesis >=1.11.4
+        - iso8601
+        - pretend
+        - pytest >=3.2.1,!=3.3.0
+        - pytz
+    source_files:
+        - tests
+about:
+    description: 'Cryptography is a package which provides cryptographic recipes and
+
+        primitives to Python developers. Our goal is for it to be your
+
+        "cryptographic standard library". It supports Python 2.6-2.7, Python 3.3+,
+
+        and PyPy 2.6+. Cryptography includes both high level recipes, and low level
+
+        interfaces to common cryptographic algorithms such as symmetric ciphers,
+
+        message digests and key derivation functions.
+
+        '
+    dev_url: https://github.com/pyca/cryptography
+    doc_source_url: https://github.com/pyca/cryptography/tree/master/docs
+    doc_url: http://cryptography.readthedocs.io/
+    home: https://github.com/pyca/cryptography
+    license: Apache 2.0 or BSD 3-Clause, PSF 2
+    license_family: BSD
+    license_file: LICENSE
+    summary: Provides cryptographic recipes and primitives to Python developers
+extra:
+    copy_test_source_files: true
+    final: true
+    recipe-maintainers:
+        - jakirkham
+        - jschueller
+        - mingwandroid

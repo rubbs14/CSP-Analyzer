@@ -1,0 +1,27 @@
+{
+  "arch": "x86",
+  "build": "h896c600_2",
+  "build_number": 2,
+  "depends": [
+    "vc 14.*"
+  ],
+  "files": [
+    "Library/bin/yaml.dll",
+    "Library/include/yaml.h",
+    "Library/lib/yaml.lib",
+    "Library/lib/yaml_static.lib"
+  ],
+  "installed_by": "Miniconda3-4.4.10-Windows-x86.exe",
+  "license": "MIT",
+  "link": {
+    "source": "C:\\Miniconda3\\pkgs\\yaml-0.1.7-h896c600_2",
+    "type": "hard-link"
+  },
+  "md5": "08aab372f5faec507a4c3141ae192cc9",
+  "name": "yaml",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1510609786681,
+  "url": "https://repo.continuum.io/pkgs/main/win-32/yaml-0.1.7-h896c600_2.tar.bz2",
+  "version": "0.1.7"
+}

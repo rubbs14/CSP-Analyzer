@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2020
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSPv2", "CSPv2\CSPv2.csproj", "{3BE699B1-D99C-40FF-9753-1597EC4C6942}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Backend(experimental)", "Backend\Backend(experimental).pyproj", "{A286E9F8-5191-4723-8F4A-8881CEC47C2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeakListExtractor", "PeakListExtractor\PeakListExtractor.csproj", "{CCFF87E7-EB9B-4B03-976B-05B5DB045D93}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3BE699B1-D99C-40FF-9753-1597EC4C6942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BE699B1-D99C-40FF-9753-1597EC4C6942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BE699B1-D99C-40FF-9753-1597EC4C6942}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BE699B1-D99C-40FF-9753-1597EC4C6942}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A286E9F8-5191-4723-8F4A-8881CEC47C2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A286E9F8-5191-4723-8F4A-8881CEC47C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCFF87E7-EB9B-4B03-976B-05B5DB045D93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCFF87E7-EB9B-4B03-976B-05B5DB045D93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCFF87E7-EB9B-4B03-976B-05B5DB045D93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCFF87E7-EB9B-4B03-976B-05B5DB045D93}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1CCB4053-91C1-432E-AB02-F51E2B46325E}
+	EndGlobalSection
+EndGlobal

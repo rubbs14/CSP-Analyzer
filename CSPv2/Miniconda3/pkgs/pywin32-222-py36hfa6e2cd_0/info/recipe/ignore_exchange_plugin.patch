@@ -1,0 +1,22 @@
+diff --git a/setup.py b/setup.py
+index 2c522df..f6227db 100644
+--- a/setup.py
++++ b/setup.py
+@@ -1989,17 +1989,6 @@ com_extensions += [
+                         %(mapi)s/mapiutil.cpp
+                         %(mapi)s/mapiguids.cpp
+                         """ % dirs).split()),
+-    WinExt_win32com_mapi('exchange', libraries="mapi32",
+-                         sources=("""
+-                                  %(mapi)s/exchange.i         %(mapi)s/exchange.cpp
+-                                  %(mapi)s/PyIExchangeManageStore.i %(mapi)s/PyIExchangeManageStore.cpp
+-                                  %(mapi)s/PyIExchangeManageStoreEx.i %(mapi)s/PyIExchangeManageStoreEx.cpp
+-                                  %(mapi)s/mapiutil.cpp
+-                                  """ % dirs).split()),
+-    WinExt_win32com_mapi('exchdapi', libraries="mapi32",
+-                         sources=("""
+-                                  %(mapi)s/exchdapi.i         %(mapi)s/exchdapi.cpp
+-                                  """ % dirs).split()),
+     WinExt_win32com('shell', libraries='shell32', pch_header="shell_pch.h",
+                     windows_h_version = 0x600,
+                     sources=("""

@@ -1,0 +1,20 @@
+{
+  "arch": "x86",
+  "build": "h36134e3_1",
+  "build_number": 1,
+  "depends": [],
+  "files": [],
+  "installed_by": "Miniconda3-4.4.10-Windows-x86.exe",
+  "license": "BSD 3-Clause",
+  "link": {
+    "source": "C:\\Miniconda3\\pkgs\\conda-env-2.6.0-h36134e3_1",
+    "type": "hard-link"
+  },
+  "md5": "e5019a7e60a4b244ef7a5a0f09ad9463",
+  "name": "conda-env",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1505924277529,
+  "url": "https://repo.continuum.io/pkgs/main/win-32/conda-env-2.6.0-h36134e3_1.tar.bz2",
+  "version": "2.6.0"
+}

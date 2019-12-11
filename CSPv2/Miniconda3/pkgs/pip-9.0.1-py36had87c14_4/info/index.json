@@ -1,0 +1,17 @@
+{
+  "arch": "x86",
+  "build": "py36had87c14_4",
+  "build_number": 4,
+  "depends": [
+    "python >=3.6,<3.7.0a0",
+    "setuptools",
+    "wheel"
+  ],
+  "license": "MIT",
+  "license_family": "MIT",
+  "name": "pip",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1509124786260,
+  "version": "9.0.1"
+}

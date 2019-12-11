@@ -1,0 +1,53 @@
+# This file created by conda-build 3.0.27
+# meta.yaml template originally from:
+# C:\ci\containers\00001u30rbe\tmp\build\80754af9\rsync-recipes\six-1.11.0-python3.6target-win-32-on-nwani-win-64, last modified Sat Oct 21 11:27:35 2017
+# ------------------------------------------------
+
+package:
+    name: six
+    version: 1.11.0
+source:
+    sha256: 70e8a77beed4562e7f14fe23a786b54f6296e34344c23bc42f07b15018ff98e9
+    url: https://pypi.io/packages/source/s/six/six-1.11.0.tar.gz
+build:
+    number: '1'
+    script: python setup.py install --single-version-externally-managed --record=record.txt
+    string: py36h7f2c006_1
+requirements:
+    host:
+        - certifi 2017.7.27.1 py36h8287e07_0
+        - python 3.6.3 h28e8c7f_1
+        - setuptools 36.5.0 py36h7f22f53_0
+        - vc 14 h2379b0c_2
+        - vs2015_runtime 14.0.25123 hd4c4e62_2
+        - wincertstore 0.2 py36hcdd9a18_0
+    run:
+        - python >=3.6,<3.7.0a0
+test:
+    imports:
+        - six
+about:
+    description: 'Six provides simple utilities for wrapping over differences between
+
+        Python 2 and Python 3. It is intended to support codebases that work on
+
+        both Python 2 and 3 without modification. six consists of only one Python
+
+        file, so it is painless to copy into a project.
+
+        '
+    dev_url: https://github.com/benjaminp/six
+    doc_url: http://pythonhosted.org/six/
+    home: http://pypi.python.org/pypi/six/
+    license: MIT
+    license_family: MIT
+    license_file: LICENSE
+    summary: Python 2 and 3 compatibility utilities
+extra:
+    copy_test_source_files: true
+    final: true
+    recipe-maintainers:
+        - jakirkham
+        - mingwandroid
+        - msarahan
+        - ocefpaf

@@ -1,0 +1,14 @@
+{
+  "arch": "x86",
+  "build": "py36h787667b_1",
+  "build_number": 1,
+  "depends": [
+    "python >=3.6,<3.7.0a0"
+  ],
+  "license": "BSD Like",
+  "name": "idna",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1505958320377,
+  "version": "2.6"
+}

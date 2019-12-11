@@ -1,0 +1,43 @@
+{
+  "requirements": {
+    "build": [
+      "vs2015_win-32 14.0.25123 hf5d5b87_2"
+    ],
+    "host": [
+      "ca-certificates 2017.08.26 h94faf87_0",
+      "certifi 2017.11.5 py36h2c9f8ed_0",
+      "cffi 1.11.2 py36h3166483_0",
+      "openssl 1.0.2m hc51d9ed_1",
+      "pycparser 2.18 py36h315bf61_1",
+      "python 3.6.3 h52e1c9f_4",
+      "setuptools 36.5.0 py36h7f22f53_0",
+      "vc 14 h2379b0c_2",
+      "vs2015_runtime 14.0.25123 hd4c4e62_2",
+      "wincertstore 0.2 py36hcdd9a18_0"
+    ],
+    "run": [
+      "asn1crypto >=0.21.0",
+      "cffi >=1.7",
+      "idna >=2.1",
+      "openssl 1.0.*",
+      "openssl >=1.0.2m,<1.0.3a",
+      "python >=3.6,<3.7.0a0",
+      "six >=1.4.1",
+      "vc 14.*"
+    ]
+  },
+  "build": {
+    "script": [
+      "python setup.py install --single-version-externally-managed --record=record.txt",
+      "set CRYPTOGRAPHY_WINDOWS_LINK_LEGACY_OPENSSL=1"
+    ]
+  },
+  "source": {
+    "fn": "cryptography-2.1.4.tar.gz",
+    "url": "https://pypi.io/packages/source/c/cryptography/cryptography-2.1.4.tar.gz",
+    "sha256": "e4d967371c5b6b2e67855066471d844c5d52d210c36c28d49a8507b96e2c5291"
+  },
+  "extra": {
+    "copy_test_source_files": true
+  }
+}

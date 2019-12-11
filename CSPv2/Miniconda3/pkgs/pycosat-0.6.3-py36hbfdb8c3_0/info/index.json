@@ -1,0 +1,15 @@
+{
+  "arch": "x86",
+  "build": "py36hbfdb8c3_0",
+  "build_number": 0,
+  "depends": [
+    "python >=3.6,<3.7.0a0",
+    "vc 14.*"
+  ],
+  "license": "MIT",
+  "name": "pycosat",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1509360537070,
+  "version": "0.6.3"
+}

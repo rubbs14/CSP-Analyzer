@@ -1,0 +1,17 @@
+{
+  "arch": "x86",
+  "build": "py36h98b3c51_0",
+  "build_number": 0,
+  "depends": [
+    "cryptography >=2.1.4",
+    "python >=3.6,<3.7.0a0",
+    "six >=1.5.2"
+  ],
+  "license": "Apache 2.0",
+  "license_family": "Apache",
+  "name": "pyopenssl",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1512209488905,
+  "version": "17.5.0"
+}

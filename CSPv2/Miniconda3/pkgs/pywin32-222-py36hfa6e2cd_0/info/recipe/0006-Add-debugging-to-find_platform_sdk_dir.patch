@@ -1,0 +1,82 @@
+--- work/setup.py.orig	2017-09-21 01:46:00.345112900 -0700
++++ work/setup.py	2017-09-21 02:11:45.994586100 -0700
+@@ -146,7 +146,7 @@
+     # Finding the Platform SDK install dir is a treat. There can be some
+     # dead ends so we only consider the job done if we find the "windows.h"
+     # landmark.
+-    DEBUG = False # can't use log.debug - not setup yet
++    DEBUG = True # can't use log.debug - not setup yet
+     landmark = "include\\windows.h"
+     # 1. The use might have their current environment setup for the
+     #    SDK, in which case the "MSSdk" env var is set.
+--- work/setup.py.orig	2017-09-21 02:45:36.805044200 -0700
++++ work/setup.py	2017-09-21 02:47:42.644517100 -0700
+@@ -794,8 +794,8 @@
+                 self.compiler.add_library_dir(extra)
+                 break
+ 
+-        log.debug("After SDK processing, includes are %s", self.compiler.include_dirs)
+-        log.debug("After SDK processing, libs are %s", self.compiler.library_dirs)
++        print("After SDK processing, includes are %s", self.compiler.include_dirs)
++        print("After SDK processing, libs are %s", self.compiler.library_dirs)
+ 
+         # Vista SDKs have a 'VC' directory with headers and libs for older
+         # compilers.  We need to hack the support in here so that the
+@@ -807,10 +807,10 @@
+         if get_build_version() < 9.0:
+             if os.path.isdir(os.path.join(sdk_dir, 'VC', 'INCLUDE')):
+                 os.environ["INCLUDE"] += ";" + os.path.join(sdk_dir, 'VC', 'INCLUDE')
+-                log.debug("Vista SDK found: %%INCLUDE%% now %s", os.environ["INCLUDE"])
++                print("Vista SDK found: %%INCLUDE%% now %s", os.environ["INCLUDE"])
+             if os.path.isdir(os.path.join(sdk_dir, 'VC', 'LIB')):
+                 os.environ["LIB"] += ";" + os.path.join(sdk_dir, 'VC', 'LIB')
+-                log.debug("Vista SDK found: %%LIB%% now %s", os.environ["LIB"])
++                print("Vista SDK found: %%LIB%% now %s", os.environ["LIB"])
+ 
+     def _why_cant_build_extension(self, ext):
+         # Return None, or a reason it can't be built.
+@@ -846,7 +846,7 @@
+                                          % (self.windows_h_version, look))
+                                 break
+                         else:
+-                            log.debug("No version in %r - looking for another...", look)
++                            print("No version in %r - looking for another...", look)
+                     if self.windows_h_version is not None:
+                         break
+                 if self.windows_h_version is not None:
+@@ -865,7 +865,7 @@
+                 if os.path.isfile(os.path.join(d, h)):
+                     break
+             else:
+-                log.debug("Looked for %s in %s", h, look_dirs)
++                print("Looked for %s in %s", h, look_dirs)
+                 return "The header '%s' can not be located" % (h,)
+ 
+         common_dirs = self.compiler.library_dirs[:]
+@@ -878,7 +878,7 @@
+                 look_dirs = common_dirs + ext.library_dirs
+                 found = self.compiler.find_library_file(look_dirs, lib, self.debug)
+                 if not found:
+-                    log.debug("Looked for %s in %s", lib, look_dirs)
++                    print("Looked for %s in %s", lib, look_dirs)
+                     return "No library '%s'" % lib
+                 self.found_libraries[lib.lower()] = found
+             patched_libs.append(os.path.splitext(os.path.basename(found))[0])
+@@ -1123,7 +1123,7 @@
+                                         self.get_ext_filename(fullname))
+         depends = sources + ext.depends
+         if not (self.force or newer_group(depends, ext_filename, 'newer')):
+-            log.debug("skipping '%s' executable (up-to-date)", ext.name)
++            print("skipping '%s' executable (up-to-date)", ext.name)
+             return
+         else:
+             log.info("building '%s' executable", ext.name)
+@@ -1405,7 +1405,7 @@
+             fqsource = os.path.abspath(source)
+             fqtarget = os.path.abspath(target)
+             rebuild = self.force or (ext and newer_group(ext.swig_deps + [fqsource], fqtarget))
+-            log.debug("should swig %s->%s=%s", source, target, rebuild)
++            print("should swig %s->%s=%s", source, target, rebuild)
+             if rebuild:
+                 swig_cmd.extend(["-o", fqtarget, fqsource])
+                 log.info("swigging %s to %s", source, target)

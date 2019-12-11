@@ -1,0 +1,41 @@
+{
+  "paths": [
+    {
+      "_path": "Lib/site-packages/__pycache__/six.cpython-36.pyc",
+      "path_type": "hardlink",
+      "sha256": "53b20ae995a9b46d7fac9f8abbce3e607a5f5379b4b0c847f442305e0298cee9",
+      "size_in_bytes": 25019
+    },
+    {
+      "_path": "Lib/site-packages/six-1.11.0-py3.6.egg-info/PKG-INFO",
+      "path_type": "hardlink",
+      "sha256": "d8b98e962c2b9e7b1aeeaa3dd0f181e53c0909e4a106387c1ef202f722472348",
+      "size_in_bytes": 1894
+    },
+    {
+      "_path": "Lib/site-packages/six-1.11.0-py3.6.egg-info/SOURCES.txt",
+      "path_type": "hardlink",
+      "sha256": "0e5cf78d9cf118b109b87e8640636cebaedaa7bdc22a3be9fd6fcbe8ea43dc8e",
+      "size_in_bytes": 253
+    },
+    {
+      "_path": "Lib/site-packages/six-1.11.0-py3.6.egg-info/dependency_links.txt",
+      "path_type": "hardlink",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "size_in_bytes": 1
+    },
+    {
+      "_path": "Lib/site-packages/six-1.11.0-py3.6.egg-info/top_level.txt",
+      "path_type": "hardlink",
+      "sha256": "fe2547fe2604b445e70fc9d819062960552f9145bdb043b51986e478a4806a2b",
+      "size_in_bytes": 4
+    },
+    {
+      "_path": "Lib/site-packages/six.py",
+      "path_type": "hardlink",
+      "sha256": "034f0c3dbf868bd15f227237216ec78a65c59841f64f620fcc7803bdd8593d10",
+      "size_in_bytes": 30888
+    }
+  ],
+  "paths_version": 1
+}

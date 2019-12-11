@@ -1,0 +1,61 @@
+# This file created by conda-build 3.2.2
+# meta.yaml template originally from:
+# C:\ci\containers\000035aliqj\tmp\build\80754af9\rsync-recipes\cffi-1.11.4-python3.6c_compilervs2015target-win-32-on-winbuilder, last modified Fri Jan 19 07:36:42 2018
+# ------------------------------------------------
+
+package:
+    name: cffi
+    version: 1.11.4
+source:
+    fn: cffi-1.11.4.tar.gz
+    patches:
+        - 0001-Link-to-dl-library.patch
+    sha256: df9083a992b17a28cd4251a3f5c879e0198bb26c9e808c4647e0a18739f1d11d
+    url: https://pypi.io/packages/source/c/cffi/cffi-1.11.4.tar.gz
+build:
+    number: '0'
+    script: python setup.py install --single-version-externally-managed --record=record.txt
+    string: py36hfa6e2cd_0
+requirements:
+    build:
+        - vs2015_win-32 14.0.25123 h1a57648_3
+    host:
+        - certifi 2017.11.5 py36h2c9f8ed_0
+        - pycparser 2.18 py36h315bf61_1
+        - python 3.6.4 h6538335_1
+        - setuptools 38.4.0 py36_0
+        - vc 14 h0510ff6_3
+        - vs2015_runtime 14.0.25123 3
+        - wincertstore 0.2 py36hcdd9a18_0
+    run:
+        - pycparser
+        - python >=3.6,<3.7.0a0
+        - vc 14.*
+test:
+    imports:
+        - _cffi_backend
+        - cffi
+about:
+    description: 'Cffi aims to allow users to call C code from Python without having
+        to
+
+        learn a 3rd language. It provides a convenient and reliable way to call
+
+        compiled C code from Python using interface declarations written in C.
+
+        '
+    dev_url: https://bitbucket.org/cffi/cffi/overview
+    doc_source_url: https://bitbucket.org/cffi/cffi/src/default/doc/?at=default
+    doc_url: http://cffi.readthedocs.org
+    home: https://bitbucket.org/cffi/cffi
+    license: MIT
+    license_file: LICENSE
+    summary: Foreign Function Interface for Python calling C code.
+extra:
+    copy_test_source_files: true
+    final: true
+    recipe-maintainers:
+        - goanpeca
+        - inducer
+        - jschueller
+        - mingwandroid

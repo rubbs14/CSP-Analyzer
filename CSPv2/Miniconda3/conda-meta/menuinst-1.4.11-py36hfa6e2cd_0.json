@@ -1,0 +1,51 @@
+{
+  "arch": "x86",
+  "build": "py36hfa6e2cd_0",
+  "build_number": 0,
+  "depends": [
+    "python >=3.6,<3.7.0a0",
+    "pywin32",
+    "vc 14.*"
+  ],
+  "files": [
+    "Lib/site-packages/menuinst-1.4.11-py3.6.egg-info",
+    "Lib/site-packages/menuinst/PythonApplet.icns",
+    "Lib/site-packages/menuinst/__init__.py",
+    "Lib/site-packages/menuinst/__pycache__/__init__.cpython-36.pyc",
+    "Lib/site-packages/menuinst/__pycache__/_version.cpython-36.pyc",
+    "Lib/site-packages/menuinst/__pycache__/darwin.cpython-36.pyc",
+    "Lib/site-packages/menuinst/__pycache__/freedesktop.cpython-36.pyc",
+    "Lib/site-packages/menuinst/__pycache__/knownfolders.cpython-36.pyc",
+    "Lib/site-packages/menuinst/__pycache__/linux.cpython-36.pyc",
+    "Lib/site-packages/menuinst/__pycache__/main.cpython-36.pyc",
+    "Lib/site-packages/menuinst/__pycache__/utils.cpython-36.pyc",
+    "Lib/site-packages/menuinst/__pycache__/win32.cpython-36.pyc",
+    "Lib/site-packages/menuinst/__pycache__/win_elevate.cpython-36.pyc",
+    "Lib/site-packages/menuinst/_version.py",
+    "Lib/site-packages/menuinst/darwin.py",
+    "Lib/site-packages/menuinst/freedesktop.py",
+    "Lib/site-packages/menuinst/knownfolders.py",
+    "Lib/site-packages/menuinst/linux.py",
+    "Lib/site-packages/menuinst/main.py",
+    "Lib/site-packages/menuinst/utils.py",
+    "Lib/site-packages/menuinst/win32.py",
+    "Lib/site-packages/menuinst/win_elevate.py",
+    "Lib/site-packages/menuinst/winshortcut.cp36-win32.pyd",
+    "Scripts/menuinst-script.py",
+    "Scripts/menuinst.exe",
+    "cwp.py"
+  ],
+  "installed_by": "Miniconda3-4.4.10-Windows-x86.exe",
+  "license": "BSD",
+  "link": {
+    "source": "C:\\Miniconda3\\pkgs\\menuinst-1.4.11-py36hfa6e2cd_0",
+    "type": "hard-link"
+  },
+  "md5": "4f7f9806bdee0706dc680fad65356a64",
+  "name": "menuinst",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1518023562269,
+  "url": "https://repo.continuum.io/pkgs/main/win-32/menuinst-1.4.11-py36hfa6e2cd_0.tar.bz2",
+  "version": "1.4.11"
+}

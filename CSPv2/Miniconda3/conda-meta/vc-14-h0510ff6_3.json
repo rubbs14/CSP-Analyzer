@@ -1,0 +1,24 @@
+{
+  "arch": "x86",
+  "build": "h0510ff6_3",
+  "build_number": 3,
+  "depends": [
+    "vs2015_runtime >=14.0.25123,<15.0a0"
+  ],
+  "files": [],
+  "installed_by": "Miniconda3-4.4.10-Windows-x86.exe",
+  "license": "Modified BSD License (3-clause)",
+  "license_family": "BSD",
+  "link": {
+    "source": "C:\\Miniconda3\\pkgs\\vc-14-h0510ff6_3",
+    "type": "hard-link"
+  },
+  "md5": "2c67d0d6f40e0160434060e3859328c6",
+  "name": "vc",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1516068910819,
+  "track_features": "vc14",
+  "url": "https://repo.continuum.io/pkgs/main/win-32/vc-14-h0510ff6_3.tar.bz2",
+  "version": "14"
+}

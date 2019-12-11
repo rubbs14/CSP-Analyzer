@@ -1,0 +1,28 @@
+{
+  "requirements": {
+    "host": [
+      "certifi 2017.11.5 py36h2c9f8ed_0",
+      "python 3.6.3 h52e1c9f_4",
+      "setuptools 36.5.0 py36h7f22f53_0",
+      "vc 14 h2379b0c_2",
+      "vs2015_runtime 14.0.25123 hd4c4e62_2",
+      "wincertstore 0.2 py36hcdd9a18_0"
+    ],
+    "run": [
+      "cryptography >=2.1.4",
+      "python >=3.6,<3.7.0a0",
+      "six >=1.5.2"
+    ]
+  },
+  "build": {
+    "script": "python setup.py install --single-version-externally-managed --record=record.txt"
+  },
+  "source": {
+    "fn": "pyOpenSSL-17.5.0.tar.gz",
+    "url": "https://pypi.io/packages/source/p/pyOpenSSL/pyOpenSSL-17.5.0.tar.gz",
+    "sha256": "2c10cfba46a52c0b0950118981d61e72c1e5b1aac451ca1bc77de1a679456773"
+  },
+  "extra": {
+    "copy_test_source_files": true
+  }
+}

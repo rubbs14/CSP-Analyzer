@@ -1,0 +1,52 @@
+# This file created by conda-build 3.0.29
+# meta.yaml template originally from:
+# C:\ci\containers\00000a6tc2v\tmp\build\80754af9\rsync-recipes\yaml-0.1.7-c_compilervs2015target-win-32-on-winbuilder, last modified Mon Nov 13 13:48:28 2017
+# ------------------------------------------------
+
+package:
+    name: yaml
+    version: 0.1.7
+source:
+    patches:
+        - CMakeLists.txt.patch
+    sha256: 8088e457264a98ba451a90b8661fcb4f9d6f478f7265d48322a196cec2480729
+    url: http://pyyaml.org/download/libyaml/yaml-0.1.7.tar.gz
+build:
+    number: '2'
+    run_exports:
+        - yaml >=0.1.7,<0.2.0a0
+    string: h896c600_2
+requirements:
+    build:
+        - cmake 3.9.4 h4b83b1b_0
+        - vc 14 h2379b0c_2
+        - vs2015_runtime 14.0.25123 hd4c4e62_2
+        - vs2015_win-32 14.0.25123 hf5d5b87_2
+    run:
+        - vc 14.*
+test:
+    commands:
+        - if not exist %LIBRARY_INC%\\yaml.h exit 1
+        - if not exist %LIBRARY_LIB%\\yaml_static.lib exit 1
+        - if not exist %LIBRARY_LIB%\\yaml.lib exit 1
+        - if not exist %LIBRARY_BIN%\\yaml.dll exit 1
+about:
+    description: 'YAML is a human friendly data serialization standard for all programming
+
+        languages.
+
+        '
+    dev_url: https://github.com/yaml
+    doc_source_url: https://github.com/yaml/www.yaml.org/tree/master/docs
+    doc_url: http://www.yaml.org/spec/1.2/spec.html
+    home: http://pyyaml.org/wiki/LibYAML
+    license: MIT
+    summary: A C library for parsing and emitting YAML.
+extra:
+    copy_test_source_files: true
+    final: true
+    recipe-maintainers:
+        - jakirkham
+        - mingwandroid
+        - msarahan
+        - pelson

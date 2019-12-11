@@ -1,0 +1,15 @@
+{
+  "arch": "x86",
+  "build": "py36h7f2c006_1",
+  "build_number": 1,
+  "depends": [
+    "python >=3.6,<3.7.0a0"
+  ],
+  "license": "MIT",
+  "license_family": "MIT",
+  "name": "six",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1508610524662,
+  "version": "1.11.0"
+}

@@ -1,0 +1,11 @@
+--- make-ca.sh-20170514.orig	2017-08-28 17:54:24.000000000 -0700
++++ make-ca.sh-20170514	2017-08-28 17:54:55.000000000 -0700
+@@ -42,7 +42,7 @@
+ # Some data in the certs have UTF-8 characters
+ export LANG=en_US.utf8
+ 
+-TEMPDIR=$(mktemp -d)
++TEMPDIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+ WORKDIR="${TEMPDIR}/work"
+ WITH_NSS=1
+ WITH_JAVA=1

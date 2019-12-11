@@ -1,0 +1,14 @@
+{
+  "arch": "x86",
+  "build": "py36h6b5aef5_1",
+  "build_number": 1,
+  "depends": [
+    "python >=3.6,<3.7.0a0"
+  ],
+  "license": "PUBLIC-DOMAIN",
+  "name": "win_inet_pton",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1505977277451,
+  "version": "1.0.1"
+}

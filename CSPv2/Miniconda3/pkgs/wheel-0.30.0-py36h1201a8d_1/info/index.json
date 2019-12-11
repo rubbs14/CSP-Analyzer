@@ -1,0 +1,15 @@
+{
+  "arch": "x86",
+  "build": "py36h1201a8d_1",
+  "build_number": 1,
+  "depends": [
+    "python >=3.6,<3.7.0a0",
+    "setuptools"
+  ],
+  "license": "MIT",
+  "name": "wheel",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1511280963940,
+  "version": "0.30.0"
+}

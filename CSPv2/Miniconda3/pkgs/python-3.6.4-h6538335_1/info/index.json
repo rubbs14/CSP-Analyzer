@@ -1,0 +1,14 @@
+{
+  "arch": "x86",
+  "build": "h6538335_1",
+  "build_number": 1,
+  "depends": [
+    "vc 14.*"
+  ],
+  "license": "PSF",
+  "name": "python",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1516127228838,
+  "version": "3.6.4"
+}

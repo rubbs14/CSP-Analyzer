@@ -1,0 +1,16 @@
+{
+  "arch": "x86",
+  "build": "py36hbb234f4_1",
+  "build_number": 1,
+  "depends": [
+    "python >=3.6,<3.7.0a0",
+    "win_inet_pton"
+  ],
+  "license": "BSD 3-Clause",
+  "license_family": "BSD",
+  "name": "pysocks",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1505977348092,
+  "version": "1.6.7"
+}

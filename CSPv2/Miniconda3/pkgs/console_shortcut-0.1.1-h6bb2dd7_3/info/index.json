@@ -1,0 +1,14 @@
+{
+  "arch": "x86",
+  "build": "h6bb2dd7_3",
+  "build_number": 3,
+  "depends": [
+    "python"
+  ],
+  "license": "BSD",
+  "name": "console_shortcut",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1508251111877,
+  "version": "0.1.1"
+}

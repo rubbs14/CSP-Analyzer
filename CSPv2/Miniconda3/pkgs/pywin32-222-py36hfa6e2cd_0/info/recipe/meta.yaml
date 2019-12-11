@@ -1,0 +1,47 @@
+# This file created by conda-build 0+unknown
+# meta.yaml template originally from:
+# C:\ci\containers\000014qcqjn\tmp\build\80754af9\rsync-recipes\pywin32-222-c_compilervs2015python3.6target-win-32-on-winbuilder, last modified Fri Jan 26 09:22:14 2018
+# ------------------------------------------------
+
+package:
+    name: pywin32
+    version: '222'
+source:
+    fn: pywin32-222.zip
+    patches:
+        - 0001-scintilla_makefiles.patch
+        - nuke_post_install.patch
+    sha256: e4a1269c9f291fa5f6b46beed1c0ad9f568a7bdf181621de127065362cf53058
+    url: https://github.com/mhammond/pywin32/archive/b222.zip
+build:
+    number: '0'
+    string: py36hfa6e2cd_0
+requirements:
+    build:
+        - vs2015_win-32 14.0.25123 h1a57648_3
+    host:
+        - certifi 2017.11.5 py36h2c9f8ed_0
+        - python 3.6.4 h6538335_1
+        - setuptools 38.4.0 py36_0
+        - vc 14 h0510ff6_3
+        - vs2015_runtime 14.0.25123 3
+        - wincertstore 0.2 py36hcdd9a18_0
+    run:
+        - python >=3.6,<3.7.0a0
+        - vc 14.*
+about:
+    description: 'A set of extension modules that provides access to many of the Windows
+        API functions.
+
+        '
+    doc_source_url: https://sourceforge.net/projects/pywin32/
+    doc_url: https://pypi.python.org/pypi/pywin32
+    home: https://sourceforge.net/projects/pywin32
+    license: PSF
+    summary: Python extensions for Windows
+extra:
+    copy_test_source_files: true
+    final: true
+    recipe-maintainers:
+        - mingwandroid
+        - nicoddemus

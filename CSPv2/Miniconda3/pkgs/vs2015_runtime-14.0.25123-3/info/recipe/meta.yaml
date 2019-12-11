@@ -1,0 +1,18 @@
+# This file created by conda-build 3.2.2
+# ------------------------------------------------
+
+package:
+    name: vs2015_runtime
+    version: 14.0.25123
+build:
+    noarch: false
+    number: '3'
+    script: install_runtime.bat
+    string: '3'
+extra:
+    copy_test_source_files: true
+    final: true
+    parent_recipe:
+        name: vs2015
+        path: C:\ci\containers\000035alipn\tmp\build\80754af9\rsync-recipes\vs2015-14.0.25123-target-win-32-on-winbuilder
+        version: 14.0.25123

@@ -1,0 +1,51 @@
+{% set name = "pywin32" %}
+{% set version = "222" %}
+{% set hash_type = "sha256" %}
+{% set hash = "e4a1269c9f291fa5f6b46beed1c0ad9f568a7bdf181621de127065362cf53058" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.zip
+  url: https://github.com/mhammond/pywin32/archive/b{{ version }}.zip
+  {{ hash_type }}: {{ hash }}
+  patches:
+    - 0001-scintilla_makefiles.patch
+    # - 0002-ucrt-compatibility-fixes.patch
+    # - 0003-ucrt-compatibility-fixes-shell.patch
+    # disabled - 222 appears to use .i files (swig?) and not cpp files directly anymore.
+    # - 0004-fix-mapi-compile-errors.patch
+    # - 0005-remove-JOB_OBJECT_RESERVED_LIMIT_VALID_FLAGS.patch
+    - ignore_exchange_plugin.patch   # [win64]
+    # running the post-install script fails, because we're not installing to the root system.
+    #    Just skip it - it's stuff like registering COM stuff that we don't handle anyway.
+    - nuke_post_install.patch
+
+build:
+  number: 0
+  skip: True  # [not win]
+
+requirements:
+  build:
+    - {{ compiler('c') }}
+  host:
+    - python
+    - setuptools
+  run:
+    - python
+
+about:
+  home: https://sourceforge.net/projects/pywin32
+  license: PSF
+  summary: Python extensions for Windows
+  description: |
+    A set of extension modules that provides access to many of the Windows API functions.
+  doc_url: https://pypi.python.org/pypi/pywin32
+  doc_source_url: https://sourceforge.net/projects/pywin32/
+
+extra:
+  recipe-maintainers:
+    - mingwandroid
+    - nicoddemus

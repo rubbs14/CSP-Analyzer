@@ -1,0 +1,25 @@
+{
+  "arch": "x86",
+  "build": "h6bb2dd7_3",
+  "build_number": 3,
+  "depends": [
+    "python"
+  ],
+  "files": [
+    "Menu/Iconleak-Atrous-Console.ico",
+    "Menu/console_shortcut.json"
+  ],
+  "installed_by": "Miniconda3-4.4.10-Windows-x86.exe",
+  "license": "BSD",
+  "link": {
+    "source": "C:\\Miniconda3\\pkgs\\console_shortcut-0.1.1-h6bb2dd7_3",
+    "type": "hard-link"
+  },
+  "md5": "14dc34de22cfc17030c86d5a277c6140",
+  "name": "console_shortcut",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1508251111877,
+  "url": "https://repo.continuum.io/pkgs/main/win-32/console_shortcut-0.1.1-h6bb2dd7_3.tar.bz2",
+  "version": "0.1.1"
+}

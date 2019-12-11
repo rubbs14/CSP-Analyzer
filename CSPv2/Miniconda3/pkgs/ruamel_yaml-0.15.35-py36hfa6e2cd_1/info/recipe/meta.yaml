@@ -1,0 +1,109 @@
+# This file created by conda-build 3.2.2
+# meta.yaml template originally from:
+# C:\ci\containers\00003hp9npc\tmp\build\80754af9\rsync-recipes\ruamel_yaml-0.15.35-c_compilervs2015python3.6target-win-32-on-winbuilder, last modified Fri Jan 19 11:36:34 2018
+# ------------------------------------------------
+
+package:
+    name: ruamel_yaml
+    version: 0.15.35
+source:
+    fn: ruamel_yaml-0.15.35.tar.gz
+    patches:
+        - ordereddict_test.patch
+    sha256: 69bec987b5ac6ecf360c091e264e80b40df8fb004c394f730e30e79fdd91beec
+    url: https://bitbucket.org/ruamel/yaml/get/0.15.35.tar.gz
+build:
+    no_link: .*\.(pyd|dll)
+    number: '1'
+    string: py36hfa6e2cd_1
+requirements:
+    build:
+        - m2-base 1.0.0 2
+        - m2-bash 4.3.042 5
+        - m2-bash-completion 2.3 2
+        - m2-catgets 1.1 3
+        - m2-coreutils 8.25 102
+        - m2-dash 0.5.8 2
+        - m2-diffutils 3.3 4
+        - m2-file 5.25 2
+        - m2-filesystem 2016.04 4
+        - m2-findutils 4.6.0 2
+        - m2-gawk 4.1.3 2
+        - m2-gcc-libs 5.3.0 4
+        - m2-gettext 0.19.7 4
+        - m2-gmp 6.1.0 3
+        - m2-grep 2.22 4
+        - m2-gzip 1.7 2
+        - m2-inetutils 1.9.2 2
+        - m2-info 6.0 2
+        - m2-less 481 2
+        - m2-libasprintf 0.19.7 4
+        - m2-libbz2 1.0.6 3
+        - m2-libcatgets 1.1 3
+        - m2-libcrypt 1.3 2
+        - m2-libgettextpo 0.19.7 4
+        - m2-libiconv 1.14 3
+        - m2-libintl 0.19.7 4
+        - m2-liblzma 5.2.2 2
+        - m2-libpcre 8.38 2
+        - m2-libreadline 6.3.008 8
+        - m2-libutil-linux 2.26.2 2
+        - m2-libxml2 2.9.2 3
+        - m2-make 4.1 5
+        - m2-mintty 1!2.2.3 2
+        - m2-mpfr 3.1.4 2
+        - m2-msys2-launcher-git 0.3.28.860c495 2
+        - m2-msys2-runtime 2.5.0.17080.65c939c 3
+        - m2-ncurses 6.0.20160220 2
+        - m2-sed 4.2.2 3
+        - m2-tar 1.28 4
+        - m2-tftp-hpa 5.2 2
+        - m2-time 1.7 2
+        - m2-ttyrec 1.0.8 2
+        - m2-tzcode 2015.e 2
+        - m2-unzip 6.0 3
+        - m2-util-linux 2.26.2 2
+        - m2-which 2.21 3
+        - m2-zip 3.0 2
+        - m2-zlib 1.2.8 4
+        - msys2-conda-epoch 20160418 1
+        - posix 1.0.0 2
+        - vs2015_win-32 14.0.25123 h1a57648_3
+    host:
+        - certifi 2017.11.5 py36h2c9f8ed_0
+        - cython 0.27.3 py36hf4b58cc_0
+        - python 3.6.4 h6538335_1
+        - setuptools 38.4.0 py36_0
+        - vc 14 h0510ff6_3
+        - vs2015_runtime 14.0.25123 3
+        - wincertstore 0.2 py36hcdd9a18_0
+        - yaml 0.1.7 h896c600_2
+    run:
+        - python >=3.6,<3.7.0a0
+        - vc 14.*
+        - yaml
+        - yaml >=0.1.7,<0.2.0a0
+test:
+    imports:
+        - ruamel_yaml
+        - ruamel_yaml.ext._ruamel_yaml
+    requires:
+        - pytest
+about:
+    description: 'ruamel.yaml is a YAML 1.2 loader/dumper package for Python.
+
+        '
+    dev_url: https://bitbucket.org/ruamel/yaml/src
+    doc_source_url: https://bitbucket.org/ruamel/yaml/src/default/_doc/?at=default
+    doc_url: http://yaml.readthedocs.io/en/latest/overview.html
+    home: https://bitbucket.org/ruamel/yaml
+    license: MIT
+    license_family: MIT
+    license_file: LICENSE
+    summary: A patched copy of ruamel.yaml.
+extra:
+    copy_test_source_files: true
+    final: true
+    recipe-maintainers:
+        - jakirkham
+        - mingwandroid

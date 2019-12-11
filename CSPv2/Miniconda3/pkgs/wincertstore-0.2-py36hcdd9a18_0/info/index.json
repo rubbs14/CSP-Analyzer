@@ -1,0 +1,14 @@
+{
+  "arch": "x86",
+  "build": "py36hcdd9a18_0",
+  "build_number": 0,
+  "depends": [
+    "python >=3.6,<3.7.0a0"
+  ],
+  "license": "PSF 2",
+  "name": "wincertstore",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1505944367136,
+  "version": "0.2"
+}

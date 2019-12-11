@@ -1,0 +1,30 @@
+{
+  "requirements": {
+    "host": [
+      "certifi 2017.7.27.1 py36h8287e07_0",
+      "python 3.6.3 h52e1c9f_4",
+      "setuptools 36.5.0 py36h7f22f53_0",
+      "vc 14 h2379b0c_2",
+      "vs2015_runtime 14.0.25123 hd4c4e62_2",
+      "wincertstore 0.2 py36hcdd9a18_0"
+    ],
+    "run": [
+      "python >=3.6,<3.7.0a0",
+      "setuptools"
+    ]
+  },
+  "build": {
+    "script": "python setup.py install --single-version-externally-managed --record=record.txt",
+    "entry_points": [
+      "wheel=wheel.tool:main"
+    ]
+  },
+  "source": {
+    "fn": "wheel-0.30.0.tar.gz",
+    "url": "https://pypi.io/packages/source/w/wheel/wheel-0.30.0.tar.gz",
+    "sha256": "9515fe0a94e823fd90b08d22de45d7bde57c90edce705b22f5e1ecf7e1b653c8"
+  },
+  "extra": {
+    "copy_test_source_files": true
+  }
+}

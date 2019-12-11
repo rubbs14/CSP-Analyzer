@@ -1,0 +1,20 @@
+{
+  "arch": "x86",
+  "build": "py36hf0c4117_0",
+  "build_number": 0,
+  "depends": [
+    "certifi",
+    "cryptography >=1.3.4",
+    "idna >=2.0.0",
+    "pyopenssl >=0.14",
+    "pysocks >=1.5.6,<2.0,!=1.5.7",
+    "python >=3.6,<3.7.0a0"
+  ],
+  "license": "MIT",
+  "license_family": "MIT",
+  "name": "urllib3",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1505980612052,
+  "version": "1.22"
+}

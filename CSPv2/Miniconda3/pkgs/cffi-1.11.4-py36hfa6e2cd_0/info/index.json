@@ -1,0 +1,16 @@
+{
+  "arch": "x86",
+  "build": "py36hfa6e2cd_0",
+  "build_number": 0,
+  "depends": [
+    "pycparser",
+    "python >=3.6,<3.7.0a0",
+    "vc 14.*"
+  ],
+  "license": "MIT",
+  "name": "cffi",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1516377673066,
+  "version": "1.11.4"
+}

@@ -1,0 +1,14 @@
+{
+  "arch": "x86",
+  "build": "h896c600_2",
+  "build_number": 2,
+  "depends": [
+    "vc 14.*"
+  ],
+  "license": "MIT",
+  "name": "yaml",
+  "platform": "win",
+  "subdir": "win-32",
+  "timestamp": 1510609786681,
+  "version": "0.1.7"
+}
