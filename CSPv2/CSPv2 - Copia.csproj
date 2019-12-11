@@ -124,6 +124,12 @@
     <Compile Include="FormOutputTable.Designer.cs">
       <DependentUpon>FormOutputTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormHelp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormHelp.Designer.cs">
+      <DependentUpon>FormHelp.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormShortcuts.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -141,6 +147,9 @@
     <EmbeddedResource Include="FormOutputTable.resx">
       <DependentUpon>FormOutputTable.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormHelp.resx">
+      <DependentUpon>FormHelp.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormShortcuts.resx">
       <DependentUpon>FormShortcuts.cs</DependentUpon>
     </EmbeddedResource>
@@ -154,6 +163,82 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="ClassDiagram1.cd" />
+    <Content Include="Demo-dataset\gpHUB1_FR_REF_pool1_130416\11\pdata\1\peaklist.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\101\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\111\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\11\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\121\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\131\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\141\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\151\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\161\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\171\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\181\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\191\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\201\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\211\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\21\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\241\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\261\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\281\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\291\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\301\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\311\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\31\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\321\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\331\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\341\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\351\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\371\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\381\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\391\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\401\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\411\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\41\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\421\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\431\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\441\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\461\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\481\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\501\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\511\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\51\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\521\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\531\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\541\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\561\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\571\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\581\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\591\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\601\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\611\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\61\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\621\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\631\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\641\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\651\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\661\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\671\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\681\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\71\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\741\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\751\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\761\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\81\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\841\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\871\pdata\1\peaklist.xml" />
+    <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\91\pdata\1\peaklist.xml" />
+    <Content Include="GPL3.0-LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Miniconda3\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Miniconda3\.nonadmin">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
