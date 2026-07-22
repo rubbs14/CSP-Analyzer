@@ -52,8 +52,16 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
 
 ## Sub-project 3 — Avalonia UI port (largest; multiple sessions)
 
-- [ ] **S7** — .NET 8 Avalonia solution scaffold. App shell + MainWindow layout
-  mapping Form1 regions. Builds + runs empty window on Linux.
+- [x] **S7** — `dotnet/CspAnalyzer.Desktop` (Avalonia 11.2.3 MVVM app, net8.0,
+  CommunityToolkit.Mvvm) scaffolded via `dotnet new avalonia.mvvm`, folded into
+  the renamed umbrella `dotnet/CspAnalyzer.sln` alongside `BackendInterop`.
+  `MainWindow.axaml` lays out empty placeholder regions mirroring every
+  `Form1.Designer.cs` panel (sidebar: File I/O / Import-Run / Run Info /
+  Help-Shortcuts; content: 2 stacked bar-chart placeholders + spectra-overlay
+  placeholder; bottom bar: analysis-info / actives-inactives / manual-results
+  / current-experiment+goto / player buttons+export-reset) - no bindings or
+  real charts yet, that's S8-S10. Builds clean and confirmed running (real
+  window, screenshotted) on this Linux box.
 - [ ] **S8** — Dataset loading: port peaklist(xml)→json pipeline from Form1 C# into
   the new project (MVVM). Unit-test the transform.
 - [ ] **S9** — Run flow: invoke python backend via the S6 contract, progress
