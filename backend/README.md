@@ -33,15 +33,16 @@ for the full modernization design and rationale.
 ## CLI usage
 
 ```
-python -m backend <json_in> [out_dir]
+python -m backend <json_in> [out_dir] [--model-dir DIR] [--bins-per-array-dimension N]
 ```
 
 `out_dir` defaults to `json_in`'s directory. Writes `processed_spectra.json`
-there. Model artifacts are loaded from `model_artifacts/` relative to the
-current working directory (override via `run(..., model_dir=...)` when
-calling as a library). Exit code `1` + stderr message on failure; the exact
-error-code/exit-semantics contract the future Avalonia UI relies on is
-defined in sub-project 2 (S6).
+there. `--model-dir` defaults to `model_artifacts/` relative to the current
+working directory - pass it explicitly (an absolute path) from any caller
+that doesn't control its own CWD, e.g. the .NET UI. Full stable contract
+(exit codes, stdout/stderr split, JSON schema) for the future Avalonia UI's
+call layer is defined in sub-project 2:
+`docs/superpowers/specs/2026-07-22-sub-project-2-backend-ui-interface-spec.md`.
 
 ## Known quirks (preserved intentionally)
 

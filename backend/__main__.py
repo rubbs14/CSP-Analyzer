@@ -1,3 +1,4 @@
+import argparse
 import os
 import sys
 
@@ -61,23 +62,45 @@ def run(
     return output_path
 
 
+def _build_parser():
+    parser = argparse.ArgumentParser(prog="python -m backend")
+    parser.add_argument("json_in", help="Peaklist JSON (reference + experiment spectra)")
+    parser.add_argument("out_dir", nargs="?", default=None, help="Defaults to json_in's directory")
+    parser.add_argument("--model-dir", dest="model_dir", default=DEFAULT_MODEL_DIR)
+    parser.add_argument(
+        "--bins-per-array-dimension", dest="bins_per_array_dimension", type=int, default=BINS_PER_ARRAY_DIMENSION
+    )
+    return parser
+
+
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
 
-    if not argv:
-        print("Usage: python -m backend <json_in> [out_dir]", file=sys.stderr)
-        return 1
-
-    json_location = argv[0]
-    output_location = argv[1] if len(argv) > 1 else None
+    parser = _build_parser()
+    try:
+        args = parser.parse_args(argv)
+    except SystemExit as exc:
+        # argparse already printed usage/error to stderr (or --help to
+        # stdout) and picked its own exit code (2 for a bad argv, 0 for
+        # --help) - propagate it as-is rather than forcing our own.
+        return exc.code if exc.code is not None else 0
 
     try:
-        output_path = run(json_location, output_location)
-    except (ValueError, RuntimeError, FileNotFoundError) as exc:
+        output_path = run(
+            args.json_in,
+            args.out_dir,
+            model_dir=args.model_dir,
+            bins_per_array_dimension=args.bins_per_array_dimension,
+        )
+    except Exception as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1
 
-    print(f"Predictions made, saved to file at {output_path}")
+    # Contract: on success, stdout is *exactly* the output path (one line,
+    # nothing else) so a calling process can read it without parsing prose.
+    # Human-readable status goes to stderr instead.
+    print(f"Predictions made, saved to file at {output_path}", file=sys.stderr)
+    print(output_path)
     return 0
 
 

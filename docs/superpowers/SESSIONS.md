@@ -34,15 +34,21 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
 
 ## Sub-project 5 — Repo hygiene
 
-- [ ] **S5** — `git rm --cached` bundled Miniconda3 (~12k files) + pkl + demo dataset
+- [x] **S5** — `git rm --cached` bundled Miniconda3 (~12k files) + pkl + demo dataset
   (local files kept). Add `.gitignore`. Verify nothing that builds depends on tracked
   copies. Commit. (History rewrite = optional later.)
 
 ## Sub-project 2 — Backend ↔ UI interface
 
-- [ ] **S6** — Define stable contract: CLI `json in → json out` (or local API).
-  Document invocation, error codes, exit semantics the Avalonia app will rely on.
-  Sub-project-2 spec. Minimal .NET call-layer stub + test.
+- [x] **S6** — Stable CLI contract defined: exit codes 0/1/2, stdout-on-success
+  is exactly the output path, stderr carries errors/diagnostics, `--model-dir`
+  and `--bins-per-array-dimension` exposed so callers aren't CWD-dependent.
+  Broadened `main()`'s exception handling to catch everything (no raw
+  tracebacks). `dotnet/BackendInterop` (.NET 8 class library) + xunit test
+  project prove the contract: `BackendCliRunner` shells out via `ArgumentList`
+  (no string-concat), `SpectrumResult` deserializes the plain-bool JSON with
+  no regex workaround. See
+  `docs/superpowers/specs/2026-07-22-sub-project-2-backend-ui-interface-spec.md`.
 
 ## Sub-project 3 — Avalonia UI port (largest; multiple sessions)
 
