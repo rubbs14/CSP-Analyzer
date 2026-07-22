@@ -1,0 +1,1 @@
+{"C": 3, "kernel": "rbf", "gamma": "auto", "degree": 3, "coef0": 0.0, "shrinking": true, "tol": 0.001, "shape_fit_": [1046, 20], "fit_status_": 0}

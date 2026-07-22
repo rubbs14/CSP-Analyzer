@@ -348,3 +348,9 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# CSP-Analyzer: bundled runtime + legacy model pickles + demo data
+# (see docs/superpowers/SESSIONS.md S5 - not source, kept locally only)
+CSPv2/Miniconda3/
+CSPv2/pickle_jar/
+CSPv2/Demo-dataset/
