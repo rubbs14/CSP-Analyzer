@@ -51,7 +51,8 @@
     <Grid ColumnDefinitions="210,*">
 
         <!-- Sidebar: panel1 / panel4 / panel3 / panel13 -->
-        <Grid Grid.Column="0" RowDefinitions="Auto,*,Auto,Auto">
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
             <Border Grid.Row="0" Classes="section">
                 <StackPanel>
                     <TextBlock Classes="sectionHeader" Text="File I/O" />
@@ -61,9 +62,22 @@
             </Border>
 
             <Border Grid.Row="1" Classes="section">
+                <StackPanel Spacing="1">
+                    <TextBlock Classes="sectionHeader" Text="DS Info" />
+                    <TextBlock Text="{Binding TotalSubfoldersFound, StringFormat='Exp Subfolders: {0}'}" FontSize="11" />
+                    <TextBlock Text="{Binding ValidXmlPeaklistCount, StringFormat='Valid XML PeakList: {0}'}" FontSize="11" />
+                    <TextBlock Text="{Binding CorruptedXmlPeaklistCount, StringFormat='Corrupted XML PeakList: {0}'}" FontSize="11" />
+                    <TextBlock Text="{Binding OutOfPeakImportRangeCount, StringFormat='Out of Peak Import Range: {0}'}" FontSize="11" />
+                    <TextBlock Text="{Binding ValidExperimentsCount, StringFormat='Valid Experiments: {0}'}" FontSize="11" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="2" Classes="section">
                 <StackPanel Spacing="2">
-                    <TextBlock Classes="sectionHeader" Text="Import Controls / Run" />
-                    <Grid ColumnDefinitions="30,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+                    <TextBlock Classes="sectionHeader" Text="Options" />
+
+                    <TextBlock Text="Import Control" FontWeight="SemiBold" FontSize="11" Margin="0,4,0,0" />
+                    <Grid ColumnDefinitions="46,*" RowDefinitions="Auto,Auto,Auto,Auto">
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="NMin" VerticalAlignment="Center" />
                         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NMin}" />
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="NMax" VerticalAlignment="Center" />
@@ -72,44 +86,82 @@
                         <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding HMin}" />
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="HMax" VerticalAlignment="Center" />
                         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding HMax}" />
-                        <TextBlock Grid.Row="4" Grid.Column="0" Text="RefI" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding ReferenceIntensityThreshold}" />
-                        <TextBlock Grid.Row="5" Grid.Column="0" Text="DSI" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding DatasetIntensityThreshold}" />
                     </Grid>
-                    <TextBlock Text="{Binding TotalSubfoldersFound, StringFormat='Subfolders scanned: {0}'}" FontSize="11" />
+                    <Button Content="Reset to Default" Command="{Binding ResetImportControlsCommand}" HorizontalAlignment="Stretch" Margin="0,2" />
+
+                    <TextBlock Text="Peak Filtering" FontWeight="SemiBold" FontSize="11" Margin="0,4,0,0" />
+                    <Grid ColumnDefinitions="62,*" RowDefinitions="Auto,Auto">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Reference" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ReferenceIntensityThreshold}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Dataset" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DatasetIntensityThreshold}" />
+                    </Grid>
+                    <Button Content="Reset to Default" Command="{Binding ResetPeakFilteringCommand}" HorizontalAlignment="Stretch" Margin="0,2" />
+
+                    <TextBlock Text="{Binding TotalSubfoldersFound, StringFormat='Subfolders scanned: {0}'}" FontSize="11" Margin="0,4,0,0" />
                     <TextBlock Text="{Binding PeaklistFilesFoundCount, StringFormat='Peaklist files found: {0}'}" FontSize="11" />
                     <Button Content="Run CSP" Command="{Binding RunCommand}" HorizontalAlignment="Stretch" Margin="0,8,0,0" />
                     <Button Content="Cancel" Command="{Binding CancelRunCommand}" HorizontalAlignment="Stretch" Margin="0,2" />
                 </StackPanel>
             </Border>
 
-            <Border Grid.Row="2" Classes="section">
+            <Border Grid.Row="3" Classes="section">
                 <StackPanel>
                     <TextBlock Classes="sectionHeader" Text="Run Info" />
                     <TextBlock Text="{Binding ReferenceStatusText}" TextWrapping="Wrap" />
                     <TextBlock Text="{Binding DatasetStatusText}" TextWrapping="Wrap" />
                     <ProgressBar IsIndeterminate="{Binding IsRunning}" IsVisible="{Binding IsRunning}" Height="6" Margin="0,4" />
+                    <Border IsVisible="{Binding RunCompletedSuccessfully}" Background="Green" CornerRadius="3" Margin="0,4" Padding="0,3">
+                        <TextBlock Text="Analysis complete" Foreground="White" FontWeight="SemiBold" FontSize="11" HorizontalAlignment="Center" />
+                    </Border>
                     <TextBlock Text="{Binding RunStatusText}" TextWrapping="Wrap" FontSize="11" />
                 </StackPanel>
             </Border>
 
-            <Border Grid.Row="3" Classes="section">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                    <Button Content="Help" />
-                    <Button Content="Details" />
-                    <Button Content="Shortcuts" />
+            <Border Grid.Row="4" Classes="section">
+                <StackPanel Spacing="4">
+                    <Button Content="Save MCC Stats" HorizontalAlignment="Stretch" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                        <Button Content="About" />
+                        <Button Content="Shortcuts" />
+                        <Button Content="Help" />
+                    </StackPanel>
+                    <TextBlock Text="Developed by R. Byrne and R. Fino" FontSize="9" FontStyle="Italic"
+                               HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="5" Classes="section">
+                <StackPanel Spacing="4">
+                    <TextBlock Classes="sectionHeader" Text="Appearance" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                        <Button Content="Light" Click="OnThemeLightClick" />
+                        <Button Content="Dark" Click="OnThemeDarkClick" />
+                        <Button Content="System" Click="OnThemeSystemClick" />
+                    </StackPanel>
+                    <TextBlock Text="Background Color" FontSize="10" HorizontalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
+                        <Button Width="20" Height="20" Padding="0" Background="#1E1E2E" Click="OnBackgroundColorClick" Tag="#1E1E2E" />
+                        <Button Width="20" Height="20" Padding="0" Background="#F5F5F5" Click="OnBackgroundColorClick" Tag="#F5F5F5" />
+                        <Button Width="20" Height="20" Padding="0" Background="#1B2A38" Click="OnBackgroundColorClick" Tag="#1B2A38" />
+                        <Button Width="20" Height="20" Padding="0" Background="#1F2E24" Click="OnBackgroundColorClick" Tag="#1F2E24" />
+                        <Button Width="20" Height="20" Padding="0" Background="#2E1F2A" Click="OnBackgroundColorClick" Tag="#2E1F2A" />
+                        <Button Content="Reset" FontSize="10" Click="OnBackgroundColorResetClick" />
+                    </StackPanel>
                 </StackPanel>
             </Border>
         </Grid>
+        </ScrollViewer>
 
         <!-- Content: chart zone (tableLayoutPanel3) + bottom bar (tableLayoutPanel6) -->
         <Grid Grid.Column="1" RowDefinitions="*,130">
 
             <!-- Chart zone: left stacked bar charts + right spectra overlay -->
             <Grid Grid.Row="0" ColumnDefinitions="*,*">
-                <Grid Grid.Column="0" RowDefinitions="*,*">
-                    <Border Grid.Row="0" Classes="section">
+                <Grid Grid.Column="0" RowDefinitions="Auto,*,*">
+                    <TextBlock Grid.Row="0" Text="MST Distance fingerprint" FontWeight="Bold" FontSize="14"
+                               HorizontalAlignment="Center" Margin="0,2,0,4" />
+                    <Border Grid.Row="1" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Peaks Difference Distribution" />
                             <lvc:CartesianChart x:Name="PeakDiffChart"
@@ -121,7 +173,7 @@
                                                  ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}" />
                         </DockPanel>
                     </Border>
-                    <Border Grid.Row="1" Classes="section">
+                    <Border Grid.Row="2" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Probability Distribution" />
                             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="4" Margin="4,0">
@@ -144,10 +196,35 @@
                 <Border Grid.Column="1" Classes="section">
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Spectra Overlay" />
-                        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4" Margin="0,4,0,0">
-                            <Button Content="Reset Zoom" Command="{Binding ResetOverlayZoomCommand}" />
-                            <Button Content="Fit to Reference" Command="{Binding FitOverlayZoomToReferenceCommand}" />
-                        </StackPanel>
+                        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,4">
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" Spacing="3">
+                                    <Ellipse Width="10" Height="10" Fill="DodgerBlue" />
+                                    <TextBlock Text="Reference" FontSize="11" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="3">
+                                    <Ellipse Width="10" Height="10" Fill="Orange" />
+                                    <TextBlock Text="Dataset" FontSize="11" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="3">
+                                    <Ellipse Width="10" Height="10" Fill="Green" />
+                                    <TextBlock Text="Actives" FontSize="11" VerticalAlignment="Center" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="3">
+                                    <Ellipse Width="10" Height="10" Fill="Red" />
+                                    <TextBlock Text="Inactives" FontSize="11" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Spacing="2">
+                                <Button Content="Mark as Active" Command="{Binding MarkActiveCommand}" Background="LightGreen" HorizontalAlignment="Stretch" />
+                                <Button Content="Mark as Inactive" Command="{Binding MarkInactiveCommand}" Background="LightPink" HorizontalAlignment="Stretch" />
+                                <Button Content="Reset Flag Status" Command="{Binding ResetManualStatusCommand}" HorizontalAlignment="Stretch" />
+                            </StackPanel>
+                        </Grid>
+                        <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,*,Auto" Margin="0,4,0,0">
+                            <Button Grid.Column="0" Content="Fit Zoom to Import Limits" Command="{Binding ResetOverlayZoomCommand}" />
+                            <Button Grid.Column="2" Content="Fit Zoom to Reference" Command="{Binding FitOverlayZoomToReferenceCommand}" />
+                        </Grid>
                         <lvc:CartesianChart Series="{Binding OverlaySeries}" XAxes="{Binding OverlayXAxes}" YAxes="{Binding OverlayYAxes}" ZoomMode="{x:Static lvcm:ZoomAndPanMode.Both}" />
                     </DockPanel>
                 </Border>
@@ -160,12 +237,21 @@
                     <Border Grid.Column="0" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Analysis Info" />
-                            <StackPanel Spacing="1">
-                                <TextBlock Text="{Binding ReferencePeakCount, StringFormat='Ref peaks: {0}'}" FontSize="11" />
-                                <TextBlock Text="{Binding ReferenceMinIntensity, StringFormat='Ref min int: {0:F0}'}" FontSize="11" />
-                                <TextBlock Text="{Binding ReferenceMaxIntensity, StringFormat='Ref max int: {0:F0}'}" FontSize="11" />
-                                <TextBlock Text="{Binding DatasetSpectra.Count, StringFormat='Experiments loaded: {0}'}" FontSize="11" />
-                            </StackPanel>
+                            <Grid ColumnDefinitions="*,*">
+                                <StackPanel Grid.Column="0" Spacing="1">
+                                    <TextBlock Text="Reference" FontWeight="SemiBold" FontSize="10" />
+                                    <TextBlock Text="{Binding ReferencePeakCount, StringFormat='Read Peaks: {0}'}" FontSize="11" />
+                                    <TextBlock Text="{Binding ReferenceMinIntensity, StringFormat='Min. Int.: {0:F0}'}" FontSize="11" />
+                                    <TextBlock Text="{Binding ReferenceMaxIntensity, StringFormat='Max Int.: {0:F0}'}" FontSize="11" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Spacing="1">
+                                    <TextBlock Text="Dataset" FontWeight="SemiBold" FontSize="10" />
+                                    <TextBlock Text="{Binding DatasetAveragePeakCount, StringFormat='Avg Peak Count: {0:F0}'}" FontSize="11" />
+                                    <TextBlock Text="{Binding DatasetAverageMinIntensity, StringFormat='Avg Min. Int.: {0:F0}'}" FontSize="11" />
+                                    <TextBlock Text="{Binding DatasetAverageMaxIntensity, StringFormat='Avg Max Int.: {0:F0}'}" FontSize="11" />
+                                    <TextBlock Text="{Binding DatasetSpectra.Count, StringFormat='#Exps: {0}'}" FontSize="11" />
+                                </StackPanel>
+                            </Grid>
                         </DockPanel>
                     </Border>
                     <Border Grid.Column="1" Classes="section">
@@ -176,8 +262,16 @@
                                 <CheckBox Content="Inactives" IsChecked="{Binding IsInactivesFilterChecked}" />
                             </StackPanel>
                             <Grid ColumnDefinitions="*,*">
-                                <lvc:PieChart Grid.Column="0" Series="{Binding ActivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}" />
-                                <lvc:PieChart Grid.Column="1" Series="{Binding InactivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}" />
+                                <Grid Grid.Column="0">
+                                    <lvc:PieChart Series="{Binding ActivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}" />
+                                    <TextBlock Text="{Binding ActivesAutoCount}" FontSize="20" FontWeight="Bold"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" />
+                                </Grid>
+                                <Grid Grid.Column="1">
+                                    <lvc:PieChart Series="{Binding InactivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}" />
+                                    <TextBlock Text="{Binding InactivesAutoCount}" FontSize="20" FontWeight="Bold"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" />
+                                </Grid>
                             </Grid>
                         </DockPanel>
                     </Border>
@@ -203,22 +297,24 @@
                             <Button Content="Go" Command="{Binding GoToExperimentCommand}" />
                         </StackPanel>
                     </Grid>
-                    <Grid Grid.Row="1" ColumnDefinitions="*,*">
-                        <Grid Grid.Column="0" ColumnDefinitions="*,*,*,*" Margin="4">
+                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto">
+                        <Grid Grid.Column="0" ColumnDefinitions="*,*,*,*" Margin="4" VerticalAlignment="Top">
                             <Button Grid.Column="0" Content="|&lt;" Command="{Binding FirstCommand}" HorizontalAlignment="Stretch" />
                             <Button Grid.Column="1" Content="&lt;" Command="{Binding PreviousCommand}" HorizontalAlignment="Stretch" />
                             <Button Grid.Column="2" Content="&gt;" Command="{Binding NextCommand}" HorizontalAlignment="Stretch" />
                             <Button Grid.Column="3" Content="&gt;|" Command="{Binding LastCommand}" HorizontalAlignment="Stretch" />
                         </Grid>
                         <StackPanel Grid.Column="1" Margin="4" Spacing="2">
-                            <TextBlock Text="{Binding CurrentManualStatusText}" FontSize="10" />
-                            <TextBlock Text="{Binding CurrentAutomaticStatusText}" FontSize="10" />
+                            <TextBlock Text="{Binding CurrentReadPeaks, StringFormat='Read Peaks: {0}'}" FontSize="10" />
+                            <TextBlock Text="{Binding CurrentMinIntensity, StringFormat='Min. Int.: {0:F0}'}" FontSize="10" />
+                            <TextBlock Text="{Binding CurrentMaxIntensity, StringFormat='Max. Int.: {0:F0}'}" FontSize="10" />
                             <TextBlock Text="{Binding CurrentPeakDifference, StringFormat='ΔPeaks: {0}'}" FontSize="10" />
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <Button Content="Mark Active" Command="{Binding MarkActiveCommand}" />
-                                <Button Content="Mark Inactive" Command="{Binding MarkInactiveCommand}" />
-                                <Button Content="Reset" Command="{Binding ResetManualStatusCommand}" />
-                            </StackPanel>
+                            <TextBlock Text="{Binding CurrentAutomaticStatusText, StringFormat='Auto Status: {0}'}" FontSize="10" FontWeight="Bold" />
+                            <TextBlock Text="{Binding CurrentManualStatusText, StringFormat='Man. Status: {0}'}" FontSize="10" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Margin="4" Spacing="2">
+                            <Button Content="Ref PP Details" Command="{Binding ShowReferencePpDetailsCommand}" HorizontalAlignment="Stretch" FontSize="10" />
+                            <Button Content="Exp PP Details" Command="{Binding ShowExperimentPpDetailsCommand}" HorizontalAlignment="Stretch" FontSize="10" />
                             <Button Content="Export" Command="{Binding OpenResultsWindowCommand}" HorizontalAlignment="Stretch" />
                         </StackPanel>
                     </Grid>

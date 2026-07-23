@@ -81,10 +81,34 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private int _peaklistFilesFoundCount;
 
+    [ObservableProperty]
+    private int _validXmlPeaklistCount;
+
+    [ObservableProperty]
+    private int _corruptedXmlPeaklistCount;
+
+    [ObservableProperty]
+    private int _outOfPeakImportRangeCount;
+
+    [ObservableProperty]
+    private int _validExperimentsCount;
+
+    [ObservableProperty]
+    private double _datasetAveragePeakCount;
+
+    [ObservableProperty]
+    private double _datasetAverageMinIntensity;
+
+    [ObservableProperty]
+    private double _datasetAverageMaxIntensity;
+
     public ObservableCollection<PeaklistSpectrum> DatasetSpectra { get; } = new();
 
     [ObservableProperty]
     private bool _isRunning;
+
+    [ObservableProperty]
+    private bool _runCompletedSuccessfully;
 
     [ObservableProperty]
     private string _runStatusText = "";
@@ -168,6 +192,9 @@ public partial class MainViewModel : ViewModelBase
         TotalSubfoldersFound = subfolders.Length;
 
         int found = 0;
+        int validXml = 0;
+        int corruptedXml = 0;
+        int outOfRange = 0;
         foreach (string dir in subfolders)
         {
             string peaklistPath = Path.Combine(dir, "pdata", "1", "peaklist.xml");
@@ -177,10 +204,32 @@ public partial class MainViewModel : ViewModelBase
             }
 
             found++;
-            DatasetSpectra.Add(PeaklistImporter.Import(peaklistPath, DatasetFilter, jsonData: "Experiment"));
+            PeaklistSpectrum spectrum;
+            try
+            {
+                spectrum = PeaklistImporter.Import(peaklistPath, DatasetFilter, jsonData: "Experiment");
+            }
+            catch (System.Xml.XmlException)
+            {
+                corruptedXml++;
+                continue;
+            }
+
+            validXml++;
+            if (spectrum.Peaklist.Count == 0)
+            {
+                outOfRange++;
+                continue;
+            }
+
+            DatasetSpectra.Add(spectrum);
         }
 
         PeaklistFilesFoundCount = found;
+        ValidXmlPeaklistCount = validXml;
+        CorruptedXmlPeaklistCount = corruptedXml;
+        OutOfPeakImportRangeCount = outOfRange;
+        ValidExperimentsCount = DatasetSpectra.Count;
 
         List<PeaklistSpectrum> sorted = DatasetSpectra.OrderBy(s => s.ExpNumber).ToList();
         DatasetSpectra.Clear();
@@ -188,6 +237,10 @@ public partial class MainViewModel : ViewModelBase
         {
             DatasetSpectra.Add(spectrum);
         }
+
+        DatasetAveragePeakCount = DatasetSpectra.Count > 0 ? DatasetSpectra.Average(s => s.TotReadPeaks) : 0;
+        DatasetAverageMinIntensity = DatasetSpectra.Count > 0 ? DatasetSpectra.Average(s => s.Peaklist.Min(p => p.Intensity)) : 0;
+        DatasetAverageMaxIntensity = DatasetSpectra.Count > 0 ? DatasetSpectra.Average(s => s.Peaklist.Max(p => p.Intensity)) : 0;
 
         DatasetStatusText = found > 0
             ? $"Dataset Loaded ({found} experiments)"
@@ -212,6 +265,7 @@ public partial class MainViewModel : ViewModelBase
 
         _runCts = new CancellationTokenSource();
         IsRunning = true;
+        RunCompletedSuccessfully = false;
         RunStatusText = "Running CSP analysis...";
         RunCommand.NotifyCanExecuteChanged();
         CancelRunCommand.NotifyCanExecuteChanged();
@@ -254,6 +308,7 @@ public partial class MainViewModel : ViewModelBase
                 BuildGauges();
                 RaiseNavigationChanged();
                 RunStatusText = $"Run complete: {parsed.Length} experiments classified.";
+                RunCompletedSuccessfully = true;
             }
             else
             {
@@ -278,6 +333,22 @@ public partial class MainViewModel : ViewModelBase
 
     [RelayCommand(CanExecute = nameof(CanCancelRun))]
     private void CancelRun() => _runCts?.Cancel();
+
+    [RelayCommand]
+    private void ResetImportControls()
+    {
+        NMin = 100;
+        NMax = 140;
+        HMin = 5;
+        HMax = 12;
+    }
+
+    [RelayCommand]
+    private void ResetPeakFiltering()
+    {
+        ReferenceIntensityThreshold = 5000;
+        DatasetIntensityThreshold = 2000;
+    }
 
     private bool CanOpenResultsWindow() => RunResults.Count > 0 && ReferenceSpectrum is not null;
 

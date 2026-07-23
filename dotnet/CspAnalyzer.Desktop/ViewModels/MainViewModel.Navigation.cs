@@ -76,6 +76,14 @@ public partial class MainViewModel
     public int? CurrentPeakDifference =>
         CurrentSpectrum is null || ReferenceSpectrum is null ? null : CurrentSpectrum.TotReadPeaks - ReferenceSpectrum.TotReadPeaks;
 
+    public int? CurrentReadPeaks => CurrentSpectrum?.TotReadPeaks;
+
+    public double? CurrentMinIntensity =>
+        CurrentSpectrum is null || CurrentSpectrum.Peaklist.Count == 0 ? null : CurrentSpectrum.Peaklist.Min(p => p.Intensity);
+
+    public double? CurrentMaxIntensity =>
+        CurrentSpectrum is null || CurrentSpectrum.Peaklist.Count == 0 ? null : CurrentSpectrum.Peaklist.Max(p => p.Intensity);
+
     public string CurrentManualStatusText => CurrentSpectrum?.UserSelection ?? "-";
 
     public string CurrentAutomaticStatusText =>
@@ -160,6 +168,9 @@ public partial class MainViewModel
         OnPropertyChanged(nameof(CurrentExperimentNumber));
         OnPropertyChanged(nameof(CurrentCounterText));
         OnPropertyChanged(nameof(CurrentPeakDifference));
+        OnPropertyChanged(nameof(CurrentReadPeaks));
+        OnPropertyChanged(nameof(CurrentMinIntensity));
+        OnPropertyChanged(nameof(CurrentMaxIntensity));
         OnPropertyChanged(nameof(CurrentManualStatusText));
         OnPropertyChanged(nameof(CurrentAutomaticStatusText));
         FirstCommand.NotifyCanExecuteChanged();
@@ -168,6 +179,14 @@ public partial class MainViewModel
         LastCommand.NotifyCanExecuteChanged();
         RebuildOverlayPoints();
     }
+
+    [RelayCommand]
+    private async System.Threading.Tasks.Task ShowReferencePpDetails() =>
+        await _confirmDialogService.ConfirmAsync("Reference PP Details", ReferenceSpectrum?.PpInfo ?? "No reference loaded.");
+
+    [RelayCommand]
+    private async System.Threading.Tasks.Task ShowExperimentPpDetails() =>
+        await _confirmDialogService.ConfirmAsync("Experiment PP Details", CurrentSpectrum?.PpInfo ?? "No experiment selected.");
 
     public void NavigateToChartIndex(int index)
     {

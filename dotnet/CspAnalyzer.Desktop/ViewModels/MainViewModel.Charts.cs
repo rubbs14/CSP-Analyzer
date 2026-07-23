@@ -223,10 +223,18 @@ public partial class MainViewModel
     [ObservableProperty]
     private ISeries[] _inactivesGaugeSeries = Array.Empty<ISeries>();
 
+    [ObservableProperty]
+    private int _activesAutoCount;
+
+    [ObservableProperty]
+    private int _inactivesAutoCount;
+
     public void BuildGauges()
     {
         int actives = RunResults.Count(IsEffectivelyActive);
         int inactives = RunResults.Count - actives;
+        ActivesAutoCount = actives;
+        InactivesAutoCount = inactives;
 
         ActivesGaugeSeries = GaugeGenerator.BuildSolidGauge(
             new GaugeItem(actives, series =>
