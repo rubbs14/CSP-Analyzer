@@ -210,8 +210,51 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
   (`Ctrl+E`/`Ctrl+P` on ResultsWindow, `Ctrl+Alt+R`/`Ctrl+Alt+E` on MainWindow)
   are validated only indirectly (same command already bound to a button in the
   same view) rather than by a dedicated key-press test.
-- [ ] **S11d** — Help window + TopSpin command generator (ported from
-  `CSPv2/FormHelp`). Split out of S11c's original scope during brainstorming.
+- [x] **S11d** — Help window + TopSpin peak-picking command generator, ported
+  from `CSPv2/FormHelp` (split out of S11c's original scope during
+  brainstorming). Static "Tips and Tricks" content reworded rather than
+  ported verbatim: the "no actives found" tip no longer blames SMOTE-ENN
+  (current pipeline is scaler → PCA → SVM, per `backend/README.md`), and the
+  "memory error" tip now names the real `csp_modern` conda environment. The
+  legacy `PPMPNUM` label typo is gone - `PPNUM` everywhere, including the
+  generated command string. "Peak lists extractor" section kept as
+  informational text only (no interactive mini-app, matching legacy).
+
+  The generator itself replaces legacy's keystroke-filtering input validation
+  with real `CanExecute`-gated numeric validation: `HelpViewModel` (new,
+  plain `ObservableObject`, no Avalonia dependency - clipboard access needs a
+  `TopLevel`, which a bare view model lacks, so Copy lives in `HelpWindow`'s
+  code-behind instead) only enables Generate once all six fields
+  (`double.TryParse`/`int.TryParse`, `CultureInfo.InvariantCulture`) parse.
+  New `IHelpWindowService`/`AvaloniaHelpWindowService`/`NullHelpWindowService`
+  follow S11c's `IAboutWindowService`/`IShortcutsWindowService` shape exactly,
+  injected as `MainViewModel`'s 6th constructor parameter. Help button
+  (previously inert) now binds to `OpenHelpWindowCommand`; bare-letter `H` is
+  wired through the existing `GuardedViewModelCommand` mechanism (not a plain
+  XAML `KeyBinding`), same as R/T/N/D/S/A/G/arrows, so typing "h" in a
+  focused sidebar textbox doesn't hijack it. `ShortcutsWindow`'s old bundled
+  "Enter, H, I ... (not yet implemented)" row is split: `H` now documented as
+  implemented, `Enter, I` correctly still marked not-yet-implemented.
+
+  Executed as 5 TDD tasks via subagent-driven-development, all 5 clean on
+  first task review - no fix-and-rereview rounds needed this session. Final
+  whole-branch review (opus): ready to merge, zero Critical/Important
+  findings; confirmed no injection surface (generated command can only ever
+  contain validated numerics) and no cross-task drift (constructor param
+  order, ViewModel↔XAML binding names, and the generated-command format all
+  agree end-to-end). 118 tests total (up from 106 at session start). See
+  `docs/superpowers/specs/2026-07-23-sub-project-3-s11d-help-window-topspin-generator-design.md`
+  and `docs/superpowers/plans/2026-07-23-s11d-help-window-topspin-generator.md`.
+
+  **Known limitations, non-blocking** (flagged Minor in review, not fixed
+  this session): a couple of stale/inconsistent doc-comments (one file's
+  class summary still says "S11c" despite now also owning `OpenHelpWindow`;
+  one interface's doc-comment cites a different sibling than its neighbors
+  do); `HelpViewModel`'s `CanExecute` tests only vary one of six fields
+  (inherited from the plan's own prescribed test list); like the pre-existing
+  About/Shortcuts services, `AvaloniaHelpWindowService.Show()` opens a new
+  window instance on every call, so repeated `H` presses stack multiple Help
+  windows - a branch-wide pattern, not something this session introduced.
 - [ ] **S12** — Polish, cross-platform smoke test (Linux + Windows), fix platform gaps.
 
 ## Sub-project 6 — CI / packaging
