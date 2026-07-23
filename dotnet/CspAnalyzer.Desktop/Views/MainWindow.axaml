@@ -170,7 +170,7 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
                         <Button Content="About" Command="{Binding OpenAboutWindowCommand}" />
                         <Button Content="Shortcuts" Command="{Binding OpenShortcutsWindowCommand}" />
-                        <Button Content="Help" />
+                        <Button Content="Help" Command="{Binding OpenHelpWindowCommand}" />
                     </StackPanel>
                     <TextBlock Text="Developed by R. Byrne and R. Fino" FontSize="9" FontStyle="Italic"
                                HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" />

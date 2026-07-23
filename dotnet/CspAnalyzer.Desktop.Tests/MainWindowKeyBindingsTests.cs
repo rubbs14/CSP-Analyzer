@@ -486,4 +486,44 @@ public class MainWindowKeyBindingsTests
         public int ShowCallCount;
         public void Show() => ShowCallCount++;
     }
+
+    private sealed class RecordingHelpWindowService : IHelpWindowService
+    {
+        public int ShowCallCount;
+        public void Show() => ShowCallCount++;
+    }
+
+    [AvaloniaFact]
+    public void H_OpensHelpWindow()
+    {
+        var recording = new RecordingHelpWindowService();
+        var vm = new MainViewModel(
+            new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
+            new NullAboutWindowService(), new NullShortcutsWindowService(), recording);
+        var window = new MainWindow { DataContext = vm };
+        window.Show();
+
+        window.KeyPressQwerty(PhysicalKey.H, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.H, RawInputModifiers.None);
+
+        Assert.Equal(1, recording.ShowCallCount);
+    }
+
+    [AvaloniaFact]
+    public void H_GuardedWhileTextBoxFocused_DoesNotOpenHelpWindow()
+    {
+        var recording = new RecordingHelpWindowService();
+        var vm = new MainViewModel(
+            new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
+            new NullAboutWindowService(), new NullShortcutsWindowService(), recording);
+        var window = new MainWindow { DataContext = vm };
+        window.Show();
+        var nMinBox = window.FindControl<TextBox>("NMinTextBox")!;
+        nMinBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.H, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.H, RawInputModifiers.None);
+
+        Assert.Equal(0, recording.ShowCallCount);
+    }
 }
