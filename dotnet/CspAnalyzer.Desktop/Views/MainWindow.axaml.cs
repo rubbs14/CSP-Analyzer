@@ -44,6 +44,8 @@ public partial class MainWindow : Window
         KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.Left), Command = GuardedViewModelCommand(vm => vm.PreviousCommand) });
         KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.Down), Command = GuardedViewModelCommand(vm => vm.LastCommand) });
         KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.Up), Command = GuardedViewModelCommand(vm => vm.FirstCommand) });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.C, KeyModifiers.Control), Command = GuardedViewModelCommand(vm => vm.ResetOverlayZoomCommand) });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.X, KeyModifiers.Control), Command = GuardedViewModelCommand(vm => vm.FitOverlayZoomToReferenceCommand) });
 
         this.FindControl<CartesianChart>("PeakDiffChart")!.ChartPointPointerDown += OnChartPointClicked;
         this.FindControl<CartesianChart>("ProbabilityChart")!.ChartPointPointerDown += OnChartPointClicked;

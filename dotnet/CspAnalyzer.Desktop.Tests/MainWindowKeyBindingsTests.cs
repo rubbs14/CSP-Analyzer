@@ -133,6 +133,81 @@ public class MainWindowKeyBindingsTests
         Assert.Equal(5000, vm.ReferenceIntensityThreshold);
     }
 
+    // Ctrl+C/Ctrl+X share the exact same defect class as the bare letters
+    // and arrow keys above: Window.KeyBindings intercept at the raw-input
+    // stage before a routed KeyDown reaches a focused control, so a plain
+    // {Binding ResetOverlayZoomCommand}/{Binding
+    // FitOverlayZoomToReferenceCommand} KeyBinding on Ctrl+C/Ctrl+X always
+    // fires the chart-reset commands instead of letting a focused TextBox
+    // perform its normal clipboard copy/cut - even with text selected.
+    [AvaloniaFact]
+    public void CtrlC_GuardedWhileTextBoxFocused_DoesNotResetOverlayZoom()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.BuildOverlayAxes();
+        vm.OverlayXAxes[0].MinLimit = 999;
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.C, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.C, RawInputModifiers.Control);
+
+        Assert.Equal(999, vm.OverlayXAxes[0].MinLimit);
+    }
+
+    [AvaloniaFact]
+    public void CtrlC_NotFocused_ResetsOverlayZoom()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.BuildOverlayAxes();
+        vm.OverlayXAxes[0].MinLimit = 999;
+
+        window.KeyPressQwerty(PhysicalKey.C, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.C, RawInputModifiers.Control);
+
+        Assert.Equal(-vm.HMax, vm.OverlayXAxes[0].MinLimit);
+    }
+
+    [AvaloniaFact]
+    public void CtrlX_GuardedWhileTextBoxFocused_DoesNotFitZoomToReference()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.ReferenceSpectrum = new CspAnalyzer.BackendInterop.PeaklistSpectrum
+        {
+            ExpNumber = 1,
+            DsName = "ref",
+            Peaklist = new() { new CspAnalyzer.BackendInterop.Peak { F1 = 110, F2 = 8 } },
+        };
+        vm.BuildOverlayAxes();
+        vm.OverlayXAxes[0].MinLimit = 999;
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.X, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.X, RawInputModifiers.Control);
+
+        Assert.Equal(999, vm.OverlayXAxes[0].MinLimit);
+    }
+
+    [AvaloniaFact]
+    public void CtrlX_NotFocused_FitsZoomToReference()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.ReferenceSpectrum = new CspAnalyzer.BackendInterop.PeaklistSpectrum
+        {
+            ExpNumber = 1,
+            DsName = "ref",
+            Peaklist = new() { new CspAnalyzer.BackendInterop.Peak { F1 = 110, F2 = 8 } },
+        };
+        vm.BuildOverlayAxes();
+        vm.OverlayXAxes[0].MinLimit = 999;
+
+        window.KeyPressQwerty(PhysicalKey.X, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.X, RawInputModifiers.Control);
+
+        Assert.Equal(-(8 + 0.5), vm.OverlayXAxes[0].MinLimit);
+    }
+
     // The input-focus caveat from the design spec: bare-letter KeyBindings
     // (N here) must not fire while a TextBox has focus and the user is
     // typing normal text. GoToExperimentText is the one sidebar TextBox
@@ -215,6 +290,94 @@ public class MainWindowKeyBindingsTests
         window.KeyReleaseQwerty(PhysicalKey.ArrowRight, RawInputModifiers.None);
 
         Assert.Equal(1, vm.CurrentIndex);
+    }
+
+    [AvaloniaFact]
+    public void Left_GuardedWhileTextBoxFocused_DoesNotGoToPrevious()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new() });
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 2, DsName = "ds", Peaklist = new() });
+        vm.CurrentIndex = 1;
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.ArrowLeft, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.ArrowLeft, RawInputModifiers.None);
+
+        Assert.Equal(1, vm.CurrentIndex);
+    }
+
+    [AvaloniaFact]
+    public void Left_NotFocused_GoesToPreviousExperiment()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new() });
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 2, DsName = "ds", Peaklist = new() });
+        vm.CurrentIndex = 1;
+
+        window.KeyPressQwerty(PhysicalKey.ArrowLeft, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.ArrowLeft, RawInputModifiers.None);
+
+        Assert.Equal(0, vm.CurrentIndex);
+    }
+
+    [AvaloniaFact]
+    public void Down_GuardedWhileTextBoxFocused_DoesNotGoToLast()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new() });
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 2, DsName = "ds", Peaklist = new() });
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.ArrowDown, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.ArrowDown, RawInputModifiers.None);
+
+        Assert.Equal(0, vm.CurrentIndex);
+    }
+
+    [AvaloniaFact]
+    public void Down_NotFocused_GoesToLastExperiment()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new() });
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 2, DsName = "ds", Peaklist = new() });
+
+        window.KeyPressQwerty(PhysicalKey.ArrowDown, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.ArrowDown, RawInputModifiers.None);
+
+        Assert.Equal(1, vm.CurrentIndex);
+    }
+
+    [AvaloniaFact]
+    public void Up_GuardedWhileTextBoxFocused_DoesNotGoToFirst()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new() });
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 2, DsName = "ds", Peaklist = new() });
+        vm.CurrentIndex = 1;
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.ArrowUp, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.ArrowUp, RawInputModifiers.None);
+
+        Assert.Equal(1, vm.CurrentIndex);
+    }
+
+    [AvaloniaFact]
+    public void Up_NotFocused_GoesToFirstExperiment()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new() });
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 2, DsName = "ds", Peaklist = new() });
+        vm.CurrentIndex = 1;
+
+        window.KeyPressQwerty(PhysicalKey.ArrowUp, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.ArrowUp, RawInputModifiers.None);
+
+        Assert.Equal(0, vm.CurrentIndex);
     }
 
     // R/D/S/A already had the GuardedViewModelCommand wiring since S11c

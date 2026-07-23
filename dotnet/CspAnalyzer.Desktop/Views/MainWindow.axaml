@@ -51,8 +51,6 @@
         <KeyBinding Gesture="Ctrl+K" Command="{Binding OpenShortcutsWindowCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+R" Command="{Binding ShowReferencePpDetailsCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+E" Command="{Binding ShowExperimentPpDetailsCommand}" />
-        <KeyBinding Gesture="Ctrl+C" Command="{Binding ResetOverlayZoomCommand}" />
-        <KeyBinding Gesture="Ctrl+X" Command="{Binding FitOverlayZoomToReferenceCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+I" Command="{Binding ResetImportControlsCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+T" Command="{Binding ResetPeakFilteringCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+O" Command="{Binding ResetAllImportAndThresholdControlsCommand}" />
@@ -84,6 +82,15 @@
       leaves CanExecute false while typing/editing, so the KeyBinding
       doesn't set Handled and the key falls through to the focused
       TextBox normally.
+
+    - Ctrl+C (ResetOverlayZoomCommand) and Ctrl+X
+      (FitOverlayZoomToReferenceCommand): same defect class as the bare
+      keys/arrows above, just via a Ctrl+letter combo. Window.KeyBindings
+      intercept before a routed KeyDown reaches a focused control, so a
+      plain {Binding ...} KeyBinding on Ctrl+C/Ctrl+X always fired these
+      chart-reset commands instead of letting a focused TextBox perform
+      its standard clipboard copy/cut (even with text selected). Guarded
+      the same way, via GuardedViewModelCommand.
     -->
 
     <!-- Outer: fixed-width sidebar (Form1's tableLayoutPanel1, ~204px) + fill content (tableLayoutPanel2) -->
