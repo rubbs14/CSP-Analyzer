@@ -1,0 +1,15 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CspAnalyzer.Desktop.Views.ConfirmDialog"
+        Title="Confirm"
+        Width="420" SizeToContent="Height"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner">
+    <StackPanel Margin="16" Spacing="12">
+        <TextBlock x:Name="MessageText" TextWrapping="Wrap" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+            <Button Content="Yes" Click="OnYesClicked" />
+            <Button Content="No" Click="OnNoClicked" IsDefault="True" />
+        </StackPanel>
+    </StackPanel>
+</Window>
