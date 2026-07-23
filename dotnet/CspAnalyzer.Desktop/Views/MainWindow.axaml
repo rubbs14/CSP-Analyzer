@@ -1,6 +1,8 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:CspAnalyzer.Desktop.ViewModels"
+        xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+        xmlns:lvcm="using:LiveChartsCore.Measure"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="820"
@@ -14,10 +16,11 @@
     Layout shell from S7 (see the wireframe survey in docs/superpowers/
     SESSIONS.md history / session memory), with S8's dataset-loading
     bindings (File I/O buttons, import range/threshold, reference/dataset
-    status) and S9's run flow (Run CSP / Cancel, indeterminate progress bar
-    - the python backend has no incremental progress protocol, so this is
-    a single blocking-call spinner, not a percentage). Charts and the
-    results table are still placeholders - that's S10.
+    status), S9's run flow (Run CSP / Cancel, indeterminate progress bar -
+    the python backend has no incremental progress protocol, so this is a
+    single blocking-call spinner, not a percentage), and S10b's embedded
+    charts + player navigation + manual-override workflow. The separate
+    results table/pie-chart window (ResultsWindow) is S10.
     -->
     <Design.DataContext>
         <vm:MainViewModel />
@@ -109,13 +112,25 @@
                     <Border Grid.Row="0" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Peaks Difference Distribution" />
-                            <TextBlock Classes="placeholder" Text="Peak-difference chart (S10)" />
+                            <lvc:CartesianChart x:Name="PeakDiffChart"
+                                                 Series="{Binding PeakDiffSeries}"
+                                                 XAxes="{Binding PeakDiffXAxes}"
+                                                 YAxes="{Binding PeakDiffYAxes}"
+                                                 Sections="{Binding PeakDiffSections}"
+                                                 VisualElements="{Binding PeakDiffAnnotations}"
+                                                 ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}" />
                         </DockPanel>
                     </Border>
                     <Border Grid.Row="1" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Probability Distribution" />
-                            <TextBlock Classes="placeholder" Text="Probability chart (S10)" />
+                            <lvc:CartesianChart x:Name="ProbabilityChart"
+                                                 Series="{Binding ProbabilitySeries}"
+                                                 XAxes="{Binding ProbabilityXAxes}"
+                                                 YAxes="{Binding ProbabilityYAxes}"
+                                                 Sections="{Binding ProbabilitySections}"
+                                                 VisualElements="{Binding ProbabilityAnnotations}"
+                                                 ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}" />
                         </DockPanel>
                     </Border>
                 </Grid>
@@ -123,7 +138,11 @@
                 <Border Grid.Column="1" Classes="section">
                     <DockPanel>
                         <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Spectra Overlay" />
-                        <TextBlock Classes="placeholder" Text="Spectra overlay scatter chart, zoom + mark-active/inactive controls (S9/S10)" TextWrapping="Wrap" />
+                        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4" Margin="0,4,0,0">
+                            <Button Content="Reset Zoom" Command="{Binding ResetOverlayZoomCommand}" />
+                            <Button Content="Fit to Reference" Command="{Binding FitOverlayZoomToReferenceCommand}" />
+                        </StackPanel>
+                        <lvc:CartesianChart Series="{Binding OverlaySeries}" XAxes="{Binding OverlayXAxes}" YAxes="{Binding OverlayYAxes}" ZoomMode="{x:Static lvcm:ZoomAndPanMode.Both}" />
                     </DockPanel>
                 </Border>
             </Grid>
@@ -146,17 +165,21 @@
                     <Border Grid.Column="1" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Automated Analysis Results" />
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
-                                <CheckBox Content="Actives" />
-                                <CheckBox Content="Inactives" />
+                            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                                <CheckBox Content="Actives" IsChecked="{Binding IsActivesFilterChecked}" />
+                                <CheckBox Content="Inactives" IsChecked="{Binding IsInactivesFilterChecked}" />
                             </StackPanel>
-                            <TextBlock Classes="placeholder" Text="Actives/inactives gauges (S10)" />
+                            <Grid ColumnDefinitions="*,*">
+                                <lvc:PieChart Grid.Column="0" Series="{Binding ActivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}" />
+                                <lvc:PieChart Grid.Column="1" Series="{Binding InactivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}" />
+                            </Grid>
                         </DockPanel>
                     </Border>
                     <Border Grid.Column="2" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Manual Analysis Results" />
-                            <TextBlock Classes="placeholder" Text="Manual-results chart + reset-flags (S10)" TextWrapping="Wrap" />
+                            <Button DockPanel.Dock="Bottom" Content="Reset All Man. Flags" Command="{Binding ResetAllManualFlagsCommand}" HorizontalAlignment="Stretch" Margin="0,4,0,0" />
+                            <lvc:CartesianChart Series="{Binding ManualResultsSeries}" />
                         </DockPanel>
                     </Border>
                 </Grid>
@@ -165,26 +188,32 @@
                     <Grid Grid.Row="0" ColumnDefinitions="*,*">
                         <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="4" Spacing="4">
                             <TextBlock Text="Current Experiment:" VerticalAlignment="Center" />
-                            <TextBlock Text="- / -" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding CurrentExperimentNumber}" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding CurrentCounterText}" VerticalAlignment="Center" />
                         </StackPanel>
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="4" Spacing="4">
                             <TextBlock Text="Go To Experiment:" VerticalAlignment="Center" />
-                            <TextBox Width="60" />
+                            <TextBox Width="60" Text="{Binding GoToExperimentText}" />
+                            <Button Content="Go" Command="{Binding GoToExperimentCommand}" />
                         </StackPanel>
                     </Grid>
                     <Grid Grid.Row="1" ColumnDefinitions="*,*">
                         <Grid Grid.Column="0" ColumnDefinitions="*,*,*,*" Margin="4">
-                            <Button Grid.Column="0" Content="|&lt;" HorizontalAlignment="Stretch" />
-                            <Button Grid.Column="1" Content="&lt;" HorizontalAlignment="Stretch" />
-                            <Button Grid.Column="2" Content="&gt;" HorizontalAlignment="Stretch" />
-                            <Button Grid.Column="3" Content="&gt;|" HorizontalAlignment="Stretch" />
+                            <Button Grid.Column="0" Content="|&lt;" Command="{Binding FirstCommand}" HorizontalAlignment="Stretch" />
+                            <Button Grid.Column="1" Content="&lt;" Command="{Binding PreviousCommand}" HorizontalAlignment="Stretch" />
+                            <Button Grid.Column="2" Content="&gt;" Command="{Binding NextCommand}" HorizontalAlignment="Stretch" />
+                            <Button Grid.Column="3" Content="&gt;|" Command="{Binding LastCommand}" HorizontalAlignment="Stretch" />
                         </Grid>
                         <StackPanel Grid.Column="1" Margin="4" Spacing="2">
-                            <TextBlock Classes="placeholder" Text="Man./auto status, ΔPeaks (S9)" TextWrapping="Wrap" FontSize="10" />
+                            <TextBlock Text="{Binding CurrentManualStatusText}" FontSize="10" />
+                            <TextBlock Text="{Binding CurrentAutomaticStatusText}" FontSize="10" />
+                            <TextBlock Text="{Binding CurrentPeakDifference, StringFormat='ΔPeaks: {0}'}" FontSize="10" />
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <Button Content="Export" Command="{Binding OpenResultsWindowCommand}" />
-                                <Button Content="Reset" />
+                                <Button Content="Mark Active" Command="{Binding MarkActiveCommand}" />
+                                <Button Content="Mark Inactive" Command="{Binding MarkInactiveCommand}" />
+                                <Button Content="Reset" Command="{Binding ResetManualStatusCommand}" />
                             </StackPanel>
+                            <Button Content="Export" Command="{Binding OpenResultsWindowCommand}" HorizontalAlignment="Stretch" />
                         </StackPanel>
                     </Grid>
                 </Grid>
