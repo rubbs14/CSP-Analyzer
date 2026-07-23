@@ -86,8 +86,9 @@
       doesn't set Handled and the key falls through to the focused
       TextBox normally.
 
-    - Ctrl+C (ResetBarChartZoomCommand), Ctrl+Y (ResetOverlayZoomCommand), and
-      Ctrl+X (FitOverlayZoomToReferenceCommand): same defect class as the bare
+    - Ctrl+C (ResetBarChartZoomCommand), Ctrl+Y (ResetOverlayZoomCommand),
+      Ctrl+X (FitOverlayZoomToReferenceCommand), and Ctrl+R
+      (ResetApplicationCommand): same defect class as the bare
       keys/arrows above, just via a Ctrl+letter combo. Window.KeyBindings
       intercept before a routed KeyDown reaches a focused control, so a
       plain {Binding ...} KeyBinding on these would always fire the

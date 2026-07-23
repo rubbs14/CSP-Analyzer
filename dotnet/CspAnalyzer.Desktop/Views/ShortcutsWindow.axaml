@@ -69,7 +69,7 @@
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="T" />
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="Abort CSP Analysis" />
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+R" />
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="Reset Application (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Reset Application" />
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Ctrl+Q" />
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="Close Selected Window/Quit" />
             </Grid>

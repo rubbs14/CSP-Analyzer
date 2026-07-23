@@ -763,4 +763,31 @@ public class MainWindowKeyBindingsTests
 
         Assert.Equal(0, recording.ShowCallCount);
     }
+
+    [AvaloniaFact]
+    public async Task CtrlR_NotFocused_ResetsApplication()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.ReferenceSpectrum = new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ref", Peaklist = new() };
+
+        window.KeyPressQwerty(PhysicalKey.R, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.R, RawInputModifiers.Control);
+        await ((IAsyncRelayCommand)vm.ResetApplicationCommand).ExecutionTask!;
+
+        Assert.False(vm.IsReferenceLoaded);
+    }
+
+    [AvaloniaFact]
+    public void CtrlR_GuardedWhileTextBoxFocused_DoesNotResetApplication()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.ReferenceSpectrum = new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ref", Peaklist = new() };
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.R, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.R, RawInputModifiers.Control);
+
+        Assert.True(vm.IsReferenceLoaded);
+    }
 }
