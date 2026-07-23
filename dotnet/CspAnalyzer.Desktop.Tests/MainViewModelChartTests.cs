@@ -1,3 +1,4 @@
+using System.Linq;
 using CspAnalyzer.BackendInterop;
 using CspAnalyzer.Desktop.ViewModels;
 using Xunit;
@@ -51,6 +52,33 @@ public class MainViewModelChartTests
         var series = Assert.Single(vm.ProbabilitySeries);
         var column = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<double>>(series);
         Assert.Equal(new[] { 0.91, 0.1 }, column.Values);
+    }
+
+    [Fact]
+    public void BuildProbabilityChart_adds_a_decision_threshold_line_at_the_minimum_active_probability()
+    {
+        MainViewModel vm = MakeViewModel(80, 85, 40, 90);
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 100, IsActive = true, ActivePseudoprobability = 0.91 });
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 101, IsActive = true, ActivePseudoprobability = 0.62 });
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 102, IsActive = false, ActivePseudoprobability = 0.1 });
+
+        vm.BuildProbabilityChart();
+
+        var thresholdLine = vm.ProbabilitySections.Single(s => s.Label == "Decision Threshold");
+        Assert.Equal(0.62, thresholdLine.Yi);
+        Assert.Equal(0.62, thresholdLine.Yj);
+    }
+
+    [Fact]
+    public void BuildProbabilityChart_falls_back_to_0_5_decision_threshold_when_nothing_is_active()
+    {
+        MainViewModel vm = MakeViewModel(80, 85);
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 100, IsActive = false, ActivePseudoprobability = 0.1 });
+
+        vm.BuildProbabilityChart();
+
+        var thresholdLine = vm.ProbabilitySections.Single(s => s.Label == "Decision Threshold");
+        Assert.Equal(0.5, thresholdLine.Yi);
     }
 
     [Fact]

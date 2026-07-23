@@ -164,11 +164,28 @@ public partial class MainViewModel
         {
             new ColumnSeries<double> { Name = "Probability", Values = probs, Fill = new SolidColorPaint(InactiveAutoColor) },
         };
+        // Port of CSPv2/Form1.cs's ProbThreshold: the actual probability
+        // cutoff the backend used to decide isActive for this run - the
+        // minimum probability among predicted actives, or 0.5 if nothing
+        // was classified active. Distinct from the static 0/0.35/0.75
+        // visual zone bands below (which don't depend on the run's data).
+        List<double> activeProbs = RunResults.Where(r => r.IsActive).Select(r => r.ActivePseudoprobability).ToList();
+        double probThreshold = activeProbs.Count > 0 ? activeProbs.Min() : 0.5;
+
         ProbabilitySections = new[]
         {
             new RectangularSection { Yi = 0, Yj = 0.35, Fill = new SolidColorPaint(BrokenSpectrumColor) },
             new RectangularSection { Yi = 0.35, Yj = 0.75, Fill = new SolidColorPaint(CheckSpectrumColor) },
             new RectangularSection { Yi = 0.75, Yj = 1, Fill = new SolidColorPaint(FineSpectrumColor) },
+            new RectangularSection
+            {
+                Yi = probThreshold,
+                Yj = probThreshold,
+                Stroke = new SolidColorPaint(ActiveAutoColor) { StrokeThickness = 1.5f },
+                Label = "Decision Threshold",
+                LabelPaint = new SolidColorPaint(CurrentMarkerTextColor),
+                LabelSize = 10,
+            },
         };
 
         if (CurrentIndex >= 0 && CurrentIndex < probs.Length)
