@@ -90,13 +90,52 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
   LiveChartsCore.SkiaSharpView.Avalonia. CSV/XLSX (ClosedXML)/PDF (PDFsharp,
   bundled DejaVu Sans font) export replace the old Excel-interop/GDI+ print
   buttons. See `docs/superpowers/specs/2026-07-23-sub-project-3-s10-results-view-design.md`.
-- [ ] **S10b** — Form1's own embedded charts, deferred from S10: peak-diff/
-  probability bar charts + spectra-overlay scatter (raw peaklist N/H/intensity
-  data, not `RunResults` - separate from `ResultsWindow`). Also the manual-
-  override workflow (ACTIVE (MAN)/INACTIVE (MAN)/Not-set toggles via
-  player-nav buttons + checkboxes, `Form1.cs`'s `MAN_ACTIVES`/`MAN_INACTIVES`)
-  so `ResultsWindow`'s Manual Flag column/pie chart have real data instead of
-  always showing 100% Not-set.
+- [x] **S10b** — Form1's own embedded charts + manual-override workflow.
+  `MainViewModel` split into partial files by responsibility
+  (`.Navigation.cs`, `.ManualOverride.cs`, `.Charts.cs`): player nav
+  (First/Previous/Next/Last/GoToExperiment, bounds enforced via
+  `CanExecute` instead of legacy's disable-after-the-fact pattern),
+  `ExperimentFilter?` (replaces two independently-mutable
+  ShowActives/ShowInactives bools), mark active/inactive/reset/reset-all
+  (mutates the already-existing `PeaklistSpectrum.UserSelection`, which
+  now actually flows into `ResultsWindow`'s Manual Flag column/pie via
+  the S10 `ResultsBuilder` join - no new plumbing needed there, just
+  something to mutate it). New `dotnet/CspAnalyzer.Desktop.Tests` xunit
+  project (first ViewModel test coverage since S7), TDD throughout, 21
+  new tests. Every LiveChartsCore 2.0.5 API used (`CartesianChart`
+  `Sections`/`VisualElements`/axis `SharedWith` for zoom-sync,
+  `RectangularSection`, `LabelVisual`, `GaugeGenerator.BuildSolidGauge`,
+  `ScatterSeries<WeightedPoint>`) was verified against the installed
+  package via a throwaway reflection probe before writing any XAML/C#,
+  to avoid repeating S7's guessed-API gotcha - this caught a real error
+  in the design spec's gauge section (`RadialGaugeSeries`/`GaugeBuilder`
+  don't exist in this package; the real gauge API is
+  `GaugeGenerator.BuildSolidGauge` bound into a `PieChart`, fixed before
+  implementation started). See
+  `docs/superpowers/specs/2026-07-23-sub-project-3-s10b-form-charts-manual-override-design.md`
+  and `docs/superpowers/plans/2026-07-23-s10b-form-charts-manual-override.md`.
+
+  **Deliberate simplification from "full fidelity"**: legacy's per-bar
+  conditional `Fill` (coloring individual bars red past a threshold via
+  LiveCharts1's `Mapper.Fill(item => ...)`) was dropped in favor of the
+  `RectangularSection` threshold-zone shading alone - LiveChartsCore 2.x's
+  per-point styling model doesn't have a direct equivalent, and the zone
+  shading conveys the same diagnostic information.
+
+  Verified end-to-end against the real local `CSPv2/Demo-dataset` (git-
+  ignored, kept locally per S5) via a temporary auto-driving patch to
+  `App.axaml.cs` (reverted before commit, never landed) run + screenshot:
+  Peak-Diff chart populates immediately after dataset load (no run
+  needed) with real threshold-zone shading; after a run, Probability
+  chart, both solid gauges (1 active / 63 inactive, real
+  `GaugeGenerator.BuildSolidGauge` output), and the spectra-overlay
+  scatter (real N/H/intensity-sized points) all render correctly; nav
+  labels (`Current Experiment: 11  1 / 64`, `ΔPeaks: 7`, `INACTIVE`)
+  matched the real classification output. No GUI automation tool on this
+  box (still true per S9's note - no `xdotool`), so button-click
+  interactions (Mark Active, filter checkboxes, Reset All confirm
+  dialog) are covered by the 21 new unit tests instead of a live click
+  pass.
 - [ ] **S11** — Secondary windows (Help, Shortcuts), settings, python/env path
   handling done cross-platform.
 - [ ] **S12** — Polish, cross-platform smoke test (Linux + Windows), fix platform gaps.
