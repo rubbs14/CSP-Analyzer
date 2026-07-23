@@ -1,0 +1,83 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:CspAnalyzer.Desktop.ViewModels"
+        xmlns:conv="using:CspAnalyzer.Desktop.Converters"
+        xmlns:lvc="using:LiveChartsCore.SkiaSharpView.Avalonia"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        x:Class="CspAnalyzer.Desktop.Views.ResultsWindow"
+        x:DataType="vm:ResultsViewModel"
+        Title="Export Data"
+        Width="1200" Height="800">
+
+    <!--
+    S10 port of CSPv2/FormOutputTable.cs: a results table (port of
+    dataGridView1) plus 3 pie charts (port of pieChartAll/pieChartAuto/
+    pieChartManual). See docs/superpowers/specs/
+    2026-07-23-sub-project-3-s10-results-view-design.md.
+    -->
+
+    <Window.Resources>
+        <conv:AutoAnalysisRowBrushConverter x:Key="AutoAnalysisRowBrushConverter" />
+    </Window.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Grid Grid.Row="0" ColumnDefinitions="*,*,*,Auto" Height="220" Margin="4">
+            <Border Grid.Column="0" BorderThickness="1" BorderBrush="Gray" Margin="2">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="Overview" HorizontalAlignment="Center" FontWeight="SemiBold" />
+                    <lvc:PieChart Series="{Binding OverviewSeries}" LegendPosition="Right" />
+                </DockPanel>
+            </Border>
+            <Border Grid.Column="1" BorderThickness="1" BorderBrush="Gray" Margin="2">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="Automatic Analysis" HorizontalAlignment="Center" FontWeight="SemiBold" />
+                    <lvc:PieChart Series="{Binding AutoSeries}" LegendPosition="Right" />
+                </DockPanel>
+            </Border>
+            <Border Grid.Column="2" BorderThickness="1" BorderBrush="Gray" Margin="2">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="Manual Analysis" HorizontalAlignment="Center" FontWeight="SemiBold" />
+                    <lvc:PieChart Series="{Binding ManualSeries}" LegendPosition="Right" />
+                </DockPanel>
+            </Border>
+            <Border Grid.Column="3" BorderThickness="1" BorderBrush="Gray" Margin="2" Width="180">
+                <StackPanel Margin="6" Spacing="4">
+                    <TextBlock Text="Run Info" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding TotalExperiments, StringFormat='Total Exp.: {0}'}" />
+                    <TextBlock Text="{Binding ActivesAuto, StringFormat='Actives: {0}'}" />
+                    <TextBlock Text="{Binding InactivesAuto, StringFormat='Inactives: {0}'}" />
+                    <TextBlock Text="{Binding ActivesManual, StringFormat='Man. Actives: {0}'}" />
+                    <TextBlock Text="{Binding InactivesManual, StringFormat='Man. Inactives: {0}'}" />
+                    <TextBlock Text="{Binding NotSetManual, StringFormat='Not set: {0}'}" />
+                    <Button Content="Refresh" Command="{Binding RefreshCommand}" HorizontalAlignment="Stretch" />
+                    <Button Content="Export CSV" Command="{Binding ExportCsvCommand}" HorizontalAlignment="Stretch" />
+                    <Button Content="Export XLSX" Command="{Binding ExportXlsxCommand}" HorizontalAlignment="Stretch" />
+                    <Button Content="Export PDF" Command="{Binding ExportPdfCommand}" HorizontalAlignment="Stretch" />
+                    <TextBlock Text="{Binding ExportStatusText}" TextWrapping="Wrap" FontSize="11" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <DataGrid Grid.Row="1" Margin="4" ItemsSource="{Binding Rows}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Styles>
+                <Style Selector="DataGridRow">
+                    <Setter Property="Background" Value="{Binding AutomaticAnalysis, Converter={StaticResource AutoAnalysisRowBrushConverter}}" />
+                </Style>
+            </DataGrid.Styles>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                <DataGridTextColumn Header="Dataset" Binding="{Binding Dataset}" />
+                <DataGridTextColumn Header="Total Read Peaks" Binding="{Binding TotalReadPeaks}" />
+                <DataGridTextColumn Header="Min Intensity (AU)" Binding="{Binding MinIntensity}" />
+                <DataGridTextColumn Header="Max Intensity (AU)" Binding="{Binding MaxIntensity}" />
+                <DataGridTextColumn Header="Peak Difference to Reference" Binding="{Binding PeakDifference}" />
+                <DataGridTextColumn Header="Probability" Binding="{Binding Probability}" />
+                <DataGridTextColumn Header="Automatic Analysis" Binding="{Binding AutomaticAnalysis}" />
+                <DataGridTextColumn Header="Manual Flag" Binding="{Binding ManualFlag}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
