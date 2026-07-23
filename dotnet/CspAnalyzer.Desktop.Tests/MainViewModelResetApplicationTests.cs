@@ -1,4 +1,6 @@
 using System.IO;
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using CspAnalyzer.BackendInterop;
@@ -44,6 +46,17 @@ public class MainViewModelResetApplicationTests
         vm.RaiseNavigationChanged();
         return vm;
     }
+
+    // RunAsync never actually creates _runCts in the test environment
+    // (there's no real Python backend, so it returns before _runCts is
+    // assigned), so this is the only way to observe whether
+    // ResetApplicationAsync's `_runCts?.Cancel();` line actually ran
+    // without a live subprocess. Matches MainWindowKeyBindingsTests's
+    // InjectRunCts helper exactly.
+    private static void InjectRunCts(MainViewModel vm, CancellationTokenSource cts) =>
+        typeof(MainViewModel)
+            .GetField("_runCts", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .SetValue(vm, cts);
 
     [Fact]
     public async Task ResetApplicationCommand_declined_leaves_everything_loaded()
@@ -117,9 +130,12 @@ public class MainViewModelResetApplicationTests
 
         var vm = MakeFullyLoadedViewModel(new NullConfirmDialogService(), settingsService);
         vm.IsRunning = true;
+        var cts = new CancellationTokenSource();
+        InjectRunCts(vm, cts);
 
         await ((IAsyncRelayCommand)vm.ResetApplicationCommand).ExecuteAsync(null);
 
+        Assert.True(cts.IsCancellationRequested);
         Assert.False(vm.IsRunning);
         Assert.False(vm.CancelRunCommand.CanExecute(null));
     }
