@@ -4,10 +4,11 @@ namespace CspAnalyzer.BackendInterop.Tests;
 
 /// <summary>
 /// BackendEnvironment is the app-runtime counterpart of this test project's
-/// own RepoPaths helper - same discovery strategy (walk up from the running
-/// assembly looking for backend/ + .git/), but living in BackendInterop so
-/// CspAnalyzer.Desktop can use it too. Full cross-platform python discovery
-/// is S11's job; this is the minimal S9 needs to actually invoke the CLI.
+/// own RepoPaths helper - same repo-root discovery strategy (walk up from
+/// the running assembly looking for backend/ + .git/), but living in
+/// BackendInterop so CspAnalyzer.Desktop can use it too. PythonExecutable
+/// probes cross-platform conda env locations (S11); RepoPaths now delegates
+/// to it instead of duplicating the logic.
 /// </summary>
 public class BackendEnvironmentTests
 {
@@ -32,9 +33,10 @@ public class BackendEnvironmentTests
     [Fact]
     public void PythonExecutable_is_null_or_an_existing_file()
     {
-        // Can't assert presence (machine-dependent, same caveat as
-        // RepoPaths.CspModernPythonExecutable) - only that the contract
-        // (null when absent, a real existing path when present) holds.
+        // Can't assert presence (machine-dependent) - only that the
+        // contract (null when absent, a real existing path when present)
+        // holds. Candidate-path shape itself is covered by
+        // CondaPythonPathsTests, which doesn't depend on the real machine.
         var python = BackendEnvironment.PythonExecutable;
 
         if (python is not null)

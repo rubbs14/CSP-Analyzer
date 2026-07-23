@@ -1,9 +1,9 @@
 namespace CspAnalyzer.BackendInterop.Tests;
 
 /// <summary>
-/// Finds repo-relative paths (real model_artifacts/, the csp_modern conda
-/// env's python) without hardcoding a fixed number of ".." segments, since
-/// the test assembly's output path depth varies by build configuration.
+/// Finds repo-relative paths (real model_artifacts/) without hardcoding a
+/// fixed number of ".." segments, since the test assembly's output path
+/// depth varies by build configuration.
 /// </summary>
 internal static class RepoPaths
 {
@@ -12,20 +12,12 @@ internal static class RepoPaths
     public static string RealModelArtifactsDir => Path.Combine(RepoRoot, "backend", "model_artifacts");
 
     /// <summary>
-    /// Path S11 will replace with real cross-platform python discovery.
-    /// Null if this exact conda env isn't present on the current machine
-    /// (the integration test skips itself in that case).
+    /// Delegates to BackendEnvironment.PythonExecutable (S11) rather than
+    /// duplicating its own path-discovery logic. Null if the csp_modern
+    /// conda env isn't present on the current machine (the integration
+    /// test skips itself in that case).
     /// </summary>
-    public static string? CspModernPythonExecutable
-    {
-        get
-        {
-            var candidate = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                "miniforge3", "envs", "csp_modern", "bin", "python");
-            return File.Exists(candidate) ? candidate : null;
-        }
-    }
+    public static string? CspModernPythonExecutable => BackendEnvironment.PythonExecutable;
 
     private static string FindRepoRoot()
     {
