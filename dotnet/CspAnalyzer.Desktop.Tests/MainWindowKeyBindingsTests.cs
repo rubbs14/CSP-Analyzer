@@ -257,6 +257,21 @@ public class MainWindowKeyBindingsTests
         Assert.True(textBox.IsFocused);
     }
 
+    [AvaloniaFact]
+    public void G_GuardedWhileTextBoxFocused_DoesNotStealFocus()
+    {
+        (MainWindow window, _) = NewWindow();
+        var nMinBox = window.FindControl<TextBox>("NMinTextBox")!;
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        nMinBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.G, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.G, RawInputModifiers.None);
+
+        Assert.False(goToBox.IsFocused);
+        Assert.True(nMinBox.IsFocused);
+    }
+
     // Arrow keys share the same class of bug the bare letters did: a plain
     // {Binding NextCommand} KeyBinding intercepts Right before a focused
     // TextBox's caret-movement handling ever runs (see the comment above
