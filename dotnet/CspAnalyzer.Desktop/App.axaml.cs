@@ -20,16 +20,18 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var window = new MainWindow();
+            var settingsService = new SettingsService();
             var viewModel = new MainViewModel(
                 new AvaloniaFilePickerService(window),
                 new AvaloniaResultsWindowService(window),
                 new AvaloniaConfirmDialogService(window),
                 new AvaloniaAboutWindowService(window),
                 new AvaloniaShortcutsWindowService(window),
-                new AvaloniaHelpWindowService(window));
+                new AvaloniaHelpWindowService(window),
+                new AvaloniaInfoDialogService(window),
+                settingsService);
             window.DataContext = viewModel;
 
-            var settingsService = new SettingsService();
             AppSettings settings = settingsService.Load();
             window.ApplyAppearanceSettings(settings);
             viewModel.ApplySettings(settings);

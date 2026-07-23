@@ -29,7 +29,8 @@ public class MainWindowKeyBindingsTests
         var recording = new RecordingShortcutsWindowService();
         var vm = new MainViewModel(
             new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
-            new NullAboutWindowService(), recording, new NullHelpWindowService());
+            new NullAboutWindowService(), recording, new NullHelpWindowService(),
+            new NullInfoDialogService(), new SettingsService());
         var window = new MainWindow { DataContext = vm };
         window.Show();
 
@@ -499,7 +500,8 @@ public class MainWindowKeyBindingsTests
         var recording = new RecordingHelpWindowService();
         var vm = new MainViewModel(
             new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
-            new NullAboutWindowService(), new NullShortcutsWindowService(), recording);
+            new NullAboutWindowService(), new NullShortcutsWindowService(), recording,
+            new NullInfoDialogService(), new SettingsService());
         var window = new MainWindow { DataContext = vm };
         window.Show();
 
@@ -515,7 +517,8 @@ public class MainWindowKeyBindingsTests
         var recording = new RecordingHelpWindowService();
         var vm = new MainViewModel(
             new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
-            new NullAboutWindowService(), new NullShortcutsWindowService(), recording);
+            new NullAboutWindowService(), new NullShortcutsWindowService(), recording,
+            new NullInfoDialogService(), new SettingsService());
         var window = new MainWindow { DataContext = vm };
         window.Show();
         var nMinBox = window.FindControl<TextBox>("NMinTextBox")!;

@@ -38,6 +38,8 @@ public partial class MainViewModel : ViewModelBase
     private readonly IAboutWindowService _aboutWindowService;
     private readonly IShortcutsWindowService _shortcutsWindowService;
     private readonly IHelpWindowService _helpWindowService;
+    private readonly IInfoDialogService _infoDialogService;
+    private readonly SettingsService _settingsService;
 
     [ObservableProperty]
     private string _greeting = "Welcome to Avalonia!";
@@ -124,7 +126,8 @@ public partial class MainViewModel : ViewModelBase
 
     public MainViewModel() : this(
         new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
-        new NullAboutWindowService(), new NullShortcutsWindowService(), new NullHelpWindowService())
+        new NullAboutWindowService(), new NullShortcutsWindowService(), new NullHelpWindowService(),
+        new NullInfoDialogService(), new SettingsService())
     {
     }
 
@@ -134,7 +137,9 @@ public partial class MainViewModel : ViewModelBase
         IConfirmDialogService confirmDialogService,
         IAboutWindowService aboutWindowService,
         IShortcutsWindowService shortcutsWindowService,
-        IHelpWindowService helpWindowService)
+        IHelpWindowService helpWindowService,
+        IInfoDialogService infoDialogService,
+        SettingsService settingsService)
     {
         _filePicker = filePicker;
         _resultsWindowService = resultsWindowService;
@@ -142,6 +147,8 @@ public partial class MainViewModel : ViewModelBase
         _aboutWindowService = aboutWindowService;
         _shortcutsWindowService = shortcutsWindowService;
         _helpWindowService = helpWindowService;
+        _infoDialogService = infoDialogService;
+        _settingsService = settingsService;
     }
 
     private PeakImportFilter ReferenceFilter => new(ReferenceIntensityThreshold, NMin, NMax, HMin, HMax);

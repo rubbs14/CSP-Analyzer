@@ -30,7 +30,8 @@ public class MainViewModelSecondaryWindowsTests
         var aboutService = new RecordingAboutWindowService();
         var vm = new MainViewModel(
             new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
-            aboutService, new NullShortcutsWindowService(), new NullHelpWindowService());
+            aboutService, new NullShortcutsWindowService(), new NullHelpWindowService(),
+            new NullInfoDialogService(), new SettingsService());
 
         vm.OpenAboutWindowCommand.Execute(null);
 
@@ -43,7 +44,8 @@ public class MainViewModelSecondaryWindowsTests
         var shortcutsService = new RecordingShortcutsWindowService();
         var vm = new MainViewModel(
             new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
-            new NullAboutWindowService(), shortcutsService, new NullHelpWindowService());
+            new NullAboutWindowService(), shortcutsService, new NullHelpWindowService(),
+            new NullInfoDialogService(), new SettingsService());
 
         vm.OpenShortcutsWindowCommand.Execute(null);
 
@@ -56,7 +58,8 @@ public class MainViewModelSecondaryWindowsTests
         var helpService = new RecordingHelpWindowService();
         var vm = new MainViewModel(
             new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
-            new NullAboutWindowService(), new NullShortcutsWindowService(), helpService);
+            new NullAboutWindowService(), new NullShortcutsWindowService(), helpService,
+            new NullInfoDialogService(), new SettingsService());
 
         vm.OpenHelpWindowCommand.Execute(null);
 
