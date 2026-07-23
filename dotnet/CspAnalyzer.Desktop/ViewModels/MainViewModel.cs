@@ -34,6 +34,7 @@ public partial class MainViewModel : ViewModelBase
 {
     private readonly IFilePickerService _filePicker;
     private readonly IResultsWindowService _resultsWindowService;
+    private readonly IConfirmDialogService _confirmDialogService;
 
     [ObservableProperty]
     private string _greeting = "Welcome to Avalonia!";
@@ -94,14 +95,15 @@ public partial class MainViewModel : ViewModelBase
 
     public bool IsReferenceLoaded => ReferenceSpectrum is not null;
 
-    public MainViewModel() : this(new NullFilePickerService(), new NullResultsWindowService())
+    public MainViewModel() : this(new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService())
     {
     }
 
-    public MainViewModel(IFilePickerService filePicker, IResultsWindowService resultsWindowService)
+    public MainViewModel(IFilePickerService filePicker, IResultsWindowService resultsWindowService, IConfirmDialogService confirmDialogService)
     {
         _filePicker = filePicker;
         _resultsWindowService = resultsWindowService;
+        _confirmDialogService = confirmDialogService;
     }
 
     private PeakImportFilter ReferenceFilter => new(ReferenceIntensityThreshold, NMin, NMax, HMin, HMax);

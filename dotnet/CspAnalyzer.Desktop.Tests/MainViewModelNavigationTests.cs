@@ -54,7 +54,7 @@ public class MainViewModelNavigationTests
         WritePeaklistXml("9", dsRoot);
         WritePeaklistXml("10", dsRoot);
 
-        var vm = new MainViewModel(new FixedFolderFilePickerService(refXml, dsRoot), new NullResultsWindowService());
+        var vm = new MainViewModel(new FixedFolderFilePickerService(refXml, dsRoot), new NullResultsWindowService(), new NullConfirmDialogService());
         await vm.LoadReferenceCommand.ExecuteAsync(null);
         await vm.LoadDatasetCommand.ExecuteAsync(null);
 
