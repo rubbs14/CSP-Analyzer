@@ -24,7 +24,7 @@ public partial class App : Application
                 new AvaloniaFilePickerService(window),
                 new AvaloniaResultsWindowService(window),
                 new AvaloniaConfirmDialogService(window),
-                new NullAboutWindowService(),
+                new AvaloniaAboutWindowService(window),
                 new NullShortcutsWindowService());
             window.DataContext = viewModel;
 

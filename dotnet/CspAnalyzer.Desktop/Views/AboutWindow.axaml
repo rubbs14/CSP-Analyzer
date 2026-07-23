@@ -1,0 +1,13 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CspAnalyzer.Desktop.Views.AboutWindow"
+        Title="About CSP Analyzer"
+        Width="360" SizeToContent="Height"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner">
+    <StackPanel Margin="20" Spacing="8">
+        <TextBlock Text="CSP Analyzer" FontSize="18" FontWeight="Bold" HorizontalAlignment="Center" />
+        <TextBlock x:Name="VersionText" HorizontalAlignment="Center" FontSize="11" />
+        <TextBlock Text="Developed by R. Byrne and R. Fino" HorizontalAlignment="Center" FontStyle="Italic" TextWrapping="Wrap" TextAlignment="Center" />
+    </StackPanel>
+</Window>

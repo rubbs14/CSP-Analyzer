@@ -122,7 +122,7 @@
                 <StackPanel Spacing="4">
                     <Button Content="Save MCC Stats" HorizontalAlignment="Stretch" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                        <Button Content="About" />
+                        <Button Content="About" Command="{Binding OpenAboutWindowCommand}" />
                         <Button Content="Shortcuts" />
                         <Button Content="Help" />
                     </StackPanel>
