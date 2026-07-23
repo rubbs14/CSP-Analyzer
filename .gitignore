@@ -354,3 +354,6 @@ MigrationBackup/
 CSPv2/Miniconda3/
 CSPv2/pickle_jar/
 CSPv2/Demo-dataset/
+
+# Local git worktrees used for isolated subagent-driven implementation work
+.worktrees/
