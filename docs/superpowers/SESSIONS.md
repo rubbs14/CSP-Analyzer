@@ -136,7 +136,7 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
   interactions (Mark Active, filter checkboxes, Reset All confirm
   dialog) are covered by the 21 new unit tests instead of a live click
   pass.
-- [x] **S11** — Cross-platform python/env discovery: `BackendEnvironment`'s
+- [ ] **S11** — Cross-platform python/env discovery: `BackendEnvironment`'s
   conda-path probing covers Windows/Linux/macOS (miniforge3/miniconda3/
   anaconda3), replacing the single hardcoded Linux path. See
   `docs/superpowers/specs/2026-07-23-sub-project-3-s11-cross-platform-python-discovery-design.md`.
