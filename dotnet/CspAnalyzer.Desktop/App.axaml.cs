@@ -19,7 +19,7 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             var window = new MainWindow();
-            window.DataContext = new MainViewModel(new AvaloniaFilePickerService(window));
+            window.DataContext = new MainViewModel(new AvaloniaFilePickerService(window), new AvaloniaResultsWindowService(window));
             desktop.MainWindow = window;
         }
 

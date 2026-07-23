@@ -32,6 +32,7 @@ namespace CspAnalyzer.Desktop.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IFilePickerService _filePicker;
+    private readonly IResultsWindowService _resultsWindowService;
 
     [ObservableProperty]
     private string _greeting = "Welcome to Avalonia!";
@@ -92,13 +93,14 @@ public partial class MainViewModel : ViewModelBase
 
     public bool IsReferenceLoaded => ReferenceSpectrum is not null;
 
-    public MainViewModel() : this(new NullFilePickerService())
+    public MainViewModel() : this(new NullFilePickerService(), new NullResultsWindowService())
     {
     }
 
-    public MainViewModel(IFilePickerService filePicker)
+    public MainViewModel(IFilePickerService filePicker, IResultsWindowService resultsWindowService)
     {
         _filePicker = filePicker;
+        _resultsWindowService = resultsWindowService;
     }
 
     private PeakImportFilter ReferenceFilter => new(ReferenceIntensityThreshold, NMin, NMax, HMin, HMax);
@@ -222,6 +224,7 @@ public partial class MainViewModel : ViewModelBase
                 {
                     RunResults.Add(r);
                 }
+                OpenResultsWindowCommand.NotifyCanExecuteChanged();
                 RunStatusText = $"Run complete: {parsed.Length} experiments classified.";
             }
             else
@@ -247,4 +250,13 @@ public partial class MainViewModel : ViewModelBase
 
     [RelayCommand(CanExecute = nameof(CanCancelRun))]
     private void CancelRun() => _runCts?.Cancel();
+
+    private bool CanOpenResultsWindow() => RunResults.Count > 0;
+
+    [RelayCommand(CanExecute = nameof(CanOpenResultsWindow))]
+    private void OpenResultsWindow()
+    {
+        var resultsViewModel = new ResultsViewModel(_filePicker, ReferenceSpectrum!, DatasetSpectra.ToList(), RunResults.ToList());
+        _resultsWindowService.Show(resultsViewModel);
+    }
 }

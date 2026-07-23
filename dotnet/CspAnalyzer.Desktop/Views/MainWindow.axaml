@@ -182,7 +182,7 @@
                         <StackPanel Grid.Column="1" Margin="4" Spacing="2">
                             <TextBlock Classes="placeholder" Text="Man./auto status, ΔPeaks (S9)" TextWrapping="Wrap" FontSize="10" />
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                <Button Content="Export" />
+                                <Button Content="Export" Command="{Binding OpenResultsWindowCommand}" />
                                 <Button Content="Reset" />
                             </StackPanel>
                         </StackPanel>
