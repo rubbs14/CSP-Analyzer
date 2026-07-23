@@ -331,4 +331,27 @@ public partial class MainViewModel
         OverlayYAxes[0].MinLimit = -(ReferenceSpectrum.Peaklist.Max(p => p.F1) + 3);
         OverlayYAxes[0].MaxLimit = -(ReferenceSpectrum.Peaklist.Min(p => p.F1) - 3);
     }
+
+    [RelayCommand]
+    private void ResetBarChartZoom()
+    {
+        if (PeakDiffXAxes.Length > 0)
+        {
+            PeakDiffXAxes[0].MinLimit = 0;
+            PeakDiffXAxes[0].MaxLimit = DatasetSpectra.Count;
+        }
+
+        if (ProbabilityXAxes.Length > 0)
+        {
+            ProbabilityXAxes[0].MinLimit = 0;
+            ProbabilityXAxes[0].MaxLimit = DatasetSpectra.Count;
+        }
+    }
+
+    [RelayCommand]
+    private void ResetAllZoom()
+    {
+        ResetOverlayZoom();
+        ResetBarChartZoom();
+    }
 }

@@ -59,9 +59,9 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+X" />
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="Fit Zoom to Reference" />
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Ctrl+Y" />
-                <TextBlock Grid.Row="2" Grid.Column="1" Text="Reset Zoom to Import limits (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Reset Zoom to Import limits" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Ctrl+Alt+Space" />
-                <TextBlock Grid.Row="3" Grid.Column="1" Text="Reset Zoom for all Graphs (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="Reset Zoom for all Graphs" />
             </Grid>
 
             <TextBlock Text="Abort/Reset" FontWeight="SemiBold" Margin="0,8,0,0" />

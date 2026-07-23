@@ -134,15 +134,53 @@ public class MainWindowKeyBindingsTests
         Assert.Equal(5000, vm.ReferenceIntensityThreshold);
     }
 
-    // Ctrl+C/Ctrl+X share the exact same defect class as the bare letters
-    // and arrow keys above: Window.KeyBindings intercept at the raw-input
-    // stage before a routed KeyDown reaches a focused control, so a plain
-    // {Binding ResetOverlayZoomCommand}/{Binding
-    // FitOverlayZoomToReferenceCommand} KeyBinding on Ctrl+C/Ctrl+X always
-    // fires the chart-reset commands instead of letting a focused TextBox
-    // perform its normal clipboard copy/cut - even with text selected.
+    // Ctrl+C/Ctrl+Y/Ctrl+X share the exact same defect class as the bare
+    // letters and arrow keys above: Window.KeyBindings intercept at the
+    // raw-input stage before a routed KeyDown reaches a focused control, so
+    // a plain {Binding ResetBarChartZoomCommand}/{Binding
+    // ResetOverlayZoomCommand}/{Binding FitOverlayZoomToReferenceCommand}
+    // KeyBinding on Ctrl+C/Ctrl+Y/Ctrl+X always fires the chart-reset
+    // commands instead of letting a focused TextBox perform its normal
+    // clipboard copy/redo/cut - even with text selected.
     [AvaloniaFact]
-    public void CtrlC_GuardedWhileTextBoxFocused_DoesNotResetOverlayZoom()
+    public void CtrlC_GuardedWhileTextBoxFocused_DoesNotResetBarChartZoom()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.ReferenceSpectrum = new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ref", Peaklist = new(), TotReadPeaks = 10 };
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new(), TotReadPeaks = 12 });
+        vm.BuildPeakDiffChart();
+        vm.PeakDiffXAxes[0].MinLimit = 999;
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.C, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.C, RawInputModifiers.Control);
+
+        Assert.Equal(999, vm.PeakDiffXAxes[0].MinLimit);
+    }
+
+    [AvaloniaFact]
+    public void CtrlC_NotFocused_ResetsBarChartZoom()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.ReferenceSpectrum = new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ref", Peaklist = new(), TotReadPeaks = 10 };
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new(), TotReadPeaks = 12 });
+        vm.BuildPeakDiffChart();
+        vm.BuildProbabilityChart();
+        vm.PeakDiffXAxes[0].MinLimit = 999;
+        vm.ProbabilityXAxes[0].MinLimit = 999;
+
+        window.KeyPressQwerty(PhysicalKey.C, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.C, RawInputModifiers.Control);
+
+        Assert.Equal(0, vm.PeakDiffXAxes[0].MinLimit);
+        Assert.Equal(1, vm.PeakDiffXAxes[0].MaxLimit);
+        Assert.Equal(0, vm.ProbabilityXAxes[0].MinLimit);
+        Assert.Equal(1, vm.ProbabilityXAxes[0].MaxLimit);
+    }
+
+    [AvaloniaFact]
+    public void CtrlY_GuardedWhileTextBoxFocused_DoesNotResetOverlayZoom()
     {
         (MainWindow window, MainViewModel vm) = NewWindow();
         vm.BuildOverlayAxes();
@@ -150,23 +188,46 @@ public class MainWindowKeyBindingsTests
         var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
         goToBox.Focus();
 
-        window.KeyPressQwerty(PhysicalKey.C, RawInputModifiers.Control);
-        window.KeyReleaseQwerty(PhysicalKey.C, RawInputModifiers.Control);
+        window.KeyPressQwerty(PhysicalKey.Y, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.Y, RawInputModifiers.Control);
 
         Assert.Equal(999, vm.OverlayXAxes[0].MinLimit);
     }
 
     [AvaloniaFact]
-    public void CtrlC_NotFocused_ResetsOverlayZoom()
+    public void CtrlY_NotFocused_ResetsOverlayZoom()
     {
         (MainWindow window, MainViewModel vm) = NewWindow();
         vm.BuildOverlayAxes();
         vm.OverlayXAxes[0].MinLimit = 999;
 
-        window.KeyPressQwerty(PhysicalKey.C, RawInputModifiers.Control);
-        window.KeyReleaseQwerty(PhysicalKey.C, RawInputModifiers.Control);
+        window.KeyPressQwerty(PhysicalKey.Y, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.Y, RawInputModifiers.Control);
 
         Assert.Equal(-vm.HMax, vm.OverlayXAxes[0].MinLimit);
+    }
+
+    [AvaloniaFact]
+    public void CtrlAltSpace_ResetsOverlayAndBarChartZoom()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.ReferenceSpectrum = new CspAnalyzer.BackendInterop.PeaklistSpectrum
+        {
+            ExpNumber = 1, DsName = "ref",
+            Peaklist = new() { new CspAnalyzer.BackendInterop.Peak { F1 = 110, F2 = 8 } },
+            TotReadPeaks = 10,
+        };
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new(), TotReadPeaks = 12 });
+        vm.BuildOverlayAxes();
+        vm.BuildPeakDiffChart();
+        vm.OverlayXAxes[0].MinLimit = 999;
+        vm.PeakDiffXAxes[0].MinLimit = 999;
+
+        window.KeyPressQwerty(PhysicalKey.Space, RawInputModifiers.Control | RawInputModifiers.Alt);
+        window.KeyReleaseQwerty(PhysicalKey.Space, RawInputModifiers.Control | RawInputModifiers.Alt);
+
+        Assert.Equal(-vm.HMax, vm.OverlayXAxes[0].MinLimit);
+        Assert.Equal(0, vm.PeakDiffXAxes[0].MinLimit);
     }
 
     [AvaloniaFact]
