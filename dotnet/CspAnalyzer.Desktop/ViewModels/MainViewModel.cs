@@ -137,6 +137,8 @@ public partial class MainViewModel : ViewModelBase
         ReferenceStatusText = "Reference Loaded";
         OnPropertyChanged(nameof(IsReferenceLoaded));
         RunCommand.NotifyCanExecuteChanged();
+        BuildOverlayAxes();
+        RaiseNavigationChanged();
     }
 
     [RelayCommand]

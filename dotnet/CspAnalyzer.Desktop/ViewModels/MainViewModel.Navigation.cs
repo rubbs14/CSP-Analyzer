@@ -166,8 +166,7 @@ public partial class MainViewModel
         PreviousCommand.NotifyCanExecuteChanged();
         NextCommand.NotifyCanExecuteChanged();
         LastCommand.NotifyCanExecuteChanged();
-        // TODO(S10b Task 10): uncomment once RebuildOverlayPoints exists.
-        // RebuildOverlayPoints();
+        RebuildOverlayPoints();
     }
 
     public void NavigateToChartIndex(int index)

@@ -78,4 +78,42 @@ public class MainViewModelChartTests
         Assert.NotEmpty(vm.ActivesGaugeSeries);
         Assert.NotEmpty(vm.InactivesGaugeSeries);
     }
+
+    [Fact]
+    public void BuildOverlayAxes_ranges_match_the_inverted_import_bounds()
+    {
+        var vm = new MainViewModel();
+        vm.NMin = 100;
+        vm.NMax = 140;
+        vm.HMin = 5;
+        vm.HMax = 12;
+
+        vm.BuildOverlayAxes();
+
+        Assert.Equal(-12, vm.OverlayXAxes[0].MinLimit);
+        Assert.Equal(-5, vm.OverlayXAxes[0].MaxLimit);
+        Assert.Equal(-140, vm.OverlayYAxes[0].MinLimit);
+        Assert.Equal(-100, vm.OverlayYAxes[0].MaxLimit);
+    }
+
+    [Fact]
+    public void RebuildOverlayPoints_plots_the_current_spectrums_peaks_inverted()
+    {
+        var vm = new MainViewModel();
+        vm.BuildOverlayAxes();
+        vm.ReferenceSpectrum = new PeaklistSpectrum { ExpNumber = 1, DsName = "ref", TotReadPeaks = 1 };
+        vm.DatasetSpectra.Add(new PeaklistSpectrum
+        {
+            ExpNumber = 101,
+            DsName = "ds",
+            Peaklist = { new Peak { Number = 1, F1 = 120.0, F2 = 8.0, Intensity = 9000 } },
+        });
+        vm.RaiseNavigationChanged();
+
+        var current = (LiveChartsCore.SkiaSharpView.ScatterSeries<LiveChartsCore.Defaults.WeightedPoint>)vm.OverlaySeries[1];
+        var point = Assert.Single(current.Values);
+        Assert.Equal(-8.0, point.X);
+        Assert.Equal(-120.0, point.Y);
+        Assert.Equal(9000.0, point.Weight);
+    }
 }

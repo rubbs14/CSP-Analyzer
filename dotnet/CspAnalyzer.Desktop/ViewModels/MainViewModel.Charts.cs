@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CspAnalyzer.BackendInterop;
 using LiveChartsCore;
+using LiveChartsCore.Defaults;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Extensions;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -198,5 +201,86 @@ public partial class MainViewModel
                 series.Name = "Inactives";
                 series.Fill = new SolidColorPaint(InactiveAutoColor);
             }));
+    }
+
+    [ObservableProperty]
+    private ISeries[] _overlaySeries = Array.Empty<ISeries>();
+
+    [ObservableProperty]
+    private Axis[] _overlayXAxes = Array.Empty<Axis>();
+
+    [ObservableProperty]
+    private Axis[] _overlayYAxes = Array.Empty<Axis>();
+
+    private readonly ScatterSeries<WeightedPoint> _referenceOverlaySeries = new()
+    {
+        Name = "Reference",
+        Fill = new SolidColorPaint(new SKColor(64, 79, 86, 220)),
+    };
+
+    private readonly ScatterSeries<WeightedPoint> _currentOverlaySeries = new()
+    {
+        Name = "Current Experiment",
+        Fill = new SolidColorPaint(AllSpectraFillColor),
+    };
+
+    private readonly ScatterSeries<WeightedPoint> _activesOverlaySeries = new()
+    {
+        Name = "Actives",
+        Fill = new SolidColorPaint(ActiveAutoColor),
+    };
+
+    private readonly ScatterSeries<WeightedPoint> _inactivesOverlaySeries = new()
+    {
+        Name = "Inactives",
+        Fill = new SolidColorPaint(InactiveAutoColor),
+    };
+
+    public void BuildOverlayAxes()
+    {
+        OverlayXAxes = new[] { new Axis { Name = "1H ppm", MinLimit = -HMax, MaxLimit = -HMin } };
+        OverlayYAxes = new[] { new Axis { Name = "15N ppm", MinLimit = -NMax, MaxLimit = -NMin } };
+        OverlaySeries = new ISeries[] { _referenceOverlaySeries, _currentOverlaySeries, _activesOverlaySeries, _inactivesOverlaySeries };
+    }
+
+    public void RebuildOverlayPoints()
+    {
+        _referenceOverlaySeries.Values = ToOverlayPoints(ReferenceSpectrum);
+        _currentOverlaySeries.Values = ToOverlayPoints(CurrentSpectrum);
+        _activesOverlaySeries.Values = CurrentFilter == ExperimentFilter.Actives ? ToOverlayPoints(CurrentSpectrum) : Array.Empty<WeightedPoint>();
+        _inactivesOverlaySeries.Values = CurrentFilter == ExperimentFilter.Inactives ? ToOverlayPoints(CurrentSpectrum) : Array.Empty<WeightedPoint>();
+    }
+
+    private static WeightedPoint[] ToOverlayPoints(PeaklistSpectrum? spectrum) =>
+        spectrum is null
+            ? Array.Empty<WeightedPoint>()
+            : spectrum.Peaklist.Select(p => new WeightedPoint(-p.F2, -p.F1, p.Intensity)).ToArray();
+
+    [RelayCommand]
+    private void ResetOverlayZoom()
+    {
+        if (OverlayXAxes.Length == 0)
+        {
+            return;
+        }
+
+        OverlayXAxes[0].MinLimit = -HMax;
+        OverlayXAxes[0].MaxLimit = -HMin;
+        OverlayYAxes[0].MinLimit = -NMax;
+        OverlayYAxes[0].MaxLimit = -NMin;
+    }
+
+    [RelayCommand]
+    private void FitOverlayZoomToReference()
+    {
+        if (ReferenceSpectrum is null || ReferenceSpectrum.Peaklist.Count == 0 || OverlayXAxes.Length == 0)
+        {
+            return;
+        }
+
+        OverlayXAxes[0].MinLimit = -(ReferenceSpectrum.Peaklist.Max(p => p.F2) + 0.5);
+        OverlayXAxes[0].MaxLimit = -(ReferenceSpectrum.Peaklist.Min(p => p.F2) - 0.5);
+        OverlayYAxes[0].MinLimit = -(ReferenceSpectrum.Peaklist.Max(p => p.F1) + 3);
+        OverlayYAxes[0].MaxLimit = -(ReferenceSpectrum.Peaklist.Min(p => p.F1) - 3);
     }
 }
