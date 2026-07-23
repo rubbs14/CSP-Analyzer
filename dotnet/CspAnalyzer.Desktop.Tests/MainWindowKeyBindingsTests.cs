@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Headless;
@@ -40,18 +42,48 @@ public class MainWindowKeyBindingsTests
     // CancelRun's only real effect (_runCts?.Cancel()) isn't observable
     // through public state without a live subprocess (RunAsync returns
     // before creating _runCts when no python env is found, which is always
-    // true in this test environment). Verified structurally instead: the
-    // KeyBinding for "T" resolves to the exact same command instance the
-    // ViewModel exposes, which is what makes the real key press wire to
-    // the real command in production.
+    // true in this test environment), and T is now wrapped in
+    // GuardedViewModelCommand like R/N/D/S/A, so it no longer resolves to
+    // the exact vm.CancelRunCommand instance (that structural check is
+    // gone by design - see MainWindow.axaml.cs). Instead, set IsRunning
+    // directly (its setter is public, and CanCancelRun/CanExecute are
+    // evaluated live with no caching to invalidate) and inject a real
+    // CancellationTokenSource into the private _runCts field via
+    // reflection, so a real key press can prove whether CancelRun() -
+    // and therefore _runCts.Cancel() - actually ran.
+    private static void InjectRunCts(MainViewModel vm, CancellationTokenSource cts) =>
+        typeof(MainViewModel)
+            .GetField("_runCts", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .SetValue(vm, cts);
+
     [AvaloniaFact]
-    public void T_IsBoundToCancelRunCommand()
+    public void T_GuardedWhileTextBoxFocused_DoesNotCancelRun()
     {
         (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.IsRunning = true;
+        var cts = new CancellationTokenSource();
+        InjectRunCts(vm, cts);
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
 
-        KeyBinding binding = Assert.Single(window.KeyBindings, kb => kb.Gesture.Key == Key.T && kb.Gesture.KeyModifiers == KeyModifiers.None);
+        window.KeyPressQwerty(PhysicalKey.T, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.T, RawInputModifiers.None);
 
-        Assert.Same(vm.CancelRunCommand, binding.Command);
+        Assert.False(cts.IsCancellationRequested);
+    }
+
+    [AvaloniaFact]
+    public void T_NotFocused_CancelsRun()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.IsRunning = true;
+        var cts = new CancellationTokenSource();
+        InjectRunCts(vm, cts);
+
+        window.KeyPressQwerty(PhysicalKey.T, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.T, RawInputModifiers.None);
+
+        Assert.True(cts.IsCancellationRequested);
     }
 
     [AvaloniaFact]
@@ -148,6 +180,108 @@ public class MainWindowKeyBindingsTests
         window.KeyReleaseQwerty(PhysicalKey.G, RawInputModifiers.None);
 
         Assert.True(textBox.IsFocused);
+    }
+
+    // Arrow keys share the same class of bug the bare letters did: a plain
+    // {Binding NextCommand} KeyBinding intercepts Right before a focused
+    // TextBox's caret-movement handling ever runs (see the comment above
+    // <Window.KeyBindings> in MainWindow.axaml), which breaks ordinary text
+    // editing in every sidebar TextBox whenever a dataset is loaded (the
+    // normal state of the app, since that's what makes NextCommand
+    // CanExecute==true in the first place).
+    [AvaloniaFact]
+    public void Right_GuardedWhileTextBoxFocused_DoesNotAdvance()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new() });
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 2, DsName = "ds", Peaklist = new() });
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.ArrowRight, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.ArrowRight, RawInputModifiers.None);
+
+        Assert.Equal(0, vm.CurrentIndex);
+    }
+
+    [AvaloniaFact]
+    public void Right_NotFocused_AdvancesToNextExperiment()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new() });
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 2, DsName = "ds", Peaklist = new() });
+
+        window.KeyPressQwerty(PhysicalKey.ArrowRight, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.ArrowRight, RawInputModifiers.None);
+
+        Assert.Equal(1, vm.CurrentIndex);
+    }
+
+    // R/D/S/A already had the GuardedViewModelCommand wiring since S11c
+    // Task 4, but only N and G had a dedicated test actually pressing the
+    // key while a TextBox was focused to prove the guard blocks it - these
+    // fill that gap.
+    [AvaloniaFact]
+    public void R_GuardedWhileTextBoxFocused_DoesNotAttemptRun()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.ReferenceSpectrum = new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ref", Peaklist = new() };
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new() });
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.R, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.R, RawInputModifiers.None);
+
+        Assert.Equal("", vm.RunStatusText);
+    }
+
+    [AvaloniaFact]
+    public void D_GuardedWhileTextBoxFocused_DoesNotResetManualStatus()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum
+        {
+            ExpNumber = 1,
+            DsName = "ds",
+            Peaklist = new(),
+            UserSelection = "ACTIVE (MAN)",
+        });
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.D, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.D, RawInputModifiers.None);
+
+        Assert.Equal("ACTIVE (MAN)", vm.DatasetSpectra[0].UserSelection);
+    }
+
+    [AvaloniaFact]
+    public void S_GuardedWhileTextBoxFocused_DoesNotMarkInactive()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new() });
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.S, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.S, RawInputModifiers.None);
+
+        Assert.Equal("Not set", vm.DatasetSpectra[0].UserSelection);
+    }
+
+    [AvaloniaFact]
+    public void A_GuardedWhileTextBoxFocused_DoesNotMarkActive()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.DatasetSpectra.Add(new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ds", Peaklist = new() });
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.A, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.A, RawInputModifiers.None);
+
+        Assert.Equal("Not set", vm.DatasetSpectra[0].UserSelection);
     }
 
     [AvaloniaFact]

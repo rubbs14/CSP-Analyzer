@@ -39,6 +39,11 @@ public partial class MainWindow : Window
         KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.D), Command = GuardedViewModelCommand(vm => vm.ResetManualStatusCommand) });
         KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.S), Command = GuardedViewModelCommand(vm => vm.MarkInactiveCommand) });
         KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.A), Command = GuardedViewModelCommand(vm => vm.MarkActiveCommand) });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.T), Command = GuardedViewModelCommand(vm => vm.CancelRunCommand) });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.Right), Command = GuardedViewModelCommand(vm => vm.NextCommand) });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.Left), Command = GuardedViewModelCommand(vm => vm.PreviousCommand) });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.Down), Command = GuardedViewModelCommand(vm => vm.LastCommand) });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.Up), Command = GuardedViewModelCommand(vm => vm.FirstCommand) });
 
         this.FindControl<CartesianChart>("PeakDiffChart")!.ChartPointPointerDown += OnChartPointClicked;
         this.FindControl<CartesianChart>("ProbabilityChart")!.ChartPointPointerDown += OnChartPointClicked;

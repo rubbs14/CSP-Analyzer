@@ -49,15 +49,10 @@
 
     <Window.KeyBindings>
         <KeyBinding Gesture="Ctrl+K" Command="{Binding OpenShortcutsWindowCommand}" />
-        <KeyBinding Gesture="Right" Command="{Binding NextCommand}" />
-        <KeyBinding Gesture="Left" Command="{Binding PreviousCommand}" />
-        <KeyBinding Gesture="Down" Command="{Binding LastCommand}" />
-        <KeyBinding Gesture="Up" Command="{Binding FirstCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+R" Command="{Binding ShowReferencePpDetailsCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+E" Command="{Binding ShowExperimentPpDetailsCommand}" />
         <KeyBinding Gesture="Ctrl+C" Command="{Binding ResetOverlayZoomCommand}" />
         <KeyBinding Gesture="Ctrl+X" Command="{Binding FitOverlayZoomToReferenceCommand}" />
-        <KeyBinding Gesture="T" Command="{Binding CancelRunCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+I" Command="{Binding ResetImportControlsCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+T" Command="{Binding ResetPeakFilteringCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+O" Command="{Binding ResetAllImportAndThresholdControlsCommand}" />
@@ -74,22 +69,21 @@
       confirmed empirically, not assumed. Setting Command directly on a
       code-constructed KeyBinding sidesteps the binding system entirely.
 
-    - R, N, D, S, A: these bare single-letter gestures collide with
-      normal text entry (e.g. typing "active" into GoToExperimentText
-      types a bare "a"). A plain {Binding XCommand} KeyBinding intercepts
-      the key on KeyDown *before* the focused TextBox ever gets to insert
-      the character (confirmed empirically via KeyboardDevice.
-      ProcessRawEvent: KeyBindings are matched by walking up from the
-      focused element before the routed KeyDown event is even raised, so
-      TextBox's own handling never runs once a binding's command reports
-      CanExecute==true). Wrapping each in a command whose CanExecute
-      additionally requires "no TextBox is currently focused" leaves
-      CanExecute false while typing, so the KeyBinding doesn't set
-      Handled and the key falls through to the focused TextBox normally.
-      T (CancelRunCommand) is deliberately left as a direct, unwrapped
-      {Binding} above and NOT given this treatment, since a test
-      elsewhere asserts the "T" KeyBinding's Command is reference-equal
-      to the ViewModel's CancelRunCommand instance.
+    - R, N, D, S, A, T, and the arrow keys (Right/Left/Down/Up): these
+      bare-key gestures collide with normal text entry and caret
+      movement (e.g. typing "active" into GoToExperimentText types a
+      bare "a"; pressing Right to move the caret in any focused
+      TextBox). A plain {Binding XCommand} KeyBinding intercepts the key
+      on KeyDown *before* the focused TextBox ever gets to insert the
+      character or move the caret (confirmed empirically via
+      KeyboardDevice.ProcessRawEvent: KeyBindings are matched by walking
+      up from the focused element before the routed KeyDown event is
+      even raised, so TextBox's own handling never runs once a binding's
+      command reports CanExecute==true). Wrapping each in a command whose
+      CanExecute additionally requires "no TextBox is currently focused"
+      leaves CanExecute false while typing/editing, so the KeyBinding
+      doesn't set Handled and the key falls through to the focused
+      TextBox normally.
     -->
 
     <!-- Outer: fixed-width sidebar (Form1's tableLayoutPanel1, ~204px) + fill content (tableLayoutPanel2) -->
