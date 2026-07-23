@@ -168,8 +168,50 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
   unconditionally overwrites it with `ComputeAutoProbabilityThreshold()`
   on every run anyway. Flagged in final review as a Minor, non-blocking
   design wart, not fixed this session.
-- [ ] **S11c** — Secondary windows: Help, Shortcuts (ported from
-  `CSPv2/FormHelp`/`FormShortcuts`).
+- [x] **S11c** — Real keyboard shortcuts + Shortcuts reference window + About
+  window. Expanded from SESSIONS.md's original "port FormHelp/FormShortcuts as
+  a static reference" wording per brainstorming: real `Window.KeyBindings` now
+  wire ~20 legacy shortcuts to pre-existing `MainViewModel`/`ResultsViewModel`
+  commands on both `MainWindow` and `ResultsWindow` (not just documented).
+  Legacy shortcuts with no real command in the port (about a third of the
+  original set) are listed in the new `ShortcutsWindow` as "(not yet
+  implemented)" rather than silently dropped or wired to a no-op. New
+  `IAboutWindowService`/`IShortcutsWindowService` (+ `Avalonia*`/`Null*`
+  implementations) follow the established `IConfirmDialogService`/
+  `IResultsWindowService` single-method-interface pattern, injected into
+  `MainViewModel`'s constructor (3→5 params). New composite
+  `ResetAllImportAndThresholdControlsCommand`. Help window + its TopSpin
+  command generator deferred to S11d (out of scope this session).
+
+  A `GuardedViewModelCommand` mechanism (not in the original plan - discovered
+  necessary during implementation and added via review-driven fixes) ANDs
+  every bare-letter/arrow-key/Ctrl+C/Ctrl+X binding's `CanExecute` with "no
+  `TextBox` is currently focused," so normal text editing (typing, arrow-key
+  caret movement, copy/cut) in any sidebar textbox isn't hijacked by a
+  shortcut. Two real bugs of this class were caught and fixed via per-task
+  review before merge: `T` (could cancel a running analysis by typing "t" into
+  a focused textbox) and the four arrow keys (broke caret movement) in the
+  first review round; `Ctrl+C`/`Ctrl+X` (hijacked standard copy/cut) in a
+  second round. A tautological test for `ResultsWindow`'s `R`→`RefreshCommand`
+  binding (asserted a value invariant under the test fixture regardless of
+  whether the binding fired) was also caught and replaced with a real
+  `CollectionChanged`-observing assertion. Executed as 5 TDD tasks via
+  subagent-driven-development; Tasks 1-3 clean on first review, Tasks 4-5 each
+  needed one extra review-and-fix round for the bugs above, plus a final
+  whole-branch review (opus) that caught one more gap (missing explicit guard
+  test for `G`, one of the letters the plan's global constraints enumerate) -
+  fixed before merge. 106 tests total (up from 76 at session start). See
+  `docs/superpowers/specs/2026-07-23-sub-project-3-s11c-keyboard-shortcuts-design.md`
+  and `docs/superpowers/plans/2026-07-23-s11c-keyboard-shortcuts.md`.
+
+  **Known limitations, non-blocking**: `Ctrl+Alt+*` combos are unguarded (no
+  practical collision - none of this app's text fields need the special
+  characters AltGr+letter produces on some keyboard layouts); a few gestures
+  (`Ctrl+E`/`Ctrl+P` on ResultsWindow, `Ctrl+Alt+R`/`Ctrl+Alt+E` on MainWindow)
+  are validated only indirectly (same command already bound to a button in the
+  same view) rather than by a dedicated key-press test.
+- [ ] **S11d** — Help window + TopSpin command generator (ported from
+  `CSPv2/FormHelp`). Split out of S11c's original scope during brainstorming.
 - [ ] **S12** — Polish, cross-platform smoke test (Linux + Windows), fix platform gaps.
 
 ## Sub-project 6 — CI / packaging
