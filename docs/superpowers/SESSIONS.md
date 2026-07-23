@@ -140,8 +140,34 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
   conda-path probing covers Windows/Linux/macOS (miniforge3/miniconda3/
   anaconda3), replacing the single hardcoded Linux path. See
   `docs/superpowers/specs/2026-07-23-sub-project-3-s11-cross-platform-python-discovery-design.md`.
-- [ ] **S11b** — Settings persistence (incl. S10b's Appearance theme/color
-  choices, currently in-memory only).
+- [x] **S11b** — Settings persistence: `AppSettings` POCO + `SettingsService`
+  (plain `System.Text.Json`, `SpecialFolder.ApplicationData/CspAnalyzer/
+  settings.json`, following S11's cross-platform `SpecialFolder` idiom;
+  missing/corrupt file silently falls back to defaults - no logging
+  framework exists in this codebase to log the failure to). Covers S10b's
+  Appearance theme/background-color choices (previously code-behind-only,
+  reset every launch), the six import-filter thresholds (`NMin`/`NMax`/
+  `HMin`/`HMax`/both intensity thresholds), `ManualProbabilityThreshold`,
+  a new `BinsPerArrayDimension` override (previously always hardcoded
+  `null`), and window size/position/maximized state - expanded from
+  SESSIONS.md's original Appearance-only wording per brainstorming.
+  `MainViewModel.ApplySettings`/`CurrentSettings` and `MainWindow.
+  ApplyAppearanceSettings`/`PopulateAppearanceSettings` merge into one
+  `AppSettings` instance; `App.axaml.cs` loads+applies at startup, saves
+  once on the window's `Closing` event (no per-change writes).
+  `ResetImportControls`/`ResetPeakFiltering` still reset to their original
+  hardcoded literals regardless of loaded settings. 17 new tests across 4
+  TDD tasks, each independently task-reviewed clean, plus a final
+  whole-branch review (verdict: ready to merge). See
+  `docs/superpowers/specs/2026-07-23-sub-project-3-s11b-settings-persistence-design.md`
+  and `docs/superpowers/plans/2026-07-23-s11b-settings-persistence.md`.
+
+  **Known limitation**: persisting `ManualProbabilityThreshold` is a no-op
+  in practice - the ViewModel field is a non-nullable `double` (default
+  0.5), so the persisted value is never actually `null`, and `RunAsync`
+  unconditionally overwrites it with `ComputeAutoProbabilityThreshold()`
+  on every run anyway. Flagged in final review as a Minor, non-blocking
+  design wart, not fixed this session.
 - [ ] **S11c** — Secondary windows: Help, Shortcuts (ported from
   `CSPv2/FormHelp`/`FormShortcuts`).
 - [ ] **S12** — Polish, cross-platform smoke test (Linux + Windows), fix platform gaps.
