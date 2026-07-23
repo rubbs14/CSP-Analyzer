@@ -22,6 +22,22 @@
         <conv:AutoAnalysisRowBrushConverter x:Key="AutoAnalysisRowBrushConverter" />
     </Window.Resources>
 
+    <!--
+    Ctrl+Q/CloseCommand is intentionally NOT bound here via
+    RelativeSource={RelativeSource Self}: KeyBinding is not part of the
+    visual tree, so a Self-relative binding on KeyBinding.Command resolves
+    to null at runtime (confirmed in MainWindow's equivalent work - see
+    MainWindow.axaml.cs). It's added programmatically in
+    ResultsWindow.axaml.cs's constructor instead. This window has no
+    TextBox controls, so the bare "R" gesture needs no focused-TextBox
+    guard (compare MainWindow.axaml.cs's GuardedViewModelCommand).
+    -->
+    <Window.KeyBindings>
+        <KeyBinding Gesture="Ctrl+E" Command="{Binding ExportXlsxCommand}" />
+        <KeyBinding Gesture="Ctrl+P" Command="{Binding ExportPdfCommand}" />
+        <KeyBinding Gesture="R" Command="{Binding RefreshCommand}" />
+    </Window.KeyBindings>
+
     <Grid RowDefinitions="Auto,*">
 
         <Grid Grid.Row="0" ColumnDefinitions="*,*,*,Auto" Height="220" Margin="4">
