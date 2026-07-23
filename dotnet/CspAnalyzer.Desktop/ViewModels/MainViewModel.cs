@@ -191,6 +191,9 @@ public partial class MainViewModel : ViewModelBase
             ? $"Dataset Loaded ({found} experiments)"
             : "No experiments were found in this folder.";
         RunCommand.NotifyCanExecuteChanged();
+
+        BuildPeakDiffChart();
+        RaiseNavigationChanged();
     }
 
     private bool CanRun() => IsReferenceLoaded && DatasetSpectra.Count > 0 && !IsRunning;
