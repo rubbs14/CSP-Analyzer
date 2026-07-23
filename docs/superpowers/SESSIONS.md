@@ -62,12 +62,32 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
   / current-experiment+goto / player buttons+export-reset) - no bindings or
   real charts yet, that's S8-S10. Builds clean and confirmed running (real
   window, screenshotted) on this Linux box.
-- [ ] **S8** — Dataset loading: port peaklist(xml)→json pipeline from Form1 C# into
-  the new project (MVVM). Unit-test the transform.
-- [ ] **S9** — Run flow: invoke python backend via the S6 contract, progress
-  reporting, cancel, parse `processed_spectra.json`.
+- [x] **S8** — Dataset loading: ported peaklist(xml)→json pipeline from Form1 C#
+  (`SPECTRUM.Read_spectrum`) into `dotnet/BackendInterop` (`Peak`,
+  `PeaklistSpectrum`, `PeaklistPathInfo`, `PeaklistXmlParser`,
+  `PeaklistImporter`) - JSON property names mirror backend/io.py's
+  `json_parser` exactly. TDD, 13 new xunit tests. Wired minimal MVVM in
+  `CspAnalyzer.Desktop`: `MainViewModel`'s `LoadReferenceCommand`/
+  `LoadDatasetCommand` over a new `IFilePickerService` (Avalonia
+  `IStorageProvider` wrapper, replacing WinForms' Open/FolderBrowserDialog),
+  bound into `MainWindow.axaml`'s S7 placeholder regions (import
+  range/threshold textboxes, reference/dataset status, Analysis Info stats).
+  Confirmed by actually running the app and clicking through Load
+  Reference/Load Dataset against the real local `CSPv2/Demo-dataset` (83 ref
+  peaks, 64 experiments loaded correctly).
+- [x] **S9** — Run flow: `BackendCliRunner.RunAsync` (cancellation-aware,
+  kills the process tree) + `BackendEnvironment` (repo-root/model-dir/python
+  discovery, S11-provisional) in `dotnet/BackendInterop`. `MainViewModel`
+  gained `RunCommand`/`CancelRunCommand`: serializes loaded reference+dataset
+  spectra to a temp JSON, shells out, parses `processed_spectra.json` into
+  `RunResults`. `MainWindow.axaml`'s "Run CSP (S9)" placeholder is now a real
+  button + Cancel + indeterminate progress bar (backend has no incremental
+  progress protocol, so no percentage). Verified end-to-end against the real
+  local `CSPv2/Demo-dataset` + real model artifacts via a throwaway
+  ViewModel harness (64 experiments classified; mid-run cancel confirmed).
 - [ ] **S10** — Results view: tables + charts (replace LiveCharts/WinForms with an
-  Avalonia charting approach). Port FormOutputTable.
+  Avalonia charting approach). Port FormOutputTable. `MainViewModel.RunResults`
+  (populated by S9) is ready to bind.
 - [ ] **S11** — Secondary windows (Help, Shortcuts), settings, python/env path
   handling done cross-platform.
 - [ ] **S12** — Polish, cross-platform smoke test (Linux + Windows), fix platform gaps.

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Xunit;
 
 namespace CspAnalyzer.BackendInterop.Tests;
@@ -60,5 +61,63 @@ public class BackendCliRunnerIntegrationTests
         Assert.Equal(1, result.ExitCode);
         Assert.StartsWith("Error: ", result.StdErr);
         Assert.Null(result.OutputPath);
+    }
+
+    [Fact]
+    public async Task RunAsync_against_real_backend_returns_success_exit_code_and_parseable_output()
+    {
+        var python = RepoPaths.CspModernPythonExecutable;
+        if (python is null)
+        {
+            return;
+        }
+
+        var jsonIn = Path.Combine(AppContext.BaseDirectory, "Fixtures", "demo.json");
+        var outDir = Directory.CreateTempSubdirectory("backend_interop_async_test_").FullName;
+
+        var result = await BackendCliRunner.RunAsync(
+            python,
+            jsonIn,
+            outDir,
+            RepoPaths.RealModelArtifactsDir,
+            RepoPaths.RepoRoot,
+            DemoBins,
+            CancellationToken.None);
+
+        Assert.True(result.IsSuccess, $"exit={result.ExitCode}, stderr={result.StdErr}");
+        Assert.NotNull(result.OutputPath);
+        Assert.True(File.Exists(result.OutputPath));
+
+        var parsed = SpectrumResult.ParseArray(File.ReadAllText(result.OutputPath!));
+        Assert.NotEmpty(parsed);
+    }
+
+    [Fact]
+    public async Task RunAsync_cancelled_before_completion_throws_and_stops_quickly()
+    {
+        var python = RepoPaths.CspModernPythonExecutable;
+        if (python is null)
+        {
+            return;
+        }
+
+        var jsonIn = Path.Combine(AppContext.BaseDirectory, "Fixtures", "demo.json");
+        var outDir = Directory.CreateTempSubdirectory("backend_interop_cancel_test_").FullName;
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        var sw = Stopwatch.StartNew();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            BackendCliRunner.RunAsync(
+                python,
+                jsonIn,
+                outDir,
+                RepoPaths.RealModelArtifactsDir,
+                RepoPaths.RepoRoot,
+                DemoBins,
+                cts.Token));
+        sw.Stop();
+
+        Assert.True(sw.Elapsed < TimeSpan.FromSeconds(5), $"cancellation took too long: {sw.Elapsed}");
     }
 }

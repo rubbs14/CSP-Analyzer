@@ -42,6 +42,72 @@ public static class BackendCliRunner
         string workingDirectory,
         int? binsPerArrayDimension = null)
     {
+        using var process = new Process { StartInfo = BuildStartInfo(pythonExecutable, jsonIn, outDir, modelDir, workingDirectory, binsPerArrayDimension) };
+        process.Start();
+
+        // Read both streams before WaitForExit to avoid deadlock if either
+        // pipe's buffer fills.
+        string stdOut = process.StandardOutput.ReadToEnd();
+        string stdErr = process.StandardError.ReadToEnd();
+        process.WaitForExit();
+
+        return new BackendRunResult(process.ExitCode, stdOut, stdErr);
+    }
+
+    /// <summary>
+    /// Async, cancellable counterpart of <see cref="Run"/> for S9's run
+    /// flow (UI stays responsive, Cancel button kills the subprocess).
+    /// Cancelling <paramref name="cancellationToken"/> kills the whole
+    /// process tree (python may have spawned worker processes) and the
+    /// call throws <see cref="OperationCanceledException"/> - it never
+    /// returns a "cancelled" result value.
+    /// </summary>
+    public static async Task<BackendRunResult> RunAsync(
+        string pythonExecutable,
+        string jsonIn,
+        string? outDir,
+        string modelDir,
+        string workingDirectory,
+        int? binsPerArrayDimension,
+        CancellationToken cancellationToken)
+    {
+        using var process = new Process { StartInfo = BuildStartInfo(pythonExecutable, jsonIn, outDir, modelDir, workingDirectory, binsPerArrayDimension) };
+
+        using var killOnCancel = cancellationToken.Register(() =>
+        {
+            try
+            {
+                if (!process.HasExited)
+                {
+                    process.Kill(entireProcessTree: true);
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                // Process already exited between HasExited check and Kill - fine, nothing to do.
+            }
+        });
+
+        process.Start();
+
+        Task<string> stdOutTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
+        Task<string> stdErrTask = process.StandardError.ReadToEndAsync(cancellationToken);
+
+        await process.WaitForExitAsync(cancellationToken);
+        string stdOut = await stdOutTask;
+        string stdErr = await stdErrTask;
+
+        return new BackendRunResult(process.ExitCode, stdOut, stdErr);
+    }
+
+    private static ProcessStartInfo BuildStartInfo(
+        string pythonExecutable,
+        string jsonIn,
+        string? outDir,
+        string modelDir,
+        string workingDirectory,
+        int? binsPerArrayDimension)
+    {
         var startInfo = new ProcessStartInfo
         {
             FileName = pythonExecutable,
@@ -70,15 +136,6 @@ public static class BackendCliRunner
             startInfo.ArgumentList.Add(bins.ToString());
         }
 
-        using var process = new Process { StartInfo = startInfo };
-        process.Start();
-
-        // Read both streams before WaitForExit to avoid deadlock if either
-        // pipe's buffer fills.
-        string stdOut = process.StandardOutput.ReadToEnd();
-        string stdErr = process.StandardError.ReadToEnd();
-        process.WaitForExit();
-
-        return new BackendRunResult(process.ExitCode, stdOut, stdErr);
+        return startInfo;
     }
 }

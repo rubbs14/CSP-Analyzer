@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using CspAnalyzer.Desktop.Services;
 using CspAnalyzer.Desktop.ViewModels;
 using CspAnalyzer.Desktop.Views;
 
@@ -17,10 +18,9 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainViewModel(),
-            };
+            var window = new MainWindow();
+            window.DataContext = new MainViewModel(new AvaloniaFilePickerService(window));
+            desktop.MainWindow = window;
         }
 
         base.OnFrameworkInitializationCompleted();

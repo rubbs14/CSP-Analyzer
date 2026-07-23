@@ -11,11 +11,13 @@
         Width="1400" Height="820" MinWidth="1000" MinHeight="650">
 
     <!--
-    Layout shell only (S7) - empty placeholder regions mirroring
-    CSPv2/Form1.Designer.cs's panel layout (see the S7 wireframe survey in
-    docs/superpowers/SESSIONS.md history / session memory). No bindings or
-    real charts yet - that's S8 (dataset loading), S9 (run flow), S10
-    (results view/charts).
+    Layout shell from S7 (see the wireframe survey in docs/superpowers/
+    SESSIONS.md history / session memory), with S8's dataset-loading
+    bindings (File I/O buttons, import range/threshold, reference/dataset
+    status) and S9's run flow (Run CSP / Cancel, indeterminate progress bar
+    - the python backend has no incremental progress protocol, so this is
+    a single blocking-call spinner, not a percentage). Charts and the
+    results table are still placeholders - that's S10.
     -->
     <Design.DataContext>
         <vm:MainViewModel />
@@ -50,23 +52,42 @@
             <Border Grid.Row="0" Classes="section">
                 <StackPanel>
                     <TextBlock Classes="sectionHeader" Text="File I/O" />
-                    <Button Content="Load Reference" HorizontalAlignment="Stretch" Margin="0,2" />
-                    <Button Content="Load Dataset" HorizontalAlignment="Stretch" Margin="0,2" />
+                    <Button Content="Load Reference" Command="{Binding LoadReferenceCommand}" HorizontalAlignment="Stretch" Margin="0,2" />
+                    <Button Content="Load Dataset" Command="{Binding LoadDatasetCommand}" IsEnabled="{Binding IsReferenceLoaded}" HorizontalAlignment="Stretch" Margin="0,2" />
                 </StackPanel>
             </Border>
 
             <Border Grid.Row="1" Classes="section">
-                <StackPanel>
+                <StackPanel Spacing="2">
                     <TextBlock Classes="sectionHeader" Text="Import Controls / Run" />
-                    <TextBlock Classes="placeholder" Text="15N/1H range, intensity thresholds, dataset stats, Run CSP (S8/S9)" TextWrapping="Wrap" />
-                    <Button Content="Run CSP" HorizontalAlignment="Stretch" Margin="0,8,0,0" />
+                    <Grid ColumnDefinitions="30,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="NMin" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding NMin}" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="NMax" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding NMax}" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="HMin" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding HMin}" />
+                        <TextBlock Grid.Row="3" Grid.Column="0" Text="HMax" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding HMax}" />
+                        <TextBlock Grid.Row="4" Grid.Column="0" Text="RefI" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding ReferenceIntensityThreshold}" />
+                        <TextBlock Grid.Row="5" Grid.Column="0" Text="DSI" VerticalAlignment="Center" />
+                        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding DatasetIntensityThreshold}" />
+                    </Grid>
+                    <TextBlock Text="{Binding TotalSubfoldersFound, StringFormat='Subfolders scanned: {0}'}" FontSize="11" />
+                    <TextBlock Text="{Binding PeaklistFilesFoundCount, StringFormat='Peaklist files found: {0}'}" FontSize="11" />
+                    <Button Content="Run CSP" Command="{Binding RunCommand}" HorizontalAlignment="Stretch" Margin="0,8,0,0" />
+                    <Button Content="Cancel" Command="{Binding CancelRunCommand}" HorizontalAlignment="Stretch" Margin="0,2" />
                 </StackPanel>
             </Border>
 
             <Border Grid.Row="2" Classes="section">
                 <StackPanel>
                     <TextBlock Classes="sectionHeader" Text="Run Info" />
-                    <TextBlock Classes="placeholder" Text="Status / progress bar (S9)" />
+                    <TextBlock Text="{Binding ReferenceStatusText}" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding DatasetStatusText}" TextWrapping="Wrap" />
+                    <ProgressBar IsIndeterminate="{Binding IsRunning}" IsVisible="{Binding IsRunning}" Height="6" Margin="0,4" />
+                    <TextBlock Text="{Binding RunStatusText}" TextWrapping="Wrap" FontSize="11" />
                 </StackPanel>
             </Border>
 
@@ -114,7 +135,12 @@
                     <Border Grid.Column="0" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Analysis Info" />
-                            <TextBlock Classes="placeholder" Text="Reference / dataset stats (S8)" TextWrapping="Wrap" />
+                            <StackPanel Spacing="1">
+                                <TextBlock Text="{Binding ReferencePeakCount, StringFormat='Ref peaks: {0}'}" FontSize="11" />
+                                <TextBlock Text="{Binding ReferenceMinIntensity, StringFormat='Ref min int: {0:F0}'}" FontSize="11" />
+                                <TextBlock Text="{Binding ReferenceMaxIntensity, StringFormat='Ref max int: {0:F0}'}" FontSize="11" />
+                                <TextBlock Text="{Binding DatasetSpectra.Count, StringFormat='Experiments loaded: {0}'}" FontSize="11" />
+                            </StackPanel>
                         </DockPanel>
                     </Border>
                     <Border Grid.Column="1" Classes="section">

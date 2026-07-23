@@ -22,4 +22,8 @@
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BackendInterop\BackendInterop.csproj" />
+  </ItemGroup>
 </Project>
