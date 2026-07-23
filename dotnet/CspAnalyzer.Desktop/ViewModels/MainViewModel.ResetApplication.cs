@@ -53,8 +53,10 @@ public partial class MainViewModel
         DatasetAveragePeakCount = 0;
         DatasetAverageMinIntensity = 0;
         DatasetAverageMaxIntensity = 0;
+        RebuildManualResults();
 
         RunResults.Clear();
+        _runCts?.Cancel();
         IsRunning = false;
         RunCompletedSuccessfully = false;
         RunStatusText = "";
@@ -94,6 +96,7 @@ public partial class MainViewModel
         RaiseNavigationChanged();
 
         RunCommand.NotifyCanExecuteChanged();
+        CancelRunCommand.NotifyCanExecuteChanged();
         OpenResultsWindowCommand.NotifyCanExecuteChanged();
         ToggleAutoActivesFilterCommand.NotifyCanExecuteChanged();
         ToggleAutoInactivesFilterCommand.NotifyCanExecuteChanged();

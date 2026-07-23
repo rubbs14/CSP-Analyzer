@@ -84,4 +84,43 @@ public class MainViewModelResetApplicationTests
         Assert.False(vm.RunCommand.CanExecute(null));
         Assert.False(vm.OpenResultsWindowCommand.CanExecute(null));
     }
+
+    [Fact]
+    public async Task ResetApplicationCommand_confirmed_resets_manual_flag_counts_and_series()
+    {
+        string settingsPath = Path.Combine(Directory.CreateTempSubdirectory("csp_reset_test_").FullName, "settings.json");
+        var settingsService = new SettingsService(settingsPath);
+
+        var vm = MakeFullyLoadedViewModel(new NullConfirmDialogService(), settingsService);
+        vm.RebuildManualResults();
+
+        Assert.Equal(1, vm.ActivesManualCount);
+
+        await ((IAsyncRelayCommand)vm.ResetApplicationCommand).ExecuteAsync(null);
+
+        Assert.Equal(0, vm.ActivesManualCount);
+        Assert.Equal(0, vm.InactivesManualCount);
+        Assert.Equal(0, vm.NotSetManualCount);
+        Assert.Equal(3, vm.ManualResultsSeries.Length);
+        Assert.All(vm.ManualResultsSeries, series =>
+        {
+            var values = Assert.IsType<int[]>(((LiveChartsCore.SkiaSharpView.ColumnSeries<int>)series).Values);
+            Assert.Equal(new[] { 0 }, values);
+        });
+    }
+
+    [Fact]
+    public async Task ResetApplicationCommand_confirmed_cancels_in_flight_run()
+    {
+        string settingsPath = Path.Combine(Directory.CreateTempSubdirectory("csp_reset_test_").FullName, "settings.json");
+        var settingsService = new SettingsService(settingsPath);
+
+        var vm = MakeFullyLoadedViewModel(new NullConfirmDialogService(), settingsService);
+        vm.IsRunning = true;
+
+        await ((IAsyncRelayCommand)vm.ResetApplicationCommand).ExecuteAsync(null);
+
+        Assert.False(vm.IsRunning);
+        Assert.False(vm.CancelRunCommand.CanExecute(null));
+    }
 }
