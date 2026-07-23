@@ -60,4 +60,128 @@ public class MainViewModelNavigationTests
 
         Assert.Equal(new[] { 9, 10 }, vm.DatasetSpectra.Select(s => s.ExpNumber));
     }
+
+    private static PeaklistSpectrum MakeSpectrum(int expNumber) => new()
+    {
+        ExpNumber = expNumber,
+        DsName = "ds",
+        TotReadPeaks = 10 + expNumber,
+        Peaklist = { new Peak { Number = 1, F1 = 120, F2 = 8, Intensity = 9000 } },
+    };
+
+    private static MainViewModel MakeViewModelWithDataset(int refTotReadPeaks, params int[] expNumbers)
+    {
+        var vm = new MainViewModel();
+        vm.ReferenceSpectrum = new PeaklistSpectrum { ExpNumber = 1, DsName = "ref", TotReadPeaks = refTotReadPeaks };
+        foreach (int exp in expNumbers)
+        {
+            vm.DatasetSpectra.Add(MakeSpectrum(exp));
+        }
+        vm.RaiseNavigationChanged();
+        return vm;
+    }
+
+    [Fact]
+    public void CurrentView_defaults_to_the_full_dataset_when_no_filter_is_set()
+    {
+        MainViewModel vm = MakeViewModelWithDataset(80, 101, 102, 103);
+
+        Assert.Equal(3, vm.CurrentView.Count);
+        Assert.Equal(101, vm.CurrentSpectrum!.ExpNumber);
+        Assert.Equal("1 / 3", vm.CurrentCounterText);
+    }
+
+    [Fact]
+    public void CurrentView_filters_to_actives_only_using_RunResults_IsActive()
+    {
+        MainViewModel vm = MakeViewModelWithDataset(80, 101, 102, 103);
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 101, IsActive = true });
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 102, IsActive = false });
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 103, IsActive = true });
+        vm.RaiseNavigationChanged();
+
+        vm.IsActivesFilterChecked = true;
+
+        Assert.Equal(2, vm.CurrentView.Count);
+        Assert.All(vm.CurrentView, s => Assert.True(s.ExpNumber is 101 or 103));
+    }
+
+    [Fact]
+    public void Checking_Inactives_filter_unchecks_Actives_filter()
+    {
+        MainViewModel vm = MakeViewModelWithDataset(80, 101);
+
+        vm.IsActivesFilterChecked = true;
+        vm.IsInactivesFilterChecked = true;
+
+        Assert.False(vm.IsActivesFilterChecked);
+        Assert.True(vm.IsInactivesFilterChecked);
+    }
+
+    [Fact]
+    public void CurrentPeakDifference_is_TotReadPeaks_minus_reference()
+    {
+        MainViewModel vm = MakeViewModelWithDataset(80, 101);
+
+        Assert.Equal(vm.DatasetSpectra[0].TotReadPeaks - 80, vm.CurrentPeakDifference);
+    }
+
+    [Fact]
+    public void First_and_Previous_are_disabled_at_index_zero()
+    {
+        MainViewModel vm = MakeViewModelWithDataset(80, 101, 102);
+
+        Assert.False(vm.FirstCommand.CanExecute(null));
+        Assert.False(vm.PreviousCommand.CanExecute(null));
+        Assert.True(vm.NextCommand.CanExecute(null));
+        Assert.True(vm.LastCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public void Next_and_Last_are_disabled_at_the_final_index()
+    {
+        MainViewModel vm = MakeViewModelWithDataset(80, 101, 102);
+
+        vm.LastCommand.Execute(null);
+
+        Assert.False(vm.NextCommand.CanExecute(null));
+        Assert.False(vm.LastCommand.CanExecute(null));
+        Assert.True(vm.PreviousCommand.CanExecute(null));
+        Assert.Equal(102, vm.CurrentSpectrum!.ExpNumber);
+    }
+
+    [Fact]
+    public void All_nav_commands_are_disabled_with_a_single_experiment()
+    {
+        MainViewModel vm = MakeViewModelWithDataset(80, 101);
+
+        Assert.False(vm.FirstCommand.CanExecute(null));
+        Assert.False(vm.PreviousCommand.CanExecute(null));
+        Assert.False(vm.NextCommand.CanExecute(null));
+        Assert.False(vm.LastCommand.CanExecute(null));
+    }
+
+    [Fact]
+    public void GoToExperiment_jumps_to_the_matching_experiment()
+    {
+        MainViewModel vm = MakeViewModelWithDataset(80, 101, 102, 103);
+
+        vm.GoToExperimentText = "103";
+        vm.GoToExperimentCommand.Execute(null);
+
+        Assert.Equal(2, vm.CurrentIndex);
+        Assert.Equal("", vm.GoToStatusText);
+    }
+
+    [Fact]
+    public void GoToExperiment_reports_not_found_and_does_not_move()
+    {
+        MainViewModel vm = MakeViewModelWithDataset(80, 101, 102);
+
+        vm.GoToExperimentText = "999";
+        vm.GoToExperimentCommand.Execute(null);
+
+        Assert.Equal(0, vm.CurrentIndex);
+        Assert.Equal("Experiment 999 not found.", vm.GoToStatusText);
+    }
 }
