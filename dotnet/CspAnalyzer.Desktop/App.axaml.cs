@@ -25,7 +25,7 @@ public partial class App : Application
                 new AvaloniaResultsWindowService(window),
                 new AvaloniaConfirmDialogService(window),
                 new AvaloniaAboutWindowService(window),
-                new NullShortcutsWindowService());
+                new AvaloniaShortcutsWindowService(window));
             window.DataContext = viewModel;
 
             var settingsService = new SettingsService();

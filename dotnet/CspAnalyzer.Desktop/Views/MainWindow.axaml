@@ -123,7 +123,7 @@
                     <Button Content="Save MCC Stats" HorizontalAlignment="Stretch" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
                         <Button Content="About" Command="{Binding OpenAboutWindowCommand}" />
-                        <Button Content="Shortcuts" />
+                        <Button Content="Shortcuts" Command="{Binding OpenShortcutsWindowCommand}" />
                         <Button Content="Help" />
                     </StackPanel>
                     <TextBlock Text="Developed by R. Byrne and R. Fino" FontSize="9" FontStyle="Italic"

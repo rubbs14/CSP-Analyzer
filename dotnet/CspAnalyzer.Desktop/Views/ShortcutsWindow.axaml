@@ -1,0 +1,114 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CspAnalyzer.Desktop.Views.ShortcutsWindow"
+        Title="Keyboard Shortcuts"
+        Width="520" Height="640"
+        WindowStartupLocation="CenterOwner">
+    <ScrollViewer>
+        <StackPanel Margin="16" Spacing="10">
+            <TextBlock Text="Keyboard Shortcuts" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,8" />
+
+            <TextBlock Text="Loading Data/Processing" FontWeight="SemiBold" />
+            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="R" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Run CSP Analysis" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+K" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Show Keyboard Shortcut Window" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Enter, H, I" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Load Reference/Dataset, Show Help Guide, Show Information Window (not yet implemented)" TextWrapping="Wrap" />
+            </Grid>
+
+            <TextBlock Text="Player" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Right" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Next Spectrum" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Left" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Previous Spectrum" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Down" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Last Spectrum" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Up" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="First Spectrum" />
+            </Grid>
+
+            <TextBlock Text="Reference/Dataset info" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Ctrl+Alt+R" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Show Reference PP info" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+Alt+E" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Show Current Exp. PP info" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Ctrl+Alt+O" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Show Out-of-Import Range Exp. (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Ctrl+Alt+F" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="Show Corrupted Peaklist Exp. (not yet implemented)" TextWrapping="Wrap" />
+            </Grid>
+
+            <TextBlock Text="Spectra Overlay" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Ctrl+I" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Show Auto Inactives (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+A" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Show Auto Actives (not yet implemented)" TextWrapping="Wrap" />
+            </Grid>
+
+            <TextBlock Text="Zoom/Import Control" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Ctrl+C" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Reset Zoom Bar charts" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+X" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Fit Zoom to Reference" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Ctrl+Y" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Reset Zoom to Import limits (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Ctrl+Alt+Space" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="Reset Zoom for all Graphs (not yet implemented)" TextWrapping="Wrap" />
+            </Grid>
+
+            <TextBlock Text="Abort/Reset" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="T" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Abort CSP Analysis" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+R" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Reset Application (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Ctrl+Q" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Close Selected Window/Quit" />
+            </Grid>
+
+            <TextBlock Text="Manual Flag Control" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="N" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Reset All Manual Flags" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="D" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Reset Manual Flag" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="S" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Mark as Inactive" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="A" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="Mark as Active" />
+            </Grid>
+
+            <TextBlock Text="Export Data Window (in the Export/Results window)" FontWeight="SemiBold" Margin="0,8,0,0" TextWrapping="Wrap" />
+            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Ctrl+E" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Export To Excel" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+P" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Print (exports PDF)" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="R" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Refresh" />
+            </Grid>
+
+            <TextBlock Text="Import/Threshold controls" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Ctrl+Alt+I" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Reset Import Limits" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+Alt+T" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Reset Intensity Thresholds" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Ctrl+Alt+O" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Reset All Imp.Controls to Default" />
+            </Grid>
+
+            <TextBlock Text="Other" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="G" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Select Go To Experiment Textbox" />
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Window>
