@@ -13,4 +13,6 @@ public interface IFilePickerService
     Task<string?> PickXmlFileAsync(string title);
 
     Task<string?> PickFolderAsync(string title);
+
+    Task<string?> PickSaveFileAsync(string suggestedFileName, string extension);
 }

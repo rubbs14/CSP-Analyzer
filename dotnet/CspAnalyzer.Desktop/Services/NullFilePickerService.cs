@@ -8,4 +8,6 @@ public sealed class NullFilePickerService : IFilePickerService
     public Task<string?> PickXmlFileAsync(string title) => Task.FromResult<string?>(null);
 
     public Task<string?> PickFolderAsync(string title) => Task.FromResult<string?>(null);
+
+    public Task<string?> PickSaveFileAsync(string suggestedFileName, string extension) => Task.FromResult<string?>(null);
 }
