@@ -9,13 +9,15 @@
             <TextBlock Text="Keyboard Shortcuts" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,8" />
 
             <TextBlock Text="Loading Data/Processing" FontWeight="SemiBold" />
-            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto,Auto">
+            <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto,Auto,Auto">
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="R" />
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="Run CSP Analysis" />
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+K" />
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="Show Keyboard Shortcut Window" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Enter, H, I" />
-                <TextBlock Grid.Row="2" Grid.Column="1" Text="Load Reference/Dataset, Show Help Guide, Show Information Window (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="H" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Show Help Guide" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Enter, I" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="Load Reference/Dataset, Show Information Window (not yet implemented)" TextWrapping="Wrap" />
             </Grid>
 
             <TextBlock Text="Player" FontWeight="SemiBold" Margin="0,8,0,0" />
