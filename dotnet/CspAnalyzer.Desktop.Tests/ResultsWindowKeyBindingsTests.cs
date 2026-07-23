@@ -26,16 +26,29 @@ public class ResultsWindowKeyBindingsTests
         return (window, vm);
     }
 
+    // TotalExperiments/ActivesAuto/etc. are [ObservableProperty] ints that
+    // skip their PropertyChanged notification when the new value equals
+    // the old one (CommunityToolkit.Mvvm's generated setter does an
+    // EqualityComparer check) - and Rebuild() is a pure function of fields
+    // that never change in this fixture, so "before vs. after" on those
+    // properties is unchanged regardless of whether R actually fires
+    // RefreshCommand, does nothing, or the KeyBinding is missing entirely.
+    // Rows.Clear()/Add(...), by contrast, are ObservableCollection
+    // mutations that always raise CollectionChanged - even when clearing
+    // an already-empty collection or re-adding identical rows - so
+    // observing a CollectionChanged notification after the key press is a
+    // real proof that Rebuild() (and therefore RefreshCommand) ran.
     [AvaloniaFact]
-    public void R_RefreshesResults()
+    public void R_InvokesRefreshCommand()
     {
         (ResultsWindow window, ResultsViewModel vm) = NewWindow();
-        int countBefore = vm.TotalExperiments;
+        bool rowsRebuilt = false;
+        vm.Rows.CollectionChanged += (_, _) => rowsRebuilt = true;
 
         window.KeyPressQwerty(PhysicalKey.R, RawInputModifiers.None);
         window.KeyReleaseQwerty(PhysicalKey.R, RawInputModifiers.None);
 
-        Assert.Equal(countBefore, vm.TotalExperiments);
+        Assert.True(rowsRebuilt);
     }
 
     [AvaloniaFact]
