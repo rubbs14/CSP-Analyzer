@@ -251,7 +251,7 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanCancelRun))]
     private void CancelRun() => _runCts?.Cancel();
 
-    private bool CanOpenResultsWindow() => RunResults.Count > 0;
+    private bool CanOpenResultsWindow() => RunResults.Count > 0 && ReferenceSpectrum is not null;
 
     [RelayCommand(CanExecute = nameof(CanOpenResultsWindow))]
     private void OpenResultsWindow()
