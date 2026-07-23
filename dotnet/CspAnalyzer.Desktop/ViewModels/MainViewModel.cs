@@ -284,6 +284,19 @@ public partial class MainViewModel : ViewModelBase
         RaiseNavigationChanged();
     }
 
+    [RelayCommand]
+    private async Task LoadReferenceOrDataset()
+    {
+        if (!IsReferenceLoaded)
+        {
+            await LoadReferenceAsync();
+        }
+        else
+        {
+            await LoadDatasetAsync();
+        }
+    }
+
     private bool CanRun() => IsReferenceLoaded && DatasetSpectra.Count > 0 && !IsRunning;
 
     [RelayCommand(CanExecute = nameof(CanRun))]

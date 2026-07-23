@@ -653,4 +653,114 @@ public class MainWindowKeyBindingsTests
 
         Assert.False(vm.IsInactivesFilterChecked);
     }
+
+    private sealed class RecordingFilePickerService : IFilePickerService
+    {
+        public int XmlPickCount;
+        public int FolderPickCount;
+        public Task<string?> PickXmlFileAsync(string title) { XmlPickCount++; return Task.FromResult<string?>(null); }
+        public Task<string?> PickFolderAsync(string title) { FolderPickCount++; return Task.FromResult<string?>(null); }
+        public Task<string?> PickSaveFileAsync(string suggestedFileName, string extension) => Task.FromResult<string?>(null);
+    }
+
+    private sealed class RecordingAboutWindowService : IAboutWindowService
+    {
+        public int ShowCallCount;
+        public void Show() => ShowCallCount++;
+    }
+
+    [AvaloniaFact]
+    public async Task Enter_NotFocused_WhenNoReferenceLoaded_LoadsReference()
+    {
+        var picker = new RecordingFilePickerService();
+        var vm = new MainViewModel(
+            picker, new NullResultsWindowService(), new NullConfirmDialogService(),
+            new NullAboutWindowService(), new NullShortcutsWindowService(), new NullHelpWindowService(),
+            new NullInfoDialogService(), new SettingsService());
+        var window = new MainWindow { DataContext = vm };
+        window.Show();
+
+        window.KeyPressQwerty(PhysicalKey.Enter, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.Enter, RawInputModifiers.None);
+        await ((IAsyncRelayCommand)vm.LoadReferenceOrDatasetCommand).ExecutionTask!;
+
+        Assert.Equal(1, picker.XmlPickCount);
+        Assert.Equal(0, picker.FolderPickCount);
+    }
+
+    [AvaloniaFact]
+    public async Task Enter_NotFocused_WhenReferenceLoaded_LoadsDataset()
+    {
+        var picker = new RecordingFilePickerService();
+        var vm = new MainViewModel(
+            picker, new NullResultsWindowService(), new NullConfirmDialogService(),
+            new NullAboutWindowService(), new NullShortcutsWindowService(), new NullHelpWindowService(),
+            new NullInfoDialogService(), new SettingsService());
+        vm.ReferenceSpectrum = new CspAnalyzer.BackendInterop.PeaklistSpectrum { ExpNumber = 1, DsName = "ref", Peaklist = new() };
+        var window = new MainWindow { DataContext = vm };
+        window.Show();
+
+        window.KeyPressQwerty(PhysicalKey.Enter, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.Enter, RawInputModifiers.None);
+        await ((IAsyncRelayCommand)vm.LoadReferenceOrDatasetCommand).ExecutionTask!;
+
+        Assert.Equal(0, picker.XmlPickCount);
+        Assert.Equal(1, picker.FolderPickCount);
+    }
+
+    [AvaloniaFact]
+    public void Enter_GuardedWhileTextBoxFocused_DoesNotPickAnything()
+    {
+        var picker = new RecordingFilePickerService();
+        var vm = new MainViewModel(
+            picker, new NullResultsWindowService(), new NullConfirmDialogService(),
+            new NullAboutWindowService(), new NullShortcutsWindowService(), new NullHelpWindowService(),
+            new NullInfoDialogService(), new SettingsService());
+        var window = new MainWindow { DataContext = vm };
+        window.Show();
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.Enter, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.Enter, RawInputModifiers.None);
+
+        Assert.Equal(0, picker.XmlPickCount);
+        Assert.Equal(0, picker.FolderPickCount);
+    }
+
+    [AvaloniaFact]
+    public void I_OpensAboutWindow()
+    {
+        var recording = new RecordingAboutWindowService();
+        var vm = new MainViewModel(
+            new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
+            recording, new NullShortcutsWindowService(), new NullHelpWindowService(),
+            new NullInfoDialogService(), new SettingsService());
+        var window = new MainWindow { DataContext = vm };
+        window.Show();
+
+        window.KeyPressQwerty(PhysicalKey.I, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.I, RawInputModifiers.None);
+
+        Assert.Equal(1, recording.ShowCallCount);
+    }
+
+    [AvaloniaFact]
+    public void I_GuardedWhileTextBoxFocused_DoesNotOpenAboutWindow()
+    {
+        var recording = new RecordingAboutWindowService();
+        var vm = new MainViewModel(
+            new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
+            recording, new NullShortcutsWindowService(), new NullHelpWindowService(),
+            new NullInfoDialogService(), new SettingsService());
+        var window = new MainWindow { DataContext = vm };
+        window.Show();
+        var nMinBox = window.FindControl<TextBox>("NMinTextBox")!;
+        nMinBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.I, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.I, RawInputModifiers.None);
+
+        Assert.Equal(0, recording.ShowCallCount);
+    }
 }

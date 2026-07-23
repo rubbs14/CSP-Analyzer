@@ -17,7 +17,7 @@
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="H" />
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="Show Help Guide" />
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Enter, I" />
-                <TextBlock Grid.Row="3" Grid.Column="1" Text="Load Reference/Dataset, Show Information Window (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="Load Reference/Dataset, Show Information Window" />
             </Grid>
 
             <TextBlock Text="Player" FontWeight="SemiBold" Margin="0,8,0,0" />

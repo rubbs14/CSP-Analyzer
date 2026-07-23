@@ -70,7 +70,7 @@
       confirmed empirically, not assumed. Setting Command directly on a
       code-constructed KeyBinding sidesteps the binding system entirely.
 
-    - R, N, D, S, A, T, and the arrow keys (Right/Left/Down/Up): these
+    - R, N, D, S, A, T, I, Enter, and the arrow keys (Right/Left/Down/Up): these
       bare-key gestures collide with normal text entry and caret
       movement (e.g. typing "active" into GoToExperimentText types a
       bare "a"; pressing Right to move the caret in any focused
