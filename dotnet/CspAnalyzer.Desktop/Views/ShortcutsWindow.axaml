@@ -38,10 +38,10 @@
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="Show Reference PP info" />
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+Alt+E" />
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="Show Current Exp. PP info" />
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="Ctrl+Alt+O" />
-                <TextBlock Grid.Row="2" Grid.Column="1" Text="Show Out-of-Import Range Exp. (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Ctrl+Alt+Y" />
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Show Out-of-Import Range Exp." />
                 <TextBlock Grid.Row="3" Grid.Column="0" Text="Ctrl+Alt+F" />
-                <TextBlock Grid.Row="3" Grid.Column="1" Text="Show Corrupted Peaklist Exp. (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="3" Grid.Column="1" Text="Show Corrupted Peaklist Exp." />
             </Grid>
 
             <TextBlock Text="Spectra Overlay" FontWeight="SemiBold" Margin="0,8,0,0" />

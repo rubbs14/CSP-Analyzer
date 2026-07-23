@@ -55,6 +55,8 @@
         <KeyBinding Gesture="Ctrl+Alt+T" Command="{Binding ResetPeakFilteringCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+O" Command="{Binding ResetAllImportAndThresholdControlsCommand}" />
         <KeyBinding Gesture="Ctrl+Alt+Space" Command="{Binding ResetAllZoomCommand}" />
+        <KeyBinding Gesture="Ctrl+Alt+F" Command="{Binding ShowCorruptedPeaklistExpCommand}" />
+        <KeyBinding Gesture="Ctrl+Alt+Y" Command="{Binding ShowOutOfImportRangeExpCommand}" />
     </Window.KeyBindings>
     <!--
     Bindings NOT declared above, added programmatically in the

@@ -109,6 +109,10 @@ public partial class MainViewModel : ViewModelBase
 
     public ObservableCollection<PeaklistSpectrum> DatasetSpectra { get; } = new();
 
+    public ObservableCollection<string> CorruptedPeaklistExperiments { get; } = new();
+
+    public ObservableCollection<string> OutOfImportRangeExperiments { get; } = new();
+
     [ObservableProperty]
     private bool _isRunning;
 
@@ -203,6 +207,8 @@ public partial class MainViewModel : ViewModelBase
 
         DatasetStatusText = "Loading Dataset...";
         DatasetSpectra.Clear();
+        CorruptedPeaklistExperiments.Clear();
+        OutOfImportRangeExperiments.Clear();
 
         // Port of load_ds_button_Click / Add_DSSpectra's effective behavior:
         // every immediate subfolder with a pdata/1/peaklist.xml is a valid
@@ -221,6 +227,7 @@ public partial class MainViewModel : ViewModelBase
             string peaklistPath = Path.Combine(dir, "pdata", "1", "peaklist.xml");
             if (!File.Exists(peaklistPath))
             {
+                CorruptedPeaklistExperiments.Add(Path.GetFileName(dir));
                 continue;
             }
 
@@ -233,6 +240,7 @@ public partial class MainViewModel : ViewModelBase
             catch (System.Xml.XmlException)
             {
                 corruptedXml++;
+                CorruptedPeaklistExperiments.Add(Path.GetFileName(dir));
                 continue;
             }
 
@@ -240,6 +248,7 @@ public partial class MainViewModel : ViewModelBase
             if (spectrum.Peaklist.Count == 0)
             {
                 outOfRange++;
+                OutOfImportRangeExperiments.Add(spectrum.ExpNumber.ToString());
                 continue;
             }
 
@@ -251,6 +260,9 @@ public partial class MainViewModel : ViewModelBase
         CorruptedXmlPeaklistCount = corruptedXml;
         OutOfPeakImportRangeCount = outOfRange;
         ValidExperimentsCount = DatasetSpectra.Count;
+
+        ShowCorruptedPeaklistExpCommand.NotifyCanExecuteChanged();
+        ShowOutOfImportRangeExpCommand.NotifyCanExecuteChanged();
 
         List<PeaklistSpectrum> sorted = DatasetSpectra.OrderBy(s => s.ExpNumber).ToList();
         DatasetSpectra.Clear();
@@ -388,4 +400,16 @@ public partial class MainViewModel : ViewModelBase
         var resultsViewModel = new ResultsViewModel(_filePicker, ReferenceSpectrum!, DatasetSpectra.ToList(), RunResults.ToList());
         _resultsWindowService.Show(resultsViewModel);
     }
+
+    private bool CanShowCorruptedPeaklistExp() => CorruptedPeaklistExperiments.Count > 0;
+
+    [RelayCommand(CanExecute = nameof(CanShowCorruptedPeaklistExp))]
+    private Task ShowCorruptedPeaklistExpAsync() =>
+        _infoDialogService.ShowAsync("Corrupted Peaklist Experiments", string.Join(Environment.NewLine, CorruptedPeaklistExperiments));
+
+    private bool CanShowOutOfImportRangeExp() => OutOfImportRangeExperiments.Count > 0;
+
+    [RelayCommand(CanExecute = nameof(CanShowOutOfImportRangeExp))]
+    private Task ShowOutOfImportRangeExpAsync() =>
+        _infoDialogService.ShowAsync("Out-of-Import-Range Experiments", string.Join(Environment.NewLine, OutOfImportRangeExperiments));
 }

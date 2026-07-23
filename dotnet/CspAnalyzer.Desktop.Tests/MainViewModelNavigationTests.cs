@@ -61,6 +61,109 @@ public class MainViewModelNavigationTests
         Assert.Equal(new[] { 9, 10 }, vm.DatasetSpectra.Select(s => s.ExpNumber));
     }
 
+    [Fact]
+    public async Task LoadDatasetAsync_tracks_folders_missing_peaklist_xml_as_corrupted()
+    {
+        string root = Directory.CreateTempSubdirectory("csp_nav_test_").FullName;
+        string refXml = WritePeaklistXml("1", Path.Combine(root, "ref_ds"));
+
+        string dsRoot = Path.Combine(root, "ds");
+        WritePeaklistXml("1", dsRoot);
+        Directory.CreateDirectory(Path.Combine(dsRoot, "2"));
+
+        var vm = new MainViewModel(new FixedFolderFilePickerService(refXml, dsRoot), new NullResultsWindowService(), new NullConfirmDialogService(), new NullAboutWindowService(), new NullShortcutsWindowService(), new NullHelpWindowService(), new NullInfoDialogService(), new SettingsService());
+        await vm.LoadReferenceCommand.ExecuteAsync(null);
+        await vm.LoadDatasetCommand.ExecuteAsync(null);
+
+        Assert.Equal(new[] { "2" }, vm.CorruptedPeaklistExperiments);
+    }
+
+    [Fact]
+    public async Task LoadDatasetAsync_tracks_malformed_peaklist_xml_as_corrupted()
+    {
+        string root = Directory.CreateTempSubdirectory("csp_nav_test_").FullName;
+        string refXml = WritePeaklistXml("1", Path.Combine(root, "ref_ds"));
+
+        string dsRoot = Path.Combine(root, "ds");
+        string badDir = Path.Combine(dsRoot, "3", "pdata", "1");
+        Directory.CreateDirectory(badDir);
+        File.WriteAllText(Path.Combine(badDir, "peaklist.xml"), "not xml at all <<<");
+
+        var vm = new MainViewModel(new FixedFolderFilePickerService(refXml, dsRoot), new NullResultsWindowService(), new NullConfirmDialogService(), new NullAboutWindowService(), new NullShortcutsWindowService(), new NullHelpWindowService(), new NullInfoDialogService(), new SettingsService());
+        await vm.LoadReferenceCommand.ExecuteAsync(null);
+        await vm.LoadDatasetCommand.ExecuteAsync(null);
+
+        Assert.Equal(new[] { "3" }, vm.CorruptedPeaklistExperiments);
+    }
+
+    [Fact]
+    public async Task LoadDatasetAsync_tracks_experiments_emptied_by_import_range_as_out_of_range()
+    {
+        string root = Directory.CreateTempSubdirectory("csp_nav_test_").FullName;
+        string refXml = WritePeaklistXml("1", Path.Combine(root, "ref_ds"));
+
+        string dsRoot = Path.Combine(root, "ds");
+        string subfolder = Path.Combine(dsRoot, "4", "pdata", "1");
+        Directory.CreateDirectory(subfolder);
+        // F1=1.0 is well outside the default NMin=100/NMax=140 import range,
+        // so PeaklistImporter filters this experiment's only peak out entirely.
+        File.WriteAllText(Path.Combine(subfolder, "peaklist.xml"), """
+            <?xml version="1.0" encoding="utf-8"?>
+            <peaklist>
+              <PeakList2D>
+                <Peak2D F1="1.0" F2="8.0" intensity="9000" Number="1"/>
+              </PeakList2D>
+            </peaklist>
+            """);
+
+        var vm = new MainViewModel(new FixedFolderFilePickerService(refXml, dsRoot), new NullResultsWindowService(), new NullConfirmDialogService(), new NullAboutWindowService(), new NullShortcutsWindowService(), new NullHelpWindowService(), new NullInfoDialogService(), new SettingsService());
+        await vm.LoadReferenceCommand.ExecuteAsync(null);
+        await vm.LoadDatasetCommand.ExecuteAsync(null);
+
+        Assert.Equal(new[] { "4" }, vm.OutOfImportRangeExperiments);
+    }
+
+    [Fact]
+    public void ShowCorruptedPeaklistExpCommand_disabled_when_empty_enabled_when_populated()
+    {
+        var vm = new MainViewModel();
+
+        Assert.False(vm.ShowCorruptedPeaklistExpCommand.CanExecute(null));
+
+        vm.CorruptedPeaklistExperiments.Add("3");
+
+        Assert.True(vm.ShowCorruptedPeaklistExpCommand.CanExecute(null));
+    }
+
+    private sealed class RecordingInfoDialogService : IInfoDialogService
+    {
+        public string? LastTitle;
+        public string? LastMessage;
+
+        public Task ShowAsync(string title, string message)
+        {
+            LastTitle = title;
+            LastMessage = message;
+            return Task.CompletedTask;
+        }
+    }
+
+    [Fact]
+    public async Task ShowOutOfImportRangeExpCommand_shows_the_out_of_range_experiment_list()
+    {
+        var infoDialog = new RecordingInfoDialogService();
+        var vm = new MainViewModel(
+            new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
+            new NullAboutWindowService(), new NullShortcutsWindowService(), new NullHelpWindowService(),
+            infoDialog, new SettingsService());
+        vm.OutOfImportRangeExperiments.Add("4");
+        vm.OutOfImportRangeExperiments.Add("5");
+
+        await vm.ShowOutOfImportRangeExpCommand.ExecuteAsync(null);
+
+        Assert.Equal($"4{System.Environment.NewLine}5", infoDialog.LastMessage);
+    }
+
     private static PeaklistSpectrum MakeSpectrum(int expNumber) => new()
     {
         ExpNumber = expNumber,
