@@ -140,9 +140,14 @@ ViewModel at all, except this one has real state.
   Bound in XAML via `Command="{Binding CopyCommand, RelativeSource={RelativeSource AncestorType=Window}}"`
   — same `RelativeSource Self`-on-the-Window-instance pattern
   `MainWindow.axaml`'s Ctrl+Q binding already uses.
-- The six input `[ObservableProperty]` strings use
-  `[NotifyCanExecuteChangedFor(nameof(GenerateCommand))]` so
-  `GenerateCommand.CanExecute` re-evaluates as the user types.
+- The six input `[ObservableProperty]` strings each get a generated
+  `partial void On<X>Changed(string value) =>
+  GenerateCommand.NotifyCanExecuteChanged();` hook, so `GenerateCommand`'s
+  `CanExecute` re-evaluates as the user types — this codebase's existing
+  convention (`MainViewModel.Charts.cs`'s `OnManualProbabilityThresholdChanged`,
+  `MainViewModel.Navigation.cs`'s `OnCurrentFilterChanged`) for reacting to
+  property changes, not the `[NotifyCanExecuteChangedFor]` attribute
+  (unused anywhere in this codebase today).
 
 ### `HelpWindow.axaml`/`.axaml.cs` (new)
 
