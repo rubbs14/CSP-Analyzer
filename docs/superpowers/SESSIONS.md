@@ -85,9 +85,18 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
   progress protocol, so no percentage). Verified end-to-end against the real
   local `CSPv2/Demo-dataset` + real model artifacts via a throwaway
   ViewModel harness (64 experiments classified; mid-run cancel confirmed).
-- [ ] **S10** — Results view: tables + charts (replace LiveCharts/WinForms with an
-  Avalonia charting approach). Port FormOutputTable. `MainViewModel.RunResults`
-  (populated by S9) is ready to bind.
+- [x] **S10** — Results view: `ResultsWindow` (table + 3 pie charts, port of
+  `FormOutputTable`), opened from `MainWindow`'s "Export" button. Charting via
+  LiveChartsCore.SkiaSharpView.Avalonia. CSV/XLSX (ClosedXML)/PDF (PDFsharp,
+  bundled DejaVu Sans font) export replace the old Excel-interop/GDI+ print
+  buttons. See `docs/superpowers/specs/2026-07-23-sub-project-3-s10-results-view-design.md`.
+- [ ] **S10b** — Form1's own embedded charts, deferred from S10: peak-diff/
+  probability bar charts + spectra-overlay scatter (raw peaklist N/H/intensity
+  data, not `RunResults` - separate from `ResultsWindow`). Also the manual-
+  override workflow (ACTIVE (MAN)/INACTIVE (MAN)/Not-set toggles via
+  player-nav buttons + checkboxes, `Form1.cs`'s `MAN_ACTIVES`/`MAN_INACTIVES`)
+  so `ResultsWindow`'s Manual Flag column/pie chart have real data instead of
+  always showing 100% Not-set.
 - [ ] **S11** — Secondary windows (Help, Shortcuts), settings, python/env path
   handling done cross-platform.
 - [ ] **S12** — Polish, cross-platform smoke test (Linux + Windows), fix platform gaps.
