@@ -283,7 +283,7 @@ public partial class MainViewModel : ViewModelBase
                 runDir,
                 BackendEnvironment.ModelDir,
                 BackendEnvironment.RepoRoot,
-                binsPerArrayDimension: null,
+                binsPerArrayDimension: BinsPerArrayDimension,
                 _runCts.Token);
 
             if (result.IsSuccess)
