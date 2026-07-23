@@ -169,10 +169,12 @@ bounds) and **Fit zoom to reference** (bounds computed from
 legacy used) — both added per your last answer, small button pair next to
 the chart.
 
-**Actives/Inactives gauges** — `RadialGaugeSeries` via `GaugeBuilder`
-(LiveChartsCore's gauge API, not a WPF `SolidGauge` port — different
-control, closest visual equivalent available), populated post-run from
-`RunResults.Count(r => r.IsActive)` / the complement, range `0..DatasetSpectra.Count`.
+**Actives/Inactives gauges** — `GaugeGenerator.BuildSolidGauge(GaugeItem[])`
+bound into a `PieChart` (verified against the installed package by
+reflection: this build's real gauge API — not a `RadialGaugeSeries`/
+`GaugeBuilder` control, which doesn't exist in this version — not a WPF
+`SolidGauge` port either, but the closest available equivalent), populated
+post-run from `RunResults.Count(r => r.IsActive)` / the complement, `PieChart.MaxValue` bound to `DatasetSpectra.Count`.
 
 ### 4. Testing
 
