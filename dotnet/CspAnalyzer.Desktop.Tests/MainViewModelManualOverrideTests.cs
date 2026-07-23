@@ -10,7 +10,7 @@ public class MainViewModelManualOverrideTests
 {
     private static MainViewModel MakeViewModel(params int[] expNumbers)
     {
-        var vm = new MainViewModel(new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService());
+        var vm = new MainViewModel(new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(), new NullAboutWindowService(), new NullShortcutsWindowService());
         vm.ReferenceSpectrum = new PeaklistSpectrum { ExpNumber = 1, DsName = "ref", TotReadPeaks = 80 };
         foreach (int exp in expNumbers)
         {

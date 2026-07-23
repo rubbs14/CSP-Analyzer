@@ -23,7 +23,9 @@ public partial class App : Application
             var viewModel = new MainViewModel(
                 new AvaloniaFilePickerService(window),
                 new AvaloniaResultsWindowService(window),
-                new AvaloniaConfirmDialogService(window));
+                new AvaloniaConfirmDialogService(window),
+                new NullAboutWindowService(),
+                new NullShortcutsWindowService());
             window.DataContext = viewModel;
 
             var settingsService = new SettingsService();

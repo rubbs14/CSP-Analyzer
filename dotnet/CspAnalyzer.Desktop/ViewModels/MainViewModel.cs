@@ -35,6 +35,8 @@ public partial class MainViewModel : ViewModelBase
     private readonly IFilePickerService _filePicker;
     private readonly IResultsWindowService _resultsWindowService;
     private readonly IConfirmDialogService _confirmDialogService;
+    private readonly IAboutWindowService _aboutWindowService;
+    private readonly IShortcutsWindowService _shortcutsWindowService;
 
     [ObservableProperty]
     private string _greeting = "Welcome to Avalonia!";
@@ -119,15 +121,24 @@ public partial class MainViewModel : ViewModelBase
 
     public bool IsReferenceLoaded => ReferenceSpectrum is not null;
 
-    public MainViewModel() : this(new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService())
+    public MainViewModel() : this(
+        new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
+        new NullAboutWindowService(), new NullShortcutsWindowService())
     {
     }
 
-    public MainViewModel(IFilePickerService filePicker, IResultsWindowService resultsWindowService, IConfirmDialogService confirmDialogService)
+    public MainViewModel(
+        IFilePickerService filePicker,
+        IResultsWindowService resultsWindowService,
+        IConfirmDialogService confirmDialogService,
+        IAboutWindowService aboutWindowService,
+        IShortcutsWindowService shortcutsWindowService)
     {
         _filePicker = filePicker;
         _resultsWindowService = resultsWindowService;
         _confirmDialogService = confirmDialogService;
+        _aboutWindowService = aboutWindowService;
+        _shortcutsWindowService = shortcutsWindowService;
     }
 
     private PeakImportFilter ReferenceFilter => new(ReferenceIntensityThreshold, NMin, NMax, HMin, HMax);
@@ -348,6 +359,13 @@ public partial class MainViewModel : ViewModelBase
     {
         ReferenceIntensityThreshold = 5000;
         DatasetIntensityThreshold = 2000;
+    }
+
+    [RelayCommand]
+    private void ResetAllImportAndThresholdControls()
+    {
+        ResetImportControls();
+        ResetPeakFiltering();
     }
 
     private bool CanOpenResultsWindow() => RunResults.Count > 0 && ReferenceSpectrum is not null;
