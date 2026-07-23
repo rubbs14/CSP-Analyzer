@@ -590,4 +590,67 @@ public class MainWindowKeyBindingsTests
 
         Assert.Equal(0, recording.ShowCallCount);
     }
+
+    [AvaloniaFact]
+    public void CtrlA_NotFocused_TogglesActivesFilter()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.RunResults.Add(new CspAnalyzer.BackendInterop.SpectrumResult { ExpNumber = 1, IsActive = true, ActivePseudoprobability = 0.9 });
+
+        window.KeyPressQwerty(PhysicalKey.A, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.A, RawInputModifiers.Control);
+
+        Assert.True(vm.IsActivesFilterChecked);
+    }
+
+    [AvaloniaFact]
+    public void CtrlA_GuardedWhileTextBoxFocused_DoesNotToggleActivesFilter()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.RunResults.Add(new CspAnalyzer.BackendInterop.SpectrumResult { ExpNumber = 1, IsActive = true, ActivePseudoprobability = 0.9 });
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.A, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.A, RawInputModifiers.Control);
+
+        Assert.False(vm.IsActivesFilterChecked);
+    }
+
+    [AvaloniaFact]
+    public void CtrlA_NoRunResultsYet_DoesNotToggleActivesFilter()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+
+        window.KeyPressQwerty(PhysicalKey.A, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.A, RawInputModifiers.Control);
+
+        Assert.False(vm.IsActivesFilterChecked);
+    }
+
+    [AvaloniaFact]
+    public void CtrlI_NotFocused_TogglesInactivesFilter()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.RunResults.Add(new CspAnalyzer.BackendInterop.SpectrumResult { ExpNumber = 1, IsActive = false, ActivePseudoprobability = 0.1 });
+
+        window.KeyPressQwerty(PhysicalKey.I, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.I, RawInputModifiers.Control);
+
+        Assert.True(vm.IsInactivesFilterChecked);
+    }
+
+    [AvaloniaFact]
+    public void CtrlI_GuardedWhileTextBoxFocused_DoesNotToggleInactivesFilter()
+    {
+        (MainWindow window, MainViewModel vm) = NewWindow();
+        vm.RunResults.Add(new CspAnalyzer.BackendInterop.SpectrumResult { ExpNumber = 1, IsActive = false, ActivePseudoprobability = 0.1 });
+        var goToBox = window.FindControl<TextBox>("GoToExperimentTextBox")!;
+        goToBox.Focus();
+
+        window.KeyPressQwerty(PhysicalKey.I, RawInputModifiers.Control);
+        window.KeyReleaseQwerty(PhysicalKey.I, RawInputModifiers.Control);
+
+        Assert.False(vm.IsInactivesFilterChecked);
+    }
 }

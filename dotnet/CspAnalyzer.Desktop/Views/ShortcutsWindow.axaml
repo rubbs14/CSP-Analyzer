@@ -47,9 +47,9 @@
             <TextBlock Text="Spectra Overlay" FontWeight="SemiBold" Margin="0,8,0,0" />
             <Grid ColumnDefinitions="90,*" RowDefinitions="Auto,Auto">
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Ctrl+I" />
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="Show Auto Inactives (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="Show Auto Inactives" />
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Ctrl+A" />
-                <TextBlock Grid.Row="1" Grid.Column="1" Text="Show Auto Actives (not yet implemented)" TextWrapping="Wrap" />
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="Show Auto Actives" />
             </Grid>
 
             <TextBlock Text="Zoom/Import Control" FontWeight="SemiBold" Margin="0,8,0,0" />

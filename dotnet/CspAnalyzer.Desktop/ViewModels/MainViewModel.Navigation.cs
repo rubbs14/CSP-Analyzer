@@ -54,6 +54,14 @@ public partial class MainViewModel
         set => CurrentFilter = value ? ExperimentFilter.Inactives : null;
     }
 
+    private bool CanToggleAutoFilter() => RunResults.Count > 0;
+
+    [RelayCommand(CanExecute = nameof(CanToggleAutoFilter))]
+    private void ToggleAutoActivesFilter() => IsActivesFilterChecked = !IsActivesFilterChecked;
+
+    [RelayCommand(CanExecute = nameof(CanToggleAutoFilter))]
+    private void ToggleAutoInactivesFilter() => IsInactivesFilterChecked = !IsInactivesFilterChecked;
+
     private Dictionary<int, SpectrumResult> ResultsByExpNumber => RunResults.ToDictionary(r => r.ExpNumber);
 
     public IReadOnlyList<PeaklistSpectrum> CurrentView => CurrentFilter switch

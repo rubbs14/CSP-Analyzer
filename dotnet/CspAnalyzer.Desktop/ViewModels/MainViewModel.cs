@@ -316,6 +316,8 @@ public partial class MainViewModel : ViewModelBase
                     RunResults.Add(r);
                 }
                 OpenResultsWindowCommand.NotifyCanExecuteChanged();
+                ToggleAutoActivesFilterCommand.NotifyCanExecuteChanged();
+                ToggleAutoInactivesFilterCommand.NotifyCanExecuteChanged();
                 CurrentIndex = 0;
                 // Bypass the ManualProbabilityThreshold setter here (it
                 // would trigger its own Build*/RaiseNavigationChanged via

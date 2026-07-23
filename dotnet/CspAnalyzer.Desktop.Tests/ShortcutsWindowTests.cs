@@ -20,7 +20,7 @@ public class ShortcutsWindowTests
 
         Assert.Contains(texts, t => t.Contains("Next Spectrum"));
         Assert.Contains(texts, t => t.Contains("Right"));
-        Assert.Contains(texts, t => t.Contains("Show Auto Actives") && t.Contains("not yet implemented"));
+        Assert.Contains(texts, t => t.Contains("Show Auto Actives") && !t.Contains("not yet implemented"));
         Assert.Contains(texts, t => t.Contains("Export To Excel"));
         Assert.Contains(texts, t => t == "H");
         Assert.Contains(texts, t => t.Contains("Show Help Guide") && !t.Contains("not yet implemented"));

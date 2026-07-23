@@ -95,6 +95,12 @@
       (S11c originally bound Ctrl+C to ResetOverlayZoomCommand instead of
       ResetBarChartZoomCommand and left Ctrl+Y unbound - legacy CSPv2/
       Form1.cs:2986-3002 has it the other way around; fixed in S12.)
+
+    - Ctrl+A (ToggleAutoActivesFilterCommand) and Ctrl+I
+      (ToggleAutoInactivesFilterCommand): same defect class again - Ctrl+A is
+      "select all" and Ctrl+I is commonly "italic" in standard text editing;
+      both must not fire while a TextBox is focused. Guarded via
+      GuardedViewModelCommand.
     -->
 
     <!-- Outer: fixed-width sidebar (Form1's tableLayoutPanel1, ~204px) + fill content (tableLayoutPanel2) -->
