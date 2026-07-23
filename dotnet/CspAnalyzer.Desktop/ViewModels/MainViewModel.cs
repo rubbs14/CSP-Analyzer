@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -176,6 +177,14 @@ public partial class MainViewModel : ViewModelBase
         }
 
         PeaklistFilesFoundCount = found;
+
+        List<PeaklistSpectrum> sorted = DatasetSpectra.OrderBy(s => s.ExpNumber).ToList();
+        DatasetSpectra.Clear();
+        foreach (PeaklistSpectrum spectrum in sorted)
+        {
+            DatasetSpectra.Add(spectrum);
+        }
+
         DatasetStatusText = found > 0
             ? $"Dataset Loaded ({found} experiments)"
             : "No experiments were found in this folder.";
