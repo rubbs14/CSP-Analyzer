@@ -195,7 +195,7 @@ public partial class ResultsViewModel : ViewModelBase
         var headerFont = new XFont("DejaVu Sans", 9, XFontStyleEx.Bold);
         var cellFont = new XFont("DejaVu Sans", 9, XFontStyleEx.Regular);
 
-        var document = new PdfDocument();
+        using var document = new PdfDocument();
         PdfPage page = NewLandscapePage(document);
         XGraphics gfx = XGraphics.FromPdfPage(page);
         double y = DrawPageHeader(gfx, titleFont, headerFont, headers, columnWidths);
