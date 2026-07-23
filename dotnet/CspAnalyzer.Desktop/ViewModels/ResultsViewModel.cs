@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ClosedXML.Excel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CspAnalyzer.BackendInterop;
@@ -9,6 +13,9 @@ using CspAnalyzer.Desktop.Services;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
+using PdfSharp.Drawing;
+using PdfSharp.Fonts;
+using PdfSharp.Pdf;
 using SkiaSharp;
 
 namespace CspAnalyzer.Desktop.ViewModels;
@@ -83,6 +90,168 @@ public partial class ResultsViewModel : ViewModelBase
 
     [RelayCommand]
     private void Refresh() => Rebuild();
+
+    private static bool _fontResolverInitialized;
+
+    [RelayCommand]
+    private async Task ExportCsvAsync()
+    {
+        string? path = await _filePicker.PickSaveFileAsync("csp_results.csv", "csv");
+        if (path is null)
+        {
+            return;
+        }
+
+        var sb = new StringBuilder();
+        sb.AppendLine("Name,Dataset,Total Read Peaks,Min Intensity (AU),Max Intensity (AU),Peak Difference to Reference,Probability,Automatic Analysis,Manual Flag");
+        foreach (ResultRow row in Rows)
+        {
+            sb.AppendLine(string.Join(",",
+                CsvField(row.Name), CsvField(row.Dataset), row.TotalReadPeaks,
+                row.MinIntensity, row.MaxIntensity,
+                row.PeakDifference?.ToString() ?? "none",
+                row.Probability?.ToString() ?? "none",
+                CsvField(row.AutomaticAnalysis ?? "none"),
+                CsvField(row.ManualFlag)));
+        }
+
+        await File.WriteAllTextAsync(path, sb.ToString());
+        ExportStatusText = $"Exported CSV to {path}";
+    }
+
+    private static string CsvField(string value) => value.Contains(',') ? $"\"{value}\"" : value;
+
+    [RelayCommand]
+    private async Task ExportXlsxAsync()
+    {
+        string? path = await _filePicker.PickSaveFileAsync("csp_results.xlsx", "xlsx");
+        if (path is null)
+        {
+            return;
+        }
+
+        await Task.Run(() => WriteXlsx(path));
+        ExportStatusText = $"Exported XLSX to {path}";
+    }
+
+    private void WriteXlsx(string path)
+    {
+        using var workbook = new XLWorkbook();
+        IXLWorksheet sheet = workbook.Worksheets.Add("CSP_Output");
+
+        string[] headers =
+        {
+            "Name", "Dataset", "Total Read Peaks", "Min Intensity (AU)", "Max Intensity (AU)",
+            "Peak Difference to Reference", "Probability", "Automatic Analysis", "Manual Flag",
+        };
+        for (int i = 0; i < headers.Length; i++)
+        {
+            sheet.Cell(1, i + 1).Value = headers[i];
+        }
+
+        int rowIndex = 2;
+        foreach (ResultRow row in Rows)
+        {
+            sheet.Cell(rowIndex, 1).Value = row.Name;
+            sheet.Cell(rowIndex, 2).Value = row.Dataset;
+            sheet.Cell(rowIndex, 3).Value = row.TotalReadPeaks;
+            sheet.Cell(rowIndex, 4).Value = row.MinIntensity;
+            sheet.Cell(rowIndex, 5).Value = row.MaxIntensity;
+            sheet.Cell(rowIndex, 6).Value = row.PeakDifference?.ToString() ?? "none";
+            sheet.Cell(rowIndex, 7).Value = row.Probability?.ToString() ?? "none";
+            sheet.Cell(rowIndex, 8).Value = row.AutomaticAnalysis ?? "none";
+            sheet.Cell(rowIndex, 9).Value = row.ManualFlag;
+            rowIndex++;
+        }
+
+        workbook.SaveAs(path);
+    }
+
+    [RelayCommand]
+    private async Task ExportPdfAsync()
+    {
+        string? path = await _filePicker.PickSaveFileAsync("csp_results.pdf", "pdf");
+        if (path is null)
+        {
+            return;
+        }
+
+        await Task.Run(() => WritePdf(path));
+        ExportStatusText = $"Exported PDF to {path}";
+    }
+
+    private void WritePdf(string path)
+    {
+        if (!_fontResolverInitialized)
+        {
+            string fontPath = Path.Combine(AppContext.BaseDirectory, "Assets", "Fonts", "DejaVuSans.ttf");
+            GlobalFontSettings.FontResolver = new DejaVuFontResolver(File.ReadAllBytes(fontPath));
+            _fontResolverInitialized = true;
+        }
+
+        string[] headers = { "Name", "Dataset", "Peaks", "Min Int.", "Max Int.", "Peak Diff", "Probability", "Auto", "Manual" };
+        double[] columnWidths = { 60, 150, 50, 55, 55, 55, 65, 55, 90 };
+        var titleFont = new XFont("DejaVu Sans", 16, XFontStyleEx.Bold);
+        var headerFont = new XFont("DejaVu Sans", 9, XFontStyleEx.Bold);
+        var cellFont = new XFont("DejaVu Sans", 9, XFontStyleEx.Regular);
+
+        var document = new PdfDocument();
+        PdfPage page = NewLandscapePage(document);
+        XGraphics gfx = XGraphics.FromPdfPage(page);
+        double y = DrawPageHeader(gfx, titleFont, headerFont, headers, columnWidths);
+
+        foreach (ResultRow row in Rows)
+        {
+            if (y > page.Height.Point - 40)
+            {
+                gfx.Dispose();
+                page = NewLandscapePage(document);
+                gfx = XGraphics.FromPdfPage(page);
+                y = DrawPageHeader(gfx, titleFont, headerFont, headers, columnWidths);
+            }
+
+            double x = 20;
+            string[] cells =
+            {
+                row.Name, row.Dataset, row.TotalReadPeaks.ToString(),
+                row.MinIntensity.ToString("F0"), row.MaxIntensity.ToString("F0"),
+                row.PeakDifference?.ToString() ?? "none",
+                row.Probability?.ToString() ?? "none",
+                row.AutomaticAnalysis ?? "none", row.ManualFlag,
+            };
+            for (int i = 0; i < cells.Length; i++)
+            {
+                gfx.DrawString(cells[i], cellFont, XBrushes.Black, new XRect(x, y, columnWidths[i], 16), XStringFormats.CenterLeft);
+                x += columnWidths[i];
+            }
+            y += 16;
+        }
+
+        gfx.Dispose();
+        document.Save(path);
+    }
+
+    private static PdfPage NewLandscapePage(PdfDocument document)
+    {
+        PdfPage page = document.AddPage();
+        page.Orientation = PdfSharp.PageOrientation.Landscape;
+        return page;
+    }
+
+    private static double DrawPageHeader(XGraphics gfx, XFont titleFont, XFont headerFont, string[] headers, double[] columnWidths)
+    {
+        gfx.DrawString("CSP Analysis Report", titleFont, XBrushes.Black, new XPoint(20, 30));
+        gfx.DrawString(DateTime.Now.ToString("f"), headerFont, XBrushes.Black, new XPoint(20, 48));
+
+        double x = 20;
+        const double y = 70;
+        for (int i = 0; i < headers.Length; i++)
+        {
+            gfx.DrawString(headers[i], headerFont, XBrushes.Black, new XRect(x, y, columnWidths[i], 18), XStringFormats.CenterLeft);
+            x += columnWidths[i];
+        }
+        return y + 20;
+    }
 
     private void Rebuild()
     {
