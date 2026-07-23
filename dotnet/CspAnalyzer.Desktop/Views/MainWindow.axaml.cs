@@ -1,9 +1,12 @@
 using System;
+using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
+using CommunityToolkit.Mvvm.Input;
 using CspAnalyzer.Desktop.Models;
 using CspAnalyzer.Desktop.ViewModels;
 using LiveChartsCore.Kernel;
@@ -14,13 +17,51 @@ namespace CspAnalyzer.Desktop.Views;
 
 public partial class MainWindow : Window
 {
+    public ICommand CloseCommand { get; }
+
+    public ICommand FocusGoToExperimentCommand { get; }
+
     public MainWindow()
     {
         InitializeComponent();
 
+        CloseCommand = new RelayCommand(Close);
+        FocusGoToExperimentCommand = new RelayCommand(
+            () => this.FindControl<TextBox>("GoToExperimentTextBox")!.Focus(),
+            () => !IsTextBoxFocused());
+
+        // Added here rather than in the <Window.KeyBindings> XAML block -
+        // see the comment above that block in MainWindow.axaml for why.
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.Q, KeyModifiers.Control), Command = CloseCommand });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.G), Command = FocusGoToExperimentCommand });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.R), Command = GuardedViewModelCommand(vm => vm.RunCommand) });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.N), Command = GuardedViewModelCommand(vm => vm.ResetAllManualFlagsCommand) });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.D), Command = GuardedViewModelCommand(vm => vm.ResetManualStatusCommand) });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.S), Command = GuardedViewModelCommand(vm => vm.MarkInactiveCommand) });
+        KeyBindings.Add(new KeyBinding { Gesture = new KeyGesture(Key.A), Command = GuardedViewModelCommand(vm => vm.MarkActiveCommand) });
+
         this.FindControl<CartesianChart>("PeakDiffChart")!.ChartPointPointerDown += OnChartPointClicked;
         this.FindControl<CartesianChart>("ProbabilityChart")!.ChartPointPointerDown += OnChartPointClicked;
     }
+
+    // See the comment above the <Window.KeyBindings> block in
+    // MainWindow.axaml: bare single-letter shortcuts must not fire while
+    // a TextBox has keyboard focus, so we look up the current ViewModel
+    // command dynamically (DataContext isn't set yet when this runs from
+    // the constructor for object-initializer callers) and AND its
+    // CanExecute with "no TextBox is focused."
+    private ICommand GuardedViewModelCommand(Func<MainViewModel, ICommand> select) =>
+        new RelayCommand(
+            () =>
+            {
+                if (DataContext is MainViewModel vm)
+                {
+                    select(vm).Execute(null);
+                }
+            },
+            () => !IsTextBoxFocused() && DataContext is MainViewModel vm && select(vm).CanExecute(null));
+
+    private bool IsTextBoxFocused() => FocusManager?.GetFocusedElement() is TextBox;
 
     private void OnChartPointClicked(IChartView chart, ChartPoint point)
     {
