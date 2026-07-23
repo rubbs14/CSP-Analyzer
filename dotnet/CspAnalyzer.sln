@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendInterop.Tests", "Bac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CspAnalyzer.Desktop", "CspAnalyzer.Desktop\CspAnalyzer.Desktop.csproj", "{0D79417E-37E6-4B15-BC08-EFEA52BE295F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CspAnalyzer.Desktop.Tests", "CspAnalyzer.Desktop.Tests\CspAnalyzer.Desktop.Tests.csproj", "{1B58E547-04AF-483B-B399-FDFB3B380814}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{0D79417E-37E6-4B15-BC08-EFEA52BE295F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D79417E-37E6-4B15-BC08-EFEA52BE295F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D79417E-37E6-4B15-BC08-EFEA52BE295F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B58E547-04AF-483B-B399-FDFB3B380814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B58E547-04AF-483B-B399-FDFB3B380814}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B58E547-04AF-483B-B399-FDFB3B380814}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B58E547-04AF-483B-B399-FDFB3B380814}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
