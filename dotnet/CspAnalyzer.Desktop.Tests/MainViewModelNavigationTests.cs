@@ -92,12 +92,12 @@ public class MainViewModelNavigationTests
     }
 
     [Fact]
-    public void CurrentView_filters_to_actives_only_using_RunResults_IsActive()
+    public void CurrentView_filters_to_actives_only_using_the_effective_probability_threshold()
     {
         MainViewModel vm = MakeViewModelWithDataset(80, 101, 102, 103);
-        vm.RunResults.Add(new SpectrumResult { ExpNumber = 101, IsActive = true });
-        vm.RunResults.Add(new SpectrumResult { ExpNumber = 102, IsActive = false });
-        vm.RunResults.Add(new SpectrumResult { ExpNumber = 103, IsActive = true });
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 101, IsActive = true, ActivePseudoprobability = 0.9 });
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 102, IsActive = false, ActivePseudoprobability = 0.1 });
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 103, IsActive = true, ActivePseudoprobability = 0.8 });
         vm.RaiseNavigationChanged();
 
         vm.IsActivesFilterChecked = true;

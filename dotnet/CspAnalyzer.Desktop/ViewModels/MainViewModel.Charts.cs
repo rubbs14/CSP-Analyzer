@@ -135,6 +135,37 @@ public partial class MainViewModel
     [ObservableProperty]
     private LabelVisual[] _probabilityAnnotations = Array.Empty<LabelVisual>();
 
+    // User-adjustable decision boundary (a slider in MainWindow.axaml) -
+    // defaults each run to the backend's own ProbThreshold (the minimum
+    // probability among predicted actives, or 0.5 if nothing was
+    // classified active - port of CSPv2/Form1.cs's ProbThreshold), but can
+    // be dragged to explore other cutoffs. Only affects this window's live
+    // view (gauges, actives/inactives filter, current-experiment status) -
+    // ResultsWindow/export still report the backend's original fixed
+    // classification (SpectrumResult.IsActive), by design: the exported
+    // report stays an objective record of what the model actually
+    // predicted, separate from interactive what-if exploration here.
+    [ObservableProperty]
+    private double _manualProbabilityThreshold = 0.5;
+
+    partial void OnManualProbabilityThresholdChanged(double value)
+    {
+        BuildProbabilityChart();
+        BuildGauges();
+        RaiseNavigationChanged();
+    }
+
+    public bool IsEffectivelyActive(SpectrumResult result) => result.ActivePseudoprobability >= ManualProbabilityThreshold;
+
+    // Port of CSPv2/Form1.cs's ProbThreshold. Public (like the Build*
+    // methods) so it's directly testable without going through RunAsync's
+    // real-subprocess flow.
+    public double ComputeAutoProbabilityThreshold()
+    {
+        List<double> activeProbs = RunResults.Where(r => r.IsActive).Select(r => r.ActivePseudoprobability).ToList();
+        return activeProbs.Count > 0 ? activeProbs.Min() : 0.5;
+    }
+
     public void BuildProbabilityChart()
     {
         double[] probs = DatasetSpectra
@@ -164,14 +195,6 @@ public partial class MainViewModel
         {
             new ColumnSeries<double> { Name = "Probability", Values = probs, Fill = new SolidColorPaint(InactiveAutoColor) },
         };
-        // Port of CSPv2/Form1.cs's ProbThreshold: the actual probability
-        // cutoff the backend used to decide isActive for this run - the
-        // minimum probability among predicted actives, or 0.5 if nothing
-        // was classified active. Distinct from the static 0/0.35/0.75
-        // visual zone bands below (which don't depend on the run's data).
-        List<double> activeProbs = RunResults.Where(r => r.IsActive).Select(r => r.ActivePseudoprobability).ToList();
-        double probThreshold = activeProbs.Count > 0 ? activeProbs.Min() : 0.5;
-
         ProbabilitySections = new[]
         {
             new RectangularSection { Yi = 0, Yj = 0.35, Fill = new SolidColorPaint(BrokenSpectrumColor) },
@@ -179,8 +202,8 @@ public partial class MainViewModel
             new RectangularSection { Yi = 0.75, Yj = 1, Fill = new SolidColorPaint(FineSpectrumColor) },
             new RectangularSection
             {
-                Yi = probThreshold,
-                Yj = probThreshold,
+                Yi = ManualProbabilityThreshold,
+                Yj = ManualProbabilityThreshold,
                 Stroke = new SolidColorPaint(ActiveAutoColor) { StrokeThickness = 1.5f },
                 Label = "Decision Threshold",
                 LabelPaint = new SolidColorPaint(CurrentMarkerTextColor),
@@ -202,7 +225,7 @@ public partial class MainViewModel
 
     public void BuildGauges()
     {
-        int actives = RunResults.Count(r => r.IsActive);
+        int actives = RunResults.Count(IsEffectivelyActive);
         int inactives = RunResults.Count - actives;
 
         ActivesGaugeSeries = GaugeGenerator.BuildSolidGauge(

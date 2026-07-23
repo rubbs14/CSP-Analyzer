@@ -55,30 +55,49 @@ public class MainViewModelChartTests
     }
 
     [Fact]
-    public void BuildProbabilityChart_adds_a_decision_threshold_line_at_the_minimum_active_probability()
+    public void ComputeAutoProbabilityThreshold_returns_the_minimum_active_probability()
     {
         MainViewModel vm = MakeViewModel(80, 85, 40, 90);
         vm.RunResults.Add(new SpectrumResult { ExpNumber = 100, IsActive = true, ActivePseudoprobability = 0.91 });
         vm.RunResults.Add(new SpectrumResult { ExpNumber = 101, IsActive = true, ActivePseudoprobability = 0.62 });
         vm.RunResults.Add(new SpectrumResult { ExpNumber = 102, IsActive = false, ActivePseudoprobability = 0.1 });
 
-        vm.BuildProbabilityChart();
-
-        var thresholdLine = vm.ProbabilitySections.Single(s => s.Label == "Decision Threshold");
-        Assert.Equal(0.62, thresholdLine.Yi);
-        Assert.Equal(0.62, thresholdLine.Yj);
+        Assert.Equal(0.62, vm.ComputeAutoProbabilityThreshold());
     }
 
     [Fact]
-    public void BuildProbabilityChart_falls_back_to_0_5_decision_threshold_when_nothing_is_active()
+    public void ComputeAutoProbabilityThreshold_falls_back_to_0_5_when_nothing_is_active()
     {
         MainViewModel vm = MakeViewModel(80, 85);
         vm.RunResults.Add(new SpectrumResult { ExpNumber = 100, IsActive = false, ActivePseudoprobability = 0.1 });
 
-        vm.BuildProbabilityChart();
+        Assert.Equal(0.5, vm.ComputeAutoProbabilityThreshold());
+    }
+
+    [Fact]
+    public void BuildProbabilityChart_draws_the_decision_threshold_line_at_ManualProbabilityThreshold()
+    {
+        MainViewModel vm = MakeViewModel(80, 85);
+        vm.ManualProbabilityThreshold = 0.73;
 
         var thresholdLine = vm.ProbabilitySections.Single(s => s.Label == "Decision Threshold");
-        Assert.Equal(0.5, thresholdLine.Yi);
+        Assert.Equal(0.73, thresholdLine.Yi);
+        Assert.Equal(0.73, thresholdLine.Yj);
+    }
+
+    [Fact]
+    public void Dragging_ManualProbabilityThreshold_reclassifies_gauges_live()
+    {
+        MainViewModel vm = MakeViewModel(80, 85, 40);
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 100, IsActive = true, ActivePseudoprobability = 0.6 });
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 101, IsActive = false, ActivePseudoprobability = 0.4 });
+        vm.BuildGauges();
+
+        // Raise the threshold above both probabilities - both become inactive.
+        vm.ManualProbabilityThreshold = 0.9;
+
+        var actives = (LiveChartsCore.SkiaSharpView.PieSeries<LiveChartsCore.Defaults.ObservableValue>)vm.ActivesGaugeSeries[0];
+        Assert.Equal(0, actives.Values.Single().Value!.Value);
     }
 
     [Fact]

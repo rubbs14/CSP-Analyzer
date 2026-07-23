@@ -242,6 +242,14 @@ public partial class MainViewModel : ViewModelBase
                 }
                 OpenResultsWindowCommand.NotifyCanExecuteChanged();
                 CurrentIndex = 0;
+                // Bypass the ManualProbabilityThreshold setter here (it
+                // would trigger its own Build*/RaiseNavigationChanged via
+                // OnManualProbabilityThresholdChanged, and CommunityToolkit
+                // skips that entirely if the new value happens to equal
+                // the old one - e.g. two runs both landing on the 0.5
+                // fallback) - the explicit calls below always run instead.
+                _manualProbabilityThreshold = ComputeAutoProbabilityThreshold();
+                OnPropertyChanged(nameof(ManualProbabilityThreshold));
                 BuildProbabilityChart();
                 BuildGauges();
                 RaiseNavigationChanged();

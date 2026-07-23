@@ -64,7 +64,7 @@ public partial class MainViewModel
     };
 
     private bool IsAutoActive(PeaklistSpectrum spectrum) =>
-        ResultsByExpNumber.TryGetValue(spectrum.ExpNumber, out SpectrumResult? result) && result.IsActive;
+        ResultsByExpNumber.TryGetValue(spectrum.ExpNumber, out SpectrumResult? result) && IsEffectivelyActive(result);
 
     public PeaklistSpectrum? CurrentSpectrum =>
         CurrentIndex >= 0 && CurrentIndex < CurrentView.Count ? CurrentView[CurrentIndex] : null;
@@ -81,7 +81,7 @@ public partial class MainViewModel
     public string CurrentAutomaticStatusText =>
         CurrentSpectrum is null ? "-" :
         ResultsByExpNumber.TryGetValue(CurrentSpectrum.ExpNumber, out SpectrumResult? result)
-            ? (result.IsActive ? "ACTIVE" : "INACTIVE")
+            ? (IsEffectivelyActive(result) ? "ACTIVE" : "INACTIVE")
             : "Run analysis";
 
     partial void OnCurrentFilterChanged(ExperimentFilter? value)

@@ -124,6 +124,12 @@
                     <Border Grid.Row="1" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Probability Distribution" />
+                            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="4" Margin="4,0">
+                                <TextBlock Text="Decision Threshold:" VerticalAlignment="Center" FontSize="11" />
+                                <Slider Width="160" Minimum="0" Maximum="1" TickFrequency="0.01"
+                                        Value="{Binding ManualProbabilityThreshold}" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding ManualProbabilityThreshold, StringFormat='{}{0:F2}'}" VerticalAlignment="Center" FontSize="11" />
+                            </StackPanel>
                             <lvc:CartesianChart x:Name="ProbabilityChart"
                                                  Series="{Binding ProbabilitySeries}"
                                                  XAxes="{Binding ProbabilityXAxes}"
