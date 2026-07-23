@@ -38,4 +38,44 @@ public class MainViewModelChartTests
 
         Assert.Equal(5, vm.PeakDiffSections.Length);
     }
+
+    [Fact]
+    public void BuildProbabilityChart_produces_one_bar_per_experiment_from_RunResults()
+    {
+        MainViewModel vm = MakeViewModel(80, 85, 40);
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 100, IsActive = true, ActivePseudoprobability = 0.91 });
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 101, IsActive = false, ActivePseudoprobability = 0.1 });
+
+        vm.BuildProbabilityChart();
+
+        var series = Assert.Single(vm.ProbabilitySeries);
+        var column = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<double>>(series);
+        Assert.Equal(new[] { 0.91, 0.1 }, column.Values);
+    }
+
+    [Fact]
+    public void BuildProbabilityChart_shares_its_X_axis_with_the_peak_diff_chart_for_zoom_sync()
+    {
+        MainViewModel vm = MakeViewModel(80, 85);
+        vm.BuildPeakDiffChart();
+
+        vm.BuildProbabilityChart();
+
+        Assert.Contains(vm.PeakDiffXAxes[0], vm.ProbabilityXAxes[0].SharedWith);
+        Assert.Contains(vm.ProbabilityXAxes[0], vm.PeakDiffXAxes[0].SharedWith);
+    }
+
+    [Fact]
+    public void BuildGauges_produces_a_solid_gauge_series_for_actives_and_inactives()
+    {
+        MainViewModel vm = MakeViewModel(80, 85, 40, 90);
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 100, IsActive = true });
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 101, IsActive = false });
+        vm.RunResults.Add(new SpectrumResult { ExpNumber = 102, IsActive = true });
+
+        vm.BuildGauges();
+
+        Assert.NotEmpty(vm.ActivesGaugeSeries);
+        Assert.NotEmpty(vm.InactivesGaugeSeries);
+    }
 }

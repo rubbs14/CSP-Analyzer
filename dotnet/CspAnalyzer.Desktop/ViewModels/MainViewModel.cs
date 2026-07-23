@@ -239,6 +239,10 @@ public partial class MainViewModel : ViewModelBase
                     RunResults.Add(r);
                 }
                 OpenResultsWindowCommand.NotifyCanExecuteChanged();
+                CurrentIndex = 0;
+                BuildProbabilityChart();
+                BuildGauges();
+                RaiseNavigationChanged();
                 RunStatusText = $"Run complete: {parsed.Length} experiments classified.";
             }
             else

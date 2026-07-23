@@ -4,6 +4,7 @@ using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Extensions;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using SkiaSharp;
@@ -115,4 +116,87 @@ public partial class MainViewModel
         TextSize = 10,
         Paint = new SolidColorPaint(CurrentMarkerTextColor),
     };
+
+    [ObservableProperty]
+    private ISeries[] _probabilitySeries = Array.Empty<ISeries>();
+
+    [ObservableProperty]
+    private Axis[] _probabilityXAxes = Array.Empty<Axis>();
+
+    [ObservableProperty]
+    private Axis[] _probabilityYAxes = Array.Empty<Axis>();
+
+    [ObservableProperty]
+    private RectangularSection[] _probabilitySections = Array.Empty<RectangularSection>();
+
+    [ObservableProperty]
+    private LabelVisual[] _probabilityAnnotations = Array.Empty<LabelVisual>();
+
+    public void BuildProbabilityChart()
+    {
+        double[] probs = DatasetSpectra
+            .Select(s => ResultsByExpNumber.TryGetValue(s.ExpNumber, out var r) ? r.ActivePseudoprobability : 0.0)
+            .ToArray();
+
+        var xAxis = new Axis
+        {
+            Name = "Experiment No.",
+            LabelsRotation = 30,
+            MinLimit = 0,
+            MaxLimit = DatasetSpectra.Count,
+            Labels = DatasetSpectra.Select(s => s.ExpNumber.ToString()).ToList(),
+        };
+
+        // Port of CSPv2/Form1.cs's Axis_RangeChanged zoom-sync hack - the
+        // modern LiveChartsCore way is just sharing axes with each other.
+        if (PeakDiffXAxes.Length > 0)
+        {
+            xAxis.SharedWith = new[] { PeakDiffXAxes[0] };
+            PeakDiffXAxes[0].SharedWith = new[] { xAxis };
+        }
+
+        ProbabilityXAxes = new[] { xAxis };
+        ProbabilityYAxes = new[] { new Axis { Name = "Probability", MinLimit = 0, MaxLimit = 1 } };
+        ProbabilitySeries = new ISeries[]
+        {
+            new ColumnSeries<double> { Name = "Probability", Values = probs, Fill = new SolidColorPaint(InactiveAutoColor) },
+        };
+        ProbabilitySections = new[]
+        {
+            new RectangularSection { Yi = 0, Yj = 0.35, Fill = new SolidColorPaint(BrokenSpectrumColor) },
+            new RectangularSection { Yi = 0.35, Yj = 0.75, Fill = new SolidColorPaint(CheckSpectrumColor) },
+            new RectangularSection { Yi = 0.75, Yj = 1, Fill = new SolidColorPaint(FineSpectrumColor) },
+        };
+
+        if (CurrentIndex >= 0 && CurrentIndex < probs.Length)
+        {
+            ProbabilityAnnotations = new[] { Label(CurrentIndex, probs[CurrentIndex], "Current Spectrum") };
+        }
+    }
+
+    [ObservableProperty]
+    private ISeries[] _activesGaugeSeries = Array.Empty<ISeries>();
+
+    [ObservableProperty]
+    private ISeries[] _inactivesGaugeSeries = Array.Empty<ISeries>();
+
+    public void BuildGauges()
+    {
+        int actives = RunResults.Count(r => r.IsActive);
+        int inactives = RunResults.Count - actives;
+
+        ActivesGaugeSeries = GaugeGenerator.BuildSolidGauge(
+            new GaugeItem(actives, series =>
+            {
+                series.Name = "Actives";
+                series.Fill = new SolidColorPaint(ActiveAutoColor);
+            }));
+
+        InactivesGaugeSeries = GaugeGenerator.BuildSolidGauge(
+            new GaugeItem(inactives, series =>
+            {
+                series.Name = "Inactives";
+                series.Fill = new SolidColorPaint(InactiveAutoColor);
+            }));
+    }
 }
