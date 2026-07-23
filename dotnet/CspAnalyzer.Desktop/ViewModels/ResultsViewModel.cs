@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -107,10 +108,10 @@ public partial class ResultsViewModel : ViewModelBase
         foreach (ResultRow row in Rows)
         {
             sb.AppendLine(string.Join(",",
-                CsvField(row.Name), CsvField(row.Dataset), row.TotalReadPeaks,
-                row.MinIntensity, row.MaxIntensity,
-                row.PeakDifference?.ToString() ?? "none",
-                row.Probability?.ToString() ?? "none",
+                CsvField(row.Name), CsvField(row.Dataset), row.TotalReadPeaks.ToString(CultureInfo.InvariantCulture),
+                row.MinIntensity.ToString(CultureInfo.InvariantCulture), row.MaxIntensity.ToString(CultureInfo.InvariantCulture),
+                row.PeakDifference?.ToString(CultureInfo.InvariantCulture) ?? "none",
+                row.Probability?.ToString(CultureInfo.InvariantCulture) ?? "none",
                 CsvField(row.AutomaticAnalysis ?? "none"),
                 CsvField(row.ManualFlag)));
         }
@@ -157,8 +158,8 @@ public partial class ResultsViewModel : ViewModelBase
             sheet.Cell(rowIndex, 3).Value = row.TotalReadPeaks;
             sheet.Cell(rowIndex, 4).Value = row.MinIntensity;
             sheet.Cell(rowIndex, 5).Value = row.MaxIntensity;
-            sheet.Cell(rowIndex, 6).Value = row.PeakDifference?.ToString() ?? "none";
-            sheet.Cell(rowIndex, 7).Value = row.Probability?.ToString() ?? "none";
+            sheet.Cell(rowIndex, 6).Value = row.PeakDifference?.ToString(CultureInfo.InvariantCulture) ?? "none";
+            sheet.Cell(rowIndex, 7).Value = row.Probability?.ToString(CultureInfo.InvariantCulture) ?? "none";
             sheet.Cell(rowIndex, 8).Value = row.AutomaticAnalysis ?? "none";
             sheet.Cell(rowIndex, 9).Value = row.ManualFlag;
             rowIndex++;
@@ -213,10 +214,10 @@ public partial class ResultsViewModel : ViewModelBase
             double x = 20;
             string[] cells =
             {
-                row.Name, row.Dataset, row.TotalReadPeaks.ToString(),
-                row.MinIntensity.ToString("F0"), row.MaxIntensity.ToString("F0"),
-                row.PeakDifference?.ToString() ?? "none",
-                row.Probability?.ToString() ?? "none",
+                row.Name, row.Dataset, row.TotalReadPeaks.ToString(CultureInfo.InvariantCulture),
+                row.MinIntensity.ToString("F0", CultureInfo.InvariantCulture), row.MaxIntensity.ToString("F0", CultureInfo.InvariantCulture),
+                row.PeakDifference?.ToString(CultureInfo.InvariantCulture) ?? "none",
+                row.Probability?.ToString(CultureInfo.InvariantCulture) ?? "none",
                 row.AutomaticAnalysis ?? "none", row.ManualFlag,
             };
             for (int i = 0; i < cells.Length; i++)
