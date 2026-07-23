@@ -7,7 +7,8 @@ namespace CspAnalyzer.BackendInterop.Tests;
 /// Exercises the real S6 contract end to end: shells out to the actual
 /// csp_modern conda env's python, against the real repo model_artifacts/,
 /// with a committed demo fixture. Skips itself if that specific conda env
-/// isn't present - python/env discovery is S11's job, not this stub's.
+/// isn't present - cross-platform python/env discovery lives in
+/// BackendEnvironment/CondaPythonPaths, not this stub.
 /// </summary>
 public class BackendCliRunnerIntegrationTests
 {

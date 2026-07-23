@@ -23,7 +23,8 @@ public sealed record BackendRunResult(int ExitCode, string StdOut, string StdErr
 /// Shells out to the python backend's stable CLI contract
 /// (`python -m backend &lt;json_in&gt; [out_dir] --model-dir DIR
 /// --bins-per-array-dimension N`). Does not search for a python executable -
-/// the caller resolves that (cross-platform discovery is S11's job).
+/// the caller resolves that (cross-platform discovery lives in
+/// BackendEnvironment/CondaPythonPaths).
 /// </summary>
 public static class BackendCliRunner
 {
