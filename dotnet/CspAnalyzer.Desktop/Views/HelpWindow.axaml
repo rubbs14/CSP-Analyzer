@@ -1,0 +1,67 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CspAnalyzer.Desktop.Views.HelpWindow"
+        Title="Help"
+        Width="700" Height="700"
+        WindowStartupLocation="CenterOwner">
+    <ScrollViewer>
+        <StackPanel Margin="16" Spacing="10">
+            <TextBlock Text="Help" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,8" />
+
+            <TextBlock Text="Tips and Tricks" FontWeight="Bold" FontSize="14" />
+            <TextBlock Text="Common issues" FontWeight="SemiBold" />
+
+            <TextBlock Text="1. No actives found after analysis" FontWeight="SemiBold" Margin="0,4,0,0" />
+            <TextBlock TextWrapping="Wrap" Text="This may be due to several causes, but most probably to incorrect or lousy peak picking - the classifier's scaler/PCA/SVM pipeline wasn't trained to separate feature vectors built from badly-picked peaks. We are aware that peak picking should be handled in a full-stack application; we are working on it!" />
+
+            <TextBlock Text="2. Memory error exception(s)" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <TextBlock TextWrapping="Wrap" Text="This is due to the csp_modern conda environment the backend runs in. Try to free some memory and rerun the software. We chose to build our own Python environment for ease of deployability of this and future upgrades; the downside is that this requires more memory." />
+
+            <TextBlock Text="3. Unable to display analysis results" FontWeight="SemiBold" Margin="0,8,0,0" />
+            <TextBlock TextWrapping="Wrap" Text="Check that the CSP Analyzer has permission to access your user temporary folder, or try running the executable with administrative rights." />
+
+            <TextBlock Text="Tricks" FontWeight="Bold" FontSize="14" Margin="0,12,0,0" />
+            <TextBlock Text="Peak picking in TopSpin" FontWeight="SemiBold" />
+            <TextBlock TextWrapping="Wrap" Text="Because the CSP Analyzer relies on TopSpin peak picking, this must be done appropriately. Of course, the peak picking is strictly dependent on the experiment and there is no easy way to standardize this operation. But we have a workaround. This is how you can have a relatively fast and efficient peak picking done in TopSpin." />
+            <TextBlock FontFamily="monospace" Text="1 F1P 135; 2 F1P 11; 1 F2P 105; 2 F2P 6; MI 0.0001; PPNUM 90; pp2d nodia" />
+
+            <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,8,0,0">
+                <StackPanel Spacing="2">
+                    <TextBlock Text="15N-High" FontSize="11" />
+                    <TextBox Name="NMaxTextBox" Width="60" Text="{Binding NMaxText}" />
+                </StackPanel>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="1H-High" FontSize="11" />
+                    <TextBox Name="HMaxTextBox" Width="60" Text="{Binding HMaxText}" />
+                </StackPanel>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="15N-Low" FontSize="11" />
+                    <TextBox Name="NMinTextBox" Width="60" Text="{Binding NMinText}" />
+                </StackPanel>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="1H-Low" FontSize="11" />
+                    <TextBox Name="HMinTextBox" Width="60" Text="{Binding HMinText}" />
+                </StackPanel>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Min. Intensity" FontSize="11" />
+                    <TextBox Name="MiTextBox" Width="70" Text="{Binding MiText}" />
+                </StackPanel>
+                <StackPanel Spacing="2">
+                    <TextBlock Text="Desired Peaks" FontSize="11" />
+                    <TextBox Name="PpNumTextBox" Width="60" Text="{Binding PpNumText}" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,8,0,0">
+                <Button Content="Generate" Command="{Binding GenerateCommand}" />
+                <Button Content="Reset" Command="{Binding ResetCommand}" />
+            </StackPanel>
+
+            <TextBox Name="GeneratedCommandTextBox" Text="{Binding GeneratedCommandText}" IsReadOnly="True" Margin="0,8,0,0" />
+            <Button Content="Copy" Click="OnCopyClicked" HorizontalAlignment="Left" />
+
+            <TextBlock Text="Peak lists extractor" FontWeight="SemiBold" Margin="0,12,0,0" />
+            <TextBlock TextWrapping="Wrap" Text="This small app will retrieve just the peaklist.xml files, keeping the same folder-tree used by TopSpin, and copy them to a custom path, so you won't have to copy the whole experiments folders (which saves precious disk space). Note that if 1-D experiments were peak-picked, these will be included in the exported folder." />
+        </StackPanel>
+    </ScrollViewer>
+</Window>
