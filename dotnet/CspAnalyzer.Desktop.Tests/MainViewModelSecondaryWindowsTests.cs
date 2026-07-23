@@ -18,13 +18,19 @@ public class MainViewModelSecondaryWindowsTests
         public void Show() => ShowCallCount++;
     }
 
+    private sealed class RecordingHelpWindowService : IHelpWindowService
+    {
+        public int ShowCallCount;
+        public void Show() => ShowCallCount++;
+    }
+
     [Fact]
     public void OpenAboutWindowCommand_CallsAboutWindowServiceShow()
     {
         var aboutService = new RecordingAboutWindowService();
         var vm = new MainViewModel(
             new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
-            aboutService, new NullShortcutsWindowService());
+            aboutService, new NullShortcutsWindowService(), new NullHelpWindowService());
 
         vm.OpenAboutWindowCommand.Execute(null);
 
@@ -37,11 +43,24 @@ public class MainViewModelSecondaryWindowsTests
         var shortcutsService = new RecordingShortcutsWindowService();
         var vm = new MainViewModel(
             new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
-            new NullAboutWindowService(), shortcutsService);
+            new NullAboutWindowService(), shortcutsService, new NullHelpWindowService());
 
         vm.OpenShortcutsWindowCommand.Execute(null);
 
         Assert.Equal(1, shortcutsService.ShowCallCount);
+    }
+
+    [Fact]
+    public void OpenHelpWindowCommand_CallsHelpWindowServiceShow()
+    {
+        var helpService = new RecordingHelpWindowService();
+        var vm = new MainViewModel(
+            new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
+            new NullAboutWindowService(), new NullShortcutsWindowService(), helpService);
+
+        vm.OpenHelpWindowCommand.Execute(null);
+
+        Assert.Equal(1, helpService.ShowCallCount);
     }
 
     [Fact]

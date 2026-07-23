@@ -10,4 +10,7 @@ public partial class MainViewModel
 
     [RelayCommand]
     private void OpenShortcutsWindow() => _shortcutsWindowService.Show();
+
+    [RelayCommand]
+    private void OpenHelpWindow() => _helpWindowService.Show();
 }

@@ -29,7 +29,7 @@ public class MainWindowKeyBindingsTests
         var recording = new RecordingShortcutsWindowService();
         var vm = new MainViewModel(
             new NullFilePickerService(), new NullResultsWindowService(), new NullConfirmDialogService(),
-            new NullAboutWindowService(), recording);
+            new NullAboutWindowService(), recording, new NullHelpWindowService());
         var window = new MainWindow { DataContext = vm };
         window.Show();
 
