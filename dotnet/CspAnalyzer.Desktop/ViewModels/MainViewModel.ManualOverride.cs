@@ -93,13 +93,36 @@ public partial class MainViewModel
         InactivesManualCount = DatasetSpectra.Count(s => s.UserSelection == "INACTIVE (MAN)");
         NotSetManualCount = DatasetSpectra.Count(s => s.UserSelection == "Not set");
 
+        // Panel is too small for a Y axis to render its numbers legibly
+        // (S12 polish: it just came out as illegible overlapping digits) -
+        // the count is small and few enough to just print above each bar
+        // instead, with the hover tooltip covering the rest.
+        static ColumnSeries<int> Bar(string name, int count, SKColor color) => new()
+        {
+            Name = name,
+            Values = new[] { count },
+            Fill = new SolidColorPaint(color),
+            ShowDataLabels = true,
+            DataLabelsPosition = LiveChartsCore.Measure.DataLabelsPosition.Top,
+            DataLabelsPaint = new SolidColorPaint(SKColors.White),
+            DataLabelsSize = 11,
+            DataLabelsFormatter = p => p.Coordinate.PrimaryValue.ToString("N0"),
+        };
+
         ManualResultsSeries = new ISeries[]
         {
-            new ColumnSeries<int> { Name = "Active", Values = new[] { ActivesManualCount }, Fill = new SolidColorPaint(ActiveManualColor) },
-            new ColumnSeries<int> { Name = "Inactive", Values = new[] { InactivesManualCount }, Fill = new SolidColorPaint(InactiveManualColor) },
-            new ColumnSeries<int> { Name = "Not set", Values = new[] { NotSetManualCount }, Fill = new SolidColorPaint(NotSetManualColor) },
+            Bar("Active", ActivesManualCount, ActiveManualColor),
+            Bar("Inactive", InactivesManualCount, InactiveManualColor),
+            Bar("Not set", NotSetManualCount, NotSetManualColor),
         };
         ManualResultsXAxes = new[] { new Axis { MinLimit = -1, MaxLimit = 1, IsVisible = false } };
-        ManualResultsYAxes = new[] { new Axis { MinLimit = 0 } };
+
+        // Headroom above the tallest bar for its data label - without an
+        // explicit MaxLimit, the tallest bar fills the chart's full height
+        // and its "Top"-positioned label gets clipped by the panel border
+        // above the chart (found live: a 61-count "Not set" bar next to
+        // 2/1-count Active/Inactive bars cut its own label in half).
+        int tallestBar = new[] { ActivesManualCount, InactivesManualCount, NotSetManualCount }.Max();
+        ManualResultsYAxes = new[] { new Axis { MinLimit = 0, MaxLimit = Math.Max(1, tallestBar) * 1.6, IsVisible = false } };
     }
 }
