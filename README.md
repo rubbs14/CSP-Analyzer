@@ -16,6 +16,27 @@ Key features include:
 - **Interactive visualization** of NMR spectra using LiveCharts
 - **Integrated peak-picking guidance** with TopSpin command-line helpers
 
+## Installation
+
+Pre-built, self-contained packages are available for Linux, Windows, and
+macOS (x64) - no separate Python or .NET install required, the backend
+classifier is bundled inside.
+
+1. Download the zip for your OS from the latest packaging run (Actions →
+   "CI" → the most recent `workflow_dispatch` run → Artifacts).
+2. Extract it anywhere.
+3. Run the executable directly from the extracted folder:
+   - **Windows:** `CspAnalyzer.Desktop.exe`
+   - **Linux / macOS:** `./CspAnalyzer.Desktop`
+
+Don't move the executable out of its extracted folder - it expects
+`model_artifacts/` and `csp-backend/` to stay right next to it.
+
+Building from source instead requires the .NET 8 SDK and a `csp_modern`
+conda environment (see `backend/requirements.txt`) - see
+`docs/superpowers/SESSIONS.md` for the full development setup this project
+was built with.
+
 ## How It Works
 
 The CSP-Analyzer pipeline operates in three stages:
@@ -87,9 +108,16 @@ The ML backend runs in a Miniconda environment built with the specifics required
 
 Load the dataset files as described in the "Loading Experiments" section above and try again.
 
-### No Python.exe found
+### Backend not found / "csp_modern python environment not found"
 
-Check that the Miniconda environment files are in the same folder from where the application was launched. If missing, manually copy the Miniconda3 folder to the application start path. Also check that the `pickle_jar` folder (containing the ML training repo) is there.
+If you're running a downloaded package: don't move the executable out of
+its extracted folder - the bundled backend (`csp-backend/`) and
+`model_artifacts/` must stay right next to it.
+
+If you're running from source (a dev checkout, not a downloaded package):
+this means no `csp_modern` conda environment was found. Install
+Miniconda/Miniforge and create the env described in
+`backend/requirements.txt`.
 
 ### Unable to show Analysis results
 
@@ -102,6 +130,30 @@ This may be caused by incorrect or noisy peak picking. Refer to the Usage Tips s
 ### Other errors
 
 Please report any other errors and we'll try to figure out what's going on. To help with bug reporting, you may also attach the JSON files generated during the analysis.
+
+## Background
+
+CSP-Analyzer implements the method described in the paper below. Fragment-based
+drug discovery relies on NMR screening to detect chemical shift perturbations
+(CSPs) that indicate protein-ligand binding, but manually reviewing hundreds
+of 2D spectra per campaign is slow and inconsistent - the same spectrum can
+get classified differently depending on where it falls in a long review
+session.
+
+The approach: each 2D HSQC spectrum is reduced to a 15-element descriptor
+vector by comparing it against a reference spectrum using computer-vision
+techniques (histograms of oriented gradients, phase cross-correlation
+registration, ORB point-matching, structural similarity, Hu moments,
+MSE/PSNR, and Jensen-Shannon entropy). SMOTE-ENN balances the training
+classes, PCA reduces dimensionality, and an RBF-kernel SVM (with Platt
+scaling for calibrated probabilities) classifies each spectrum as active or
+inactive.
+
+Validated on 1,611 2D HSQC spectra across 4 protein targets, trained on
+just 100 labeled spectra (6.2% of the total): 0.87 average accuracy, 0.72
+sensitivity, 0.88 specificity, 3.10% false-negative rate, 10.30%
+false-positive rate - deliberately tuned to minimize missed actives over
+minimizing false alarms.
 
 ## Citation
 
