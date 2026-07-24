@@ -374,7 +374,25 @@ public partial class MainViewModel
 
     public void BuildOverlayAxes()
     {
-        OverlayXAxes = new[] { new Axis { Name = "1H ppm", NameTextSize = AxisNameTextSize, NamePaint = new SolidColorPaint(AxisNameColor), TextSize = 9, MinLimit = -HMax, MaxLimit = -HMin, Labeler = value => Math.Abs(value).ToString("0.##") } };
+        OverlayXAxes = new[]
+        {
+            new Axis
+            {
+                Name = "1H ppm",
+                NameTextSize = AxisNameTextSize,
+                NamePaint = new SolidColorPaint(AxisNameColor),
+                TextSize = 9,
+                MinLimit = -HMax,
+                MaxLimit = -HMin,
+                Labeler = value => Math.Abs(value).ToString("0.##"),
+                // Y already shows separator lines by default - X needs an
+                // explicit SeparatorsPaint or it stays invisible (same
+                // ShowSeparatorLines quirk as the peak-diff/probability
+                // charts' X axes).
+                ShowSeparatorLines = true,
+                SeparatorsPaint = new SolidColorPaint(GridSeparatorColor),
+            },
+        };
         OverlayYAxes = new[]
         {
             new Axis

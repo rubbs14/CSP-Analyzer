@@ -191,11 +191,11 @@ public partial class MainViewModel
 
     [RelayCommand]
     private async System.Threading.Tasks.Task ShowReferencePpDetails() =>
-        await _confirmDialogService.ConfirmAsync("Reference PP Details", ReferenceSpectrum?.PpInfo ?? "No reference loaded.");
+        await _infoDialogService.ShowAsync("Reference PP Details", ReferenceSpectrum?.PpInfo ?? "No reference loaded.");
 
     [RelayCommand]
     private async System.Threading.Tasks.Task ShowExperimentPpDetails() =>
-        await _confirmDialogService.ConfirmAsync("Experiment PP Details", CurrentSpectrum?.PpInfo ?? "No experiment selected.");
+        await _infoDialogService.ShowAsync("Experiment PP Details", CurrentSpectrum?.PpInfo ?? "No experiment selected.");
 
     public void NavigateToChartIndex(int index)
     {

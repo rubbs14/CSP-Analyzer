@@ -5,9 +5,19 @@ namespace CspAnalyzer.Desktop.Services;
 
 public sealed class AvaloniaHelpWindowService(Window owner) : IHelpWindowService
 {
+    // See AvaloniaAboutWindowService's comment - same fix, same reason.
+    private HelpWindow? _window;
+
     public void Show()
     {
-        var window = new HelpWindow();
-        window.Show(owner);
+        if (_window is not null)
+        {
+            _window.Activate();
+            return;
+        }
+
+        _window = new HelpWindow();
+        _window.Closed += (_, _) => _window = null;
+        _window.Show(owner);
     }
 }
