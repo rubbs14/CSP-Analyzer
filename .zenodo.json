@@ -1,0 +1,46 @@
+{
+  "title": "CSP-Analyzer",
+  "description": "A fast machine-learning-based desktop application for automated analysis of two-dimensional NMR spectra in NMR fragment-based screening. It reads Bruker TopSpin peaklists, compares each experiment spectrum against a reference using computer-vision descriptors, and classifies spectra as active or inactive via a SMOTE-ENN / PCA / SVM pipeline. Cross-platform (.NET 8 / Avalonia) with a bundled Python backend.",
+  "upload_type": "software",
+  "license": "MIT",
+  "access_right": "open",
+  "creators": [
+    {
+      "name": "Fino, Roberto",
+      "orcid": "0000-0001-5323-4562"
+    },
+    {
+      "name": "Byrne, Ryan"
+    }
+  ],
+  "keywords": [
+    "NMR",
+    "NMR spectroscopy",
+    "fragment-based drug discovery",
+    "machine learning",
+    "HSQC",
+    "SVM",
+    "SMOTE-ENN",
+    "cheminformatics",
+    "structural biology"
+  ],
+  "grants": [
+    {
+      "id": "10.13039/501100000780::675555"
+    }
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.1016/j.csbj.2020.02.015",
+      "relation": "isSupplementTo",
+      "resource_type": "publication-article",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "https://github.com/rubbs14/CSP-Analyzer",
+      "relation": "isSupplementedBy",
+      "resource_type": "software",
+      "scheme": "url"
+    }
+  ]
+}
