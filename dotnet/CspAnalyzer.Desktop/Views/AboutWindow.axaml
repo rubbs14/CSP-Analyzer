@@ -10,7 +10,7 @@
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="Padding" Value="0" />
             <Setter Property="Cursor" Value="Hand" />
-            <Setter Property="Foreground" Value="#5B9BFF" />
+            <Setter Property="Foreground" Value="#00A297" />
             <Setter Property="HorizontalAlignment" Value="Left" />
         </Style>
         <Style Selector="Button.link TextBlock">
@@ -18,20 +18,20 @@
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
         <Style Selector="Button.link:pointerover">
-            <Setter Property="Foreground" Value="#8CB8FF" />
+            <Setter Property="Foreground" Value="#4DBFB0" />
         </Style>
         <Style Selector="Button.link:pointerover TextBlock">
-            <Setter Property="Foreground" Value="#8CB8FF" />
+            <Setter Property="Foreground" Value="#4DBFB0" />
         </Style>
         <Style Selector="TextBlock.section">
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="FontSize" Value="13" />
-            <Setter Property="Foreground" Value="#7FA8FF" />
+            <Setter Property="Foreground" Value="#00A297" />
             <Setter Property="Margin" Value="0,10,0,0" />
         </Style>
         <Style Selector="Border.code">
             <Setter Property="Background" Value="#1E1E1E" />
-            <Setter Property="BorderBrush" Value="#3A5CDC" />
+            <Setter Property="BorderBrush" Value="#00A297" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="4" />
             <Setter Property="Padding" Value="8,6" />
@@ -102,7 +102,7 @@
                         <TextBlock TextWrapping="Wrap" Text="TopSpin has a very useful feature for batch processing spectra using the command line. To help find the right settings, the Help window provides a string-generator for the TopSpin command line." />
                         <TextBlock TextWrapping="Wrap" Text="Automatic peak-picking for 2-D datasets can be run firing a command that should look like this:" />
                         <Border Classes="code">
-                            <TextBlock FontFamily="monospace" TextWrapping="Wrap" Foreground="#C8E6FF" Text="1 F1P 135; 2 F1P 11; 1 F2P 102; 2 F2P 6; MI 0.03; PPNUM 120; pp2d nodia" />
+                            <TextBlock FontFamily="monospace" TextWrapping="Wrap" Foreground="#C8F5EE" Text="1 F1P 135; 2 F1P 11; 1 F2P 102; 2 F2P 6; MI 0.03; PPNUM 120; pp2d nodia" />
                         </Border>
                         <TextBlock TextWrapping="Wrap" Text="Where: 1 F1P is the 15N upper-bound frequency limit; 2 F1P is the 1H upper-bound frequency limit; 1 F2P is the 15N lower-bound frequency limit; 2 F2P is the 1H lower-bound frequency limit; MI is the Minimum Intensity contour limit for the lowest intensity peak recognized as a signal peak and not noise; PPNUM is the desired number of peaks (usually tightly related to the number of residues in the protein screened); pp2d nodia runs the peak-picking in silent mode (without showing the pp windows)." />
                         <TextBlock TextWrapping="Wrap" Text="Unfortunately, to find the optimal settings, the user sometimes has to run the same command several times before reaching the optimum trade-off between the number of peaks correctly picked and those belonging to background noise." />
