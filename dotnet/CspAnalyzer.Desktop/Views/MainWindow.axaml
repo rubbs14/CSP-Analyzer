@@ -206,6 +206,23 @@
             <Setter Property="BorderBrush" Value="#4E7DF0" />
             <Setter Property="Opacity" Value="1" />
         </Style>
+
+        <!-- Player: First/Previous/Next/Last spectrum navigation - icon over
+             label, flat, teal when enabled, dimmed (not FluentTheme's default
+             disabled foreground swap, which an Image ignores) when not. -->
+        <Style Selector="Button.player">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="4,4" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.player:pointerover">
+            <Setter Property="Background" Value="#1F00A297" />
+        </Style>
+        <Style Selector="Button.player:disabled">
+            <Setter Property="Opacity" Value="0.35" />
+        </Style>
     </Window.Styles>
 
     <Window.KeyBindings>
@@ -544,10 +561,30 @@
                     </Grid>
                     <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto">
                         <Grid Grid.Column="0" ColumnDefinitions="*,*,*,*" Margin="4" VerticalAlignment="Top">
-                            <Button Grid.Column="0" Content="|&lt;" Command="{Binding FirstCommand}" Classes="compact" HorizontalAlignment="Stretch" />
-                            <Button Grid.Column="1" Content="&lt;" Command="{Binding PreviousCommand}" Classes="compact" HorizontalAlignment="Stretch" />
-                            <Button Grid.Column="2" Content="&gt;" Command="{Binding NextCommand}" Classes="compact" HorizontalAlignment="Stretch" />
-                            <Button Grid.Column="3" Content="&gt;|" Command="{Binding LastCommand}" Classes="compact" HorizontalAlignment="Stretch" />
+                            <Button Grid.Column="0" Command="{Binding FirstCommand}" Classes="player" HorizontalAlignment="Stretch">
+                                <StackPanel Spacing="2" HorizontalAlignment="Center">
+                                    <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/first.png" Width="18" Height="18" />
+                                    <TextBlock Text="First" FontSize="9" HorizontalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="1" Command="{Binding PreviousCommand}" Classes="player" HorizontalAlignment="Stretch">
+                                <StackPanel Spacing="2" HorizontalAlignment="Center">
+                                    <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/previous.png" Width="18" Height="18" />
+                                    <TextBlock Text="Previous" FontSize="9" HorizontalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="2" Command="{Binding NextCommand}" Classes="player" HorizontalAlignment="Stretch">
+                                <StackPanel Spacing="2" HorizontalAlignment="Center">
+                                    <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/next.png" Width="18" Height="18" />
+                                    <TextBlock Text="Next" FontSize="9" HorizontalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="3" Command="{Binding LastCommand}" Classes="player" HorizontalAlignment="Stretch">
+                                <StackPanel Spacing="2" HorizontalAlignment="Center">
+                                    <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/last.png" Width="18" Height="18" />
+                                    <TextBlock Text="Last" FontSize="9" HorizontalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
                         </Grid>
                         <StackPanel Grid.Column="1" Margin="4" Spacing="2">
                             <TextBlock Text="{Binding CurrentReadPeaks, StringFormat='Read Peaks: {0}'}" FontSize="10" />
