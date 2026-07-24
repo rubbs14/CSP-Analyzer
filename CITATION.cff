@@ -14,7 +14,8 @@ authors:
     orcid: "https://orcid.org/0000-0001-5323-4562"
   - family-names: "Byrne"
     given-names: "Ryan"
-version: "2.0.0"
+version: "2.0.1"
+doi: "10.5281/zenodo.3618512"
 license: MIT
 repository-code: "https://github.com/rubbs14/CSP-Analyzer"
 url: "https://github.com/rubbs14/CSP-Analyzer"

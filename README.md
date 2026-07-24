@@ -8,7 +8,8 @@
 [![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey)](#installation)
 [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)](#installation)
 [![Published in CSBJ](https://img.shields.io/badge/published-CSBJ%202020-blueviolet)](#citation)
-[![DOI](https://img.shields.io/badge/DOI-10.1016%2Fj.csbj.2020.02.015-blue)](https://doi.org/10.1016/j.csbj.2020.02.015)
+[![Paper DOI](https://img.shields.io/badge/paper%20DOI-10.1016%2Fj.csbj.2020.02.015-blue)](https://doi.org/10.1016/j.csbj.2020.02.015)
+[![Software DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3618512.svg)](https://doi.org/10.5281/zenodo.3618512)
 
 A fast, machine-learning-based analyzer for multi-spectrum 2-D NMR Fragment Screening data.
 
@@ -156,7 +157,9 @@ If you use CSP Analyzer in your work, please cite:
 
 > Fino, R., Byrne, R., Softley, C.A., Sattler, M., Schneider, G. and Popowicz, G.M., 2020. Introducing the CSP Analyzer: A novel Machine Learning-based application for automated analysis of two-dimensional NMR spectra in NMR fragment-based screening. *Computational and Structural Biotechnology Journal*, 18, pp.603-611.
 
-**DOI:** [10.1016/j.csbj.2020.02.015](https://doi.org/10.1016/j.csbj.2020.02.015) · **Open access full text:** [PMC7096735](https://pmc.ncbi.nlm.nih.gov/articles/PMC7096735/) · **Publisher page:** [ScienceDirect](https://www.sciencedirect.com/science/article/pii/S2001037020300246)
+**Paper DOI:** [10.1016/j.csbj.2020.02.015](https://doi.org/10.1016/j.csbj.2020.02.015) · **Open access full text:** [PMC7096735](https://pmc.ncbi.nlm.nih.gov/articles/PMC7096735/) · **Publisher page:** [ScienceDirect](https://www.sciencedirect.com/science/article/pii/S2001037020300246)
+
+To cite the **software** itself (all versions), use the Zenodo concept DOI: [10.5281/zenodo.3618512](https://doi.org/10.5281/zenodo.3618512).
 
 <details>
 <summary>BibTeX</summary>
