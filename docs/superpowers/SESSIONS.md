@@ -302,10 +302,52 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
 
 ## Sub-project 6 — CI / packaging
 
-- [ ] **S13** — GitHub Actions CI: build + test matrix (python `pytest` +
-  .NET `dotnet test`) on push/PR. Split out of the original combined S13
-  scope during brainstorming - packaging isn't just CI config, it needs its
-  own design (see S14).
+- [x] **S13** — GitHub Actions CI: `.github/workflows/ci.yml`, two jobs
+  (`python-tests`, `dotnet-tests`) each on a `[ubuntu-latest, windows-latest,
+  macos-latest]` matrix with `fail-fast: false`, triggered on push/PR. Python
+  side is plain `pip install -r backend/requirements.txt -r
+  backend/requirements-dev.txt` + `pytest backend/tests` - no conda, unlike
+  the real `csp_modern` env S11/S12 relied on for live runs; CI only needs
+  the pinned-version wheels, not conda's own environment management. .NET
+  side is `dotnet restore/build/test dotnet/CspAnalyzer.sln` against .NET
+  8.0.x. Split out of the original combined S13 scope during brainstorming -
+  packaging isn't just CI config, it needs its own design (see S14).
+  6/6 green as of run `30114927021`.
+
+  Real gotcha, worth its own paragraph: the first push (commits `06c58f9`,
+  `e0030dd`) triggered a real run where `python-tests` passed on
+  ubuntu-latest but failed identically on macos-latest AND windows-latest
+  with `ModuleNotFoundError: No module named 'backend'` from
+  `backend/tests/conftest.py`, despite `backend/__init__.py` and
+  `backend/tests/__init__.py` both existing and a local Linux venv run
+  passing 35/35 cleanly. The obvious-looking fix - set `PYTHONPATH:
+  ${{ github.workspace }}` on the pytest step, to force the repo root onto
+  `sys.path` instead of trusting pytest's own rootdir-walking insertion -
+  was tried first and did *not* work; a temporary diagnostic step proved why:
+  `sys.path` genuinely contained the repo root, `os.path.exists(".../backend/
+  __init__.py")` was `True`, and `os.listdir("backend")` succeeded - yet
+  `import backend` still raised `ModuleNotFoundError`. The real cause: the
+  repo root had *two* top-level directories differing only in case -
+  `backend/` (the real package) and a long-dead `Backend/` (an orphaned
+  Visual Studio Python Tools stub from the repo's very first commit,
+  superseded back in S1-S5). On Linux's case-sensitive filesystem those are
+  two unrelated directories and everything works. On macOS/Windows'
+  default case-insensitive filesystems, git checkout collapses both trees
+  onto the same on-disk directory - and while `os.path.exists`/`os.listdir`
+  resolve names case-insensitively (so they don't notice anything wrong),
+  Python's import `FileFinder` does an exact case-sensitive string match
+  against the raw OS directory-listing entries, and the entry it actually
+  found there was spelled `Backend`, not `backend`. No `PYTHONPATH` value
+  can fix a name that isn't spelled the way `import` needs it spelled. The
+  real fix was `git rm -r Backend` (plus dropping its now-dangling project
+  reference from the legacy root `CSPv2.sln`, which isn't the solution CI
+  builds - `dotnet/CspAnalyzer.sln` never referenced it), not a sys.path
+  tweak. Nothing under the real `backend/` package was touched. Lesson for
+  future cross-platform sessions: a `ModuleNotFoundError` that survives a
+  correct, verified `PYTHONPATH`/`sys.path` entry and reproduces
+  identically on both case-insensitive OSes while passing on Linux is a
+  strong signal to check for a case-colliding path in the repo, not to
+  keep adjusting `sys.path`.
 - [ ] **S14** — Cross-platform packaging (Linux/Windows/Mac artifacts).
   Blocked on a real design decision deferred from S11/S12:
   `BackendEnvironment.FindRepoRoot()` requires a `.git` folder next to
