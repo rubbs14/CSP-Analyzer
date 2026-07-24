@@ -313,25 +313,26 @@
                 <StackPanel Spacing="2">
                     <TextBlock Classes="sectionHeader" Text="Options" />
 
-                    <TextBlock Text="Import Control" FontWeight="SemiBold" FontSize="11" Margin="0,4,0,0" />
-                    <Grid ColumnDefinitions="46,*" RowDefinitions="Auto,Auto,Auto,Auto">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="NMin" VerticalAlignment="Center" />
-                        <TextBox x:Name="NMinTextBox" Grid.Row="0" Grid.Column="1" Text="{Binding NMin}" />
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="NMax" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding NMax}" />
-                        <TextBlock Grid.Row="2" Grid.Column="0" Text="HMin" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding HMin}" />
-                        <TextBlock Grid.Row="3" Grid.Column="0" Text="HMax" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding HMax}" />
+                    <TextBlock Text="Import Control" FontWeight="SemiBold" FontSize="11" Margin="0,4,0,0" HorizontalAlignment="Center" />
+                    <Grid ColumnDefinitions="Auto,*,*" RowDefinitions="Auto,Auto,Auto">
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Min" FontStyle="Italic" FontSize="10" HorizontalAlignment="Center" Margin="2" />
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Max" FontStyle="Italic" FontSize="10" HorizontalAlignment="Center" Margin="2" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="15N (ppm)" FontStyle="Italic" VerticalAlignment="Center" Margin="2" />
+                        <TextBox x:Name="NMinTextBox" Grid.Row="1" Grid.Column="1" Text="{Binding NMin}" HorizontalContentAlignment="Center" Margin="2" />
+                        <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding NMax}" HorizontalContentAlignment="Center" Margin="2" />
+                        <TextBlock Grid.Row="2" Grid.Column="0" Text="1H (ppm)" FontStyle="Italic" VerticalAlignment="Center" Margin="2" />
+                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding HMin}" HorizontalContentAlignment="Center" Margin="2" />
+                        <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding HMax}" HorizontalContentAlignment="Center" Margin="2" />
                     </Grid>
                     <Button Content="Reset to Default" Command="{Binding ResetImportControlsCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="0,2" />
 
-                    <TextBlock Text="Peak Filtering" FontWeight="SemiBold" FontSize="11" Margin="0,4,0,0" />
-                    <Grid ColumnDefinitions="62,*" RowDefinitions="Auto,Auto">
-                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Reference" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ReferenceIntensityThreshold}" />
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Dataset" VerticalAlignment="Center" />
-                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DatasetIntensityThreshold}" />
+                    <TextBlock Text="Peak Filtering" FontWeight="SemiBold" FontSize="11" Margin="0,4,0,0" HorizontalAlignment="Center" />
+                    <TextBlock Text="Lowest Intensity threshold" FontStyle="Italic" FontSize="10" HorizontalAlignment="Center" />
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
+                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding ReferenceIntensityThreshold}" HorizontalContentAlignment="Center" Margin="2" />
+                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DatasetIntensityThreshold}" HorizontalContentAlignment="Center" Margin="2" />
+                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Reference" HorizontalAlignment="Center" Margin="2" />
+                        <TextBlock Grid.Row="1" Grid.Column="1" Text="Dataset" HorizontalAlignment="Center" Margin="2" />
                     </Grid>
                     <Button Content="Reset to Default" Command="{Binding ResetPeakFilteringCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="0,2" />
 
@@ -595,8 +596,10 @@
                             <TextBlock Text="{Binding CurrentManualStatusText, StringFormat='Man. Status: {0}'}" FontSize="10" />
                         </StackPanel>
                         <StackPanel Grid.Column="2" Margin="4" Spacing="2">
-                            <Button Content="Ref PP Details" Command="{Binding ShowReferencePpDetailsCommand}" Classes="compact" HorizontalAlignment="Stretch" />
-                            <Button Content="Exp PP Details" Command="{Binding ShowExperimentPpDetailsCommand}" Classes="compact" HorizontalAlignment="Stretch" />
+                            <Grid ColumnDefinitions="*,*">
+                                <Button Grid.Column="0" Content="Ref PP Details" Command="{Binding ShowReferencePpDetailsCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="0,0,1,0" />
+                                <Button Grid.Column="1" Content="Exp PP Details" Command="{Binding ShowExperimentPpDetailsCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="1,0,0,0" />
+                            </Grid>
                             <Button Content="Export" Command="{Binding OpenResultsWindowCommand}" Classes="accent" HorizontalAlignment="Stretch" />
                         </StackPanel>
                     </Grid>
