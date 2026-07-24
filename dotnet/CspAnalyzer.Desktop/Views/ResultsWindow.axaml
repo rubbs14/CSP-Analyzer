@@ -40,39 +40,39 @@
 
     <Grid RowDefinitions="Auto,*">
 
-        <Grid Grid.Row="0" ColumnDefinitions="*,*,*,Auto" Height="220" Margin="4">
+        <Grid Grid.Row="0" ColumnDefinitions="*,*,*,Auto" Height="250" Margin="4">
             <Border Grid.Column="0" BorderThickness="1" BorderBrush="Gray" Margin="2">
                 <DockPanel>
-                    <TextBlock DockPanel.Dock="Top" Text="Overview" HorizontalAlignment="Center" FontWeight="SemiBold" />
-                    <lvc:PieChart Series="{Binding OverviewSeries}" LegendPosition="Right" />
+                    <TextBlock DockPanel.Dock="Top" Text="Overview" HorizontalAlignment="Center" FontWeight="SemiBold" FontSize="11" />
+                    <lvc:PieChart Series="{Binding OverviewSeries}" LegendPosition="Right" LegendTextSize="10" TooltipTextSize="9" />
                 </DockPanel>
             </Border>
             <Border Grid.Column="1" BorderThickness="1" BorderBrush="Gray" Margin="2">
                 <DockPanel>
-                    <TextBlock DockPanel.Dock="Top" Text="Automatic Analysis" HorizontalAlignment="Center" FontWeight="SemiBold" />
-                    <lvc:PieChart Series="{Binding AutoSeries}" LegendPosition="Right" />
+                    <TextBlock DockPanel.Dock="Top" Text="Automatic Analysis" HorizontalAlignment="Center" FontWeight="SemiBold" FontSize="11" />
+                    <lvc:PieChart Series="{Binding AutoSeries}" LegendPosition="Right" LegendTextSize="10" TooltipTextSize="9" />
                 </DockPanel>
             </Border>
             <Border Grid.Column="2" BorderThickness="1" BorderBrush="Gray" Margin="2">
                 <DockPanel>
-                    <TextBlock DockPanel.Dock="Top" Text="Manual Analysis" HorizontalAlignment="Center" FontWeight="SemiBold" />
-                    <lvc:PieChart Series="{Binding ManualSeries}" LegendPosition="Right" />
+                    <TextBlock DockPanel.Dock="Top" Text="Manual Analysis" HorizontalAlignment="Center" FontWeight="SemiBold" FontSize="11" />
+                    <lvc:PieChart Series="{Binding ManualSeries}" LegendPosition="Right" LegendTextSize="10" TooltipTextSize="9" />
                 </DockPanel>
             </Border>
             <Border Grid.Column="3" BorderThickness="1" BorderBrush="Gray" Margin="2" Width="180">
-                <StackPanel Margin="6" Spacing="4">
-                    <TextBlock Text="Run Info" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding TotalExperiments, StringFormat='Total Exp.: {0}'}" />
-                    <TextBlock Text="{Binding ActivesAuto, StringFormat='Actives: {0}'}" />
-                    <TextBlock Text="{Binding InactivesAuto, StringFormat='Inactives: {0}'}" />
-                    <TextBlock Text="{Binding ActivesManual, StringFormat='Man. Actives: {0}'}" />
-                    <TextBlock Text="{Binding InactivesManual, StringFormat='Man. Inactives: {0}'}" />
-                    <TextBlock Text="{Binding NotSetManual, StringFormat='Not set: {0}'}" />
-                    <Button Content="Refresh" Command="{Binding RefreshCommand}" HorizontalAlignment="Stretch" />
-                    <Button Content="Export CSV" Command="{Binding ExportCsvCommand}" HorizontalAlignment="Stretch" />
-                    <Button Content="Export XLSX" Command="{Binding ExportXlsxCommand}" HorizontalAlignment="Stretch" />
-                    <Button Content="Export PDF" Command="{Binding ExportPdfCommand}" HorizontalAlignment="Stretch" />
-                    <TextBlock Text="{Binding ExportStatusText}" TextWrapping="Wrap" FontSize="11" />
+                <StackPanel Margin="6" Spacing="2">
+                    <TextBlock Text="Run Info" FontWeight="SemiBold" FontSize="11" />
+                    <TextBlock Text="{Binding TotalExperiments, StringFormat='Total Exp.: {0}'}" FontSize="10" />
+                    <TextBlock Text="{Binding ActivesAuto, StringFormat='Actives: {0}'}" FontSize="10" />
+                    <TextBlock Text="{Binding InactivesAuto, StringFormat='Inactives: {0}'}" FontSize="10" />
+                    <TextBlock Text="{Binding ActivesManual, StringFormat='Man. Actives: {0}'}" FontSize="10" />
+                    <TextBlock Text="{Binding InactivesManual, StringFormat='Man. Inactives: {0}'}" FontSize="10" />
+                    <TextBlock Text="{Binding NotSetManual, StringFormat='Not set: {0}'}" FontSize="10" />
+                    <Button Content="Refresh" Command="{Binding RefreshCommand}" HorizontalAlignment="Stretch" FontSize="10" Padding="4,2" Margin="0,2,0,0" />
+                    <Button Content="Export CSV" Command="{Binding ExportCsvCommand}" HorizontalAlignment="Stretch" FontSize="10" Padding="4,2" />
+                    <Button Content="Export XLSX" Command="{Binding ExportXlsxCommand}" HorizontalAlignment="Stretch" FontSize="10" Padding="4,2" />
+                    <Button Content="Export PDF" Command="{Binding ExportPdfCommand}" HorizontalAlignment="Stretch" FontSize="10" Padding="4,2" />
+                    <TextBlock Text="{Binding ExportStatusText}" TextWrapping="Wrap" FontSize="9" />
                 </StackPanel>
             </Border>
         </Grid>
