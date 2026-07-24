@@ -1,0 +1,52 @@
+cff-version: 1.2.0
+message: "If you use CSP-Analyzer in your work, please cite both the software and the paper it implements."
+title: "CSP-Analyzer"
+abstract: >-
+  A fast machine-learning-based desktop application for automated analysis of
+  two-dimensional NMR spectra in NMR fragment-based screening. It reads Bruker
+  TopSpin peaklists, compares each experiment spectrum against a reference using
+  computer-vision descriptors, and classifies spectra as active or inactive via
+  a SMOTE-ENN / PCA / SVM pipeline.
+type: software
+authors:
+  - family-names: "Fino"
+    given-names: "Roberto"
+  - family-names: "Byrne"
+    given-names: "Ryan"
+version: "2.0.0"
+license: MIT
+repository-code: "https://github.com/rubbs14/CSP-Analyzer"
+url: "https://github.com/rubbs14/CSP-Analyzer"
+keywords:
+  - NMR
+  - NMR spectroscopy
+  - fragment-based drug discovery
+  - machine learning
+  - HSQC
+  - SVM
+  - cheminformatics
+  - structural biology
+preferred-citation:
+  type: article
+  title: "Introducing the CSP Analyzer: A novel Machine Learning-based application for automated analysis of two-dimensional NMR spectra in NMR fragment-based screening"
+  authors:
+    - family-names: "Fino"
+      given-names: "Roberto"
+    - family-names: "Byrne"
+      given-names: "Ryan"
+    - family-names: "Softley"
+      given-names: "Claire A."
+    - family-names: "Sattler"
+      given-names: "Michael"
+    - family-names: "Schneider"
+      given-names: "Gisbert"
+    - family-names: "Popowicz"
+      given-names: "Grzegorz M."
+  journal: "Computational and Structural Biotechnology Journal"
+  year: 2020
+  volume: 18
+  start: 603
+  end: 611
+  doi: "10.1016/j.csbj.2020.02.015"
+  publisher:
+    name: "Elsevier"
