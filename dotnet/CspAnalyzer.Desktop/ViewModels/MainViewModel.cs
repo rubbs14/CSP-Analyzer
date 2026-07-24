@@ -307,13 +307,12 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanRun))]
     private async Task RunAsync()
     {
-        string? python = BackendEnvironment.PythonExecutable;
-        if (python is null)
+        BackendExecutable? executable = BackendEnvironment.Executable;
+        if (executable is null)
         {
             RunStatusText = "csp_modern python environment not found - cannot run.";
             return;
         }
-        var executable = new BackendExecutable(python, new[] { "-m", "backend" });
 
         _runCts = new CancellationTokenSource();
         IsRunning = true;
@@ -334,7 +333,7 @@ public partial class MainViewModel : ViewModelBase
                 jsonIn,
                 runDir,
                 BackendEnvironment.ModelDir,
-                BackendEnvironment.RepoRoot,
+                BackendEnvironment.WorkingDirectory,
                 binsPerArrayDimension: BinsPerArrayDimension,
                 _runCts.Token);
 

@@ -44,4 +44,31 @@ public class BackendEnvironmentTests
             Assert.True(File.Exists(python));
         }
     }
+
+    [Fact]
+    public void IsPackagedLayout_is_false_in_this_dev_checkout()
+    {
+        // This test assembly's own output directory has no csp-backend/
+        // dist or model_artifacts/ sitting next to it - only a real S14
+        // package layout would make this true.
+        Assert.False(BackendEnvironment.IsPackagedLayout);
+    }
+
+    [Fact]
+    public void Executable_in_dev_checkout_matches_PythonExecutable_with_module_leading_args()
+    {
+        var executable = BackendEnvironment.Executable;
+        var python = BackendEnvironment.PythonExecutable;
+
+        if (python is null)
+        {
+            Assert.Null(executable);
+        }
+        else
+        {
+            Assert.NotNull(executable);
+            Assert.Equal(python, executable!.FileName);
+            Assert.Equal(new[] { "-m", "backend" }, executable.LeadingArgs);
+        }
+    }
 }

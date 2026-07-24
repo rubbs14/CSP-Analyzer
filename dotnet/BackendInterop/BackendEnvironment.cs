@@ -3,37 +3,83 @@ using System.Runtime.InteropServices;
 namespace CspAnalyzer.BackendInterop;
 
 /// <summary>
-/// Minimal runtime discovery so CspAnalyzer.Desktop can actually invoke
-/// BackendCliRunner without every call site hardcoding paths (S9).
-/// PythonExecutable probes cross-platform conda env locations via
-/// CondaPythonPaths (S11). RepoRoot/ModelDir still require a .git
-/// directory next to backend/ - fine for dev checkouts, packaged-app
-/// resolution is deferred to S12/S13.
+/// Runtime discovery so CspAnalyzer.Desktop can invoke BackendCliRunner
+/// without every call site hardcoding paths (S9). Two layouts are
+/// supported: a packaged install (model_artifacts/ + a frozen csp-backend
+/// dist sitting as siblings of the app under AppContext.BaseDirectory -
+/// S14) is tried first; a dev checkout (.git walk-up + csp_modern conda
+/// probe - S11) is the fallback. RepoRoot is lazily computed (not a field
+/// initializer) specifically so that touching this class in a packaged
+/// install - where there's no .git anywhere above the app - never throws
+/// unless something actually needs the dev-mode fallback.
 /// </summary>
 public static class BackendEnvironment
 {
-    public static string RepoRoot { get; } = FindRepoRoot();
+    private static string? _repoRoot;
 
-    public static string ModelDir => Path.Combine(RepoRoot, "backend", "model_artifacts");
+    /// <summary>
+    /// Only valid in a dev checkout. Lazily computed so merely referencing
+    /// other members of this class (e.g. IsPackagedLayout) never triggers
+    /// this walk-up in a packaged install that has no .git directory.
+    /// </summary>
+    public static string RepoRoot => _repoRoot ??= FindRepoRoot();
+
+    public static bool IsPackagedLayout => FrozenBackendPaths.IsPackagedLayout(CurrentPlatform(), AppContext.BaseDirectory);
+
+    public static string ModelDir => IsPackagedLayout
+        ? FrozenBackendPaths.ModelDir(AppContext.BaseDirectory)
+        : Path.Combine(RepoRoot, "backend", "model_artifacts");
+
+    /// <summary>
+    /// ProcessStartInfo.WorkingDirectory for BackendCliRunner. Dev mode
+    /// needs the repo root (`python -m backend` needs backend/ importable
+    /// from CWD). Packaged mode's frozen executable has no such
+    /// requirement, so the app's own directory is fine.
+    /// </summary>
+    public static string WorkingDirectory => IsPackagedLayout ? AppContext.BaseDirectory : RepoRoot;
 
     /// <summary>
     /// Path to the csp_modern conda env's python, or null if that exact
     /// env isn't present on the current machine under any known conda
-    /// distro (miniforge3/miniconda3/anaconda3).
+    /// distro (miniforge3/miniconda3/anaconda3). Dev-mode only - packaged
+    /// installs don't use this.
     /// </summary>
     public static string? PythonExecutable
     {
         get
         {
             var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            var platform = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? OSPlatform.Windows
-                : RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? OSPlatform.OSX
-                : OSPlatform.Linux;
-
-            return CondaPythonPaths.BuildCandidates(platform, home, "csp_modern")
+            return CondaPythonPaths.BuildCandidates(CurrentPlatform(), home, "csp_modern")
                 .FirstOrDefault(File.Exists);
         }
     }
+
+    /// <summary>
+    /// The BackendExecutable callers should pass to BackendCliRunner, or
+    /// null if no backend is reachable (packaged install with a missing
+    /// dist is not expected, but dev checkout without csp_modern
+    /// installed is a real, user-facing case the caller must handle).
+    /// </summary>
+    public static BackendExecutable? Executable
+    {
+        get
+        {
+            if (IsPackagedLayout)
+            {
+                return new BackendExecutable(
+                    FrozenBackendPaths.ExecutablePath(CurrentPlatform(), AppContext.BaseDirectory),
+                    Array.Empty<string>());
+            }
+
+            string? python = PythonExecutable;
+            return python is null ? null : new BackendExecutable(python, new[] { "-m", "backend" });
+        }
+    }
+
+    private static OSPlatform CurrentPlatform() =>
+        RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? OSPlatform.Windows
+        : RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? OSPlatform.OSX
+        : OSPlatform.Linux;
 
     private static string FindRepoRoot()
     {
