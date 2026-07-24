@@ -134,9 +134,21 @@ public partial class MainWindow : Window
     {
         if (sender is Button { Tag: string hex })
         {
-            Background = new SolidColorBrush(Color.Parse(hex));
+            var color = Color.Parse(hex);
+            Background = new SolidColorBrush(color);
+
+            // Most text in this app has no explicit Foreground and relies on
+            // the FluentTheme default, which only follows ThemeVariant - not
+            // this custom background swatch. Without this, picking a light
+            // swatch while the theme stays Dark leaves the (still white)
+            // default text unreadable on the new light background.
+            (Application.Current ?? throw new InvalidOperationException()).RequestedThemeVariant =
+                IsLightColor(color) ? ThemeVariant.Light : ThemeVariant.Dark;
         }
     }
+
+    private static bool IsLightColor(Color color) =>
+        (0.299 * color.R + 0.587 * color.G + 0.114 * color.B) / 255.0 > 0.5;
 
     private void OnBackgroundColorResetClick(object? sender, RoutedEventArgs e) => ClearValue(BackgroundProperty);
 
@@ -151,7 +163,10 @@ public partial class MainWindow : Window
 
         if (settings.BackgroundColorHex is string hex)
         {
-            Background = new SolidColorBrush(Color.Parse(hex));
+            var color = Color.Parse(hex);
+            Background = new SolidColorBrush(color);
+            (Application.Current ?? throw new InvalidOperationException()).RequestedThemeVariant =
+                IsLightColor(color) ? ThemeVariant.Light : ThemeVariant.Dark;
         }
         else
         {

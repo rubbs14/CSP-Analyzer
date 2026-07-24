@@ -9,6 +9,20 @@
         <local:ViewLocator />
     </Application.DataTemplates>
 
+    <Application.Resources>
+        <!-- App-wide accent (matches the icon teal, #00A297) - overrides
+             FluentTheme's default blue everywhere it drives a control's
+             default look: CheckBox/Slider fills, tab selection pipes, etc. -->
+        <Color x:Key="SystemAccentColor">#00A297</Color>
+        <Color x:Key="SystemAccentColorLight1">#4DBFB0</Color>
+        <Color x:Key="SystemAccentColorLight2">#7FD4C8</Color>
+        <Color x:Key="SystemAccentColorLight3">#B2E8E0</Color>
+        <Color x:Key="SystemAccentColorDark1">#00786F</Color>
+        <Color x:Key="SystemAccentColorDark2">#005349</Color>
+        <Color x:Key="SystemAccentColorDark3">#003530</Color>
+        <SolidColorBrush x:Key="TabItemHeaderSelectedPipeFill" Color="#00A297" />
+    </Application.Resources>
+
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
