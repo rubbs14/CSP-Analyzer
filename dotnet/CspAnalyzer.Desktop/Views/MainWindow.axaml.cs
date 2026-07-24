@@ -6,6 +6,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using CspAnalyzer.Desktop.Models;
 using CspAnalyzer.Desktop.ViewModels;
@@ -190,20 +191,26 @@ public partial class MainWindow : Window
         // default size Avalonia picked, clipping content that assumes a
         // full-size window (S12 bug report: legend text, the gauge panel
         // checkboxes, and the Go-To-Experiment button all clipped by the
-        // window edge). Re-applying once more on Opened, after the
-        // platform window is realized, was tried first but is itself
-        // unreliable - this X11/WM combination doesn't consistently honor
-        // a native maximize request even post-Show (confirmed by a live
-        // run that still opened at ~1197x810 with this alone). Explicitly
-        // sizing/positioning to the primary screen's working area is a
-        // deterministic fallback that doesn't depend on the WM granting
-        // the maximize request at all.
+        // window edge).
+        //
+        // Re-applying once on Opened - explicitly sizing/positioning to
+        // the primary screen's working area instead of trusting
+        // WindowState alone - mostly fixes it, but this X11/WM
+        // combination sometimes applies its own late, asynchronous
+        // "restore" resize well AFTER Opened fires - not a one-off race
+        // in the first second, but observed live drifting the window back
+        // down to ~1197x810 (or ~999x676 on another launch) a full 5-10+
+        // seconds after startup, long after a short retry window would
+        // have already stopped watching. Guarding for a generous 15
+        // seconds of wall-clock time after Opened - re-asserting only
+        // when the size has actually drifted - reliably outlasts however
+        // late the WM's own correction lands, without fighting a
+        // deliberate resize the user makes well after startup.
         if (settings.WindowState == "Maximized")
         {
-            void SetMaximizedOnOpen(object? sender, EventArgs e)
+            void ApplyFullScreenGeometry()
             {
                 WindowState = Avalonia.Controls.WindowState.Maximized;
-
                 if (Screens.Primary is { } screen)
                 {
                     PixelRect area = screen.WorkingArea;
@@ -211,8 +218,29 @@ public partial class MainWindow : Window
                     Width = area.Width / screen.Scaling;
                     Height = area.Height / screen.Scaling;
                 }
+            }
 
+            void SetMaximizedOnOpen(object? sender, EventArgs e)
+            {
+                ApplyFullScreenGeometry();
                 Opened -= SetMaximizedOnOpen;
+
+                DateTime deadline = DateTime.UtcNow.AddSeconds(15);
+                var retryTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
+                retryTimer.Tick += (_, _) =>
+                {
+                    if (Screens.Primary is { } screen &&
+                        Math.Abs(Width - screen.WorkingArea.Width / screen.Scaling) > 1)
+                    {
+                        ApplyFullScreenGeometry();
+                    }
+
+                    if (DateTime.UtcNow >= deadline)
+                    {
+                        retryTimer.Stop();
+                    }
+                };
+                retryTimer.Start();
             }
 
             Opened += SetMaximizedOnOpen;

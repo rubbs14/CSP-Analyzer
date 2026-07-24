@@ -10,7 +10,7 @@
         x:DataType="vm:MainViewModel"
         Icon="/Assets/cspanalyzer_SPd_icon.ico"
         Title="CSP Analyzer"
-        Width="1400" Height="820" MinWidth="1000" MinHeight="650">
+        Width="1500" Height="900" MinWidth="1500" MinHeight="850">
 
     <!--
     Layout shell from S7 (see the wireframe survey in docs/superpowers/
