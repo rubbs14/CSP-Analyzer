@@ -144,6 +144,25 @@ public class MainViewModelChartTests
     }
 
     [Fact]
+    public void BuildOverlayAxes_labels_render_as_positive_ppm_despite_inverted_limits()
+    {
+        var vm = new MainViewModel();
+        vm.NMin = 100;
+        vm.NMax = 140;
+        vm.HMin = 5;
+        vm.HMax = 12;
+
+        vm.BuildOverlayAxes();
+
+        Assert.NotNull(vm.OverlayXAxes[0].Labeler);
+        Assert.NotNull(vm.OverlayYAxes[0].Labeler);
+        Assert.Equal("12", vm.OverlayXAxes[0].Labeler!(-12));
+        Assert.Equal("5", vm.OverlayXAxes[0].Labeler!(-5));
+        Assert.Equal("140", vm.OverlayYAxes[0].Labeler!(-140));
+        Assert.Equal("100", vm.OverlayYAxes[0].Labeler!(-100));
+    }
+
+    [Fact]
     public void RebuildOverlayPoints_plots_the_current_spectrums_peaks_inverted()
     {
         var vm = new MainViewModel();

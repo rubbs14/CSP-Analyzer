@@ -286,8 +286,8 @@ public partial class MainViewModel
 
     public void BuildOverlayAxes()
     {
-        OverlayXAxes = new[] { new Axis { Name = "1H ppm", MinLimit = -HMax, MaxLimit = -HMin } };
-        OverlayYAxes = new[] { new Axis { Name = "15N ppm", MinLimit = -NMax, MaxLimit = -NMin } };
+        OverlayXAxes = new[] { new Axis { Name = "1H ppm", MinLimit = -HMax, MaxLimit = -HMin, Labeler = value => Math.Abs(value).ToString("0.##") } };
+        OverlayYAxes = new[] { new Axis { Name = "15N ppm", MinLimit = -NMax, MaxLimit = -NMin, Labeler = value => Math.Abs(value).ToString("0.##") } };
         OverlaySeries = new ISeries[] { _referenceOverlaySeries, _currentOverlaySeries, _activesOverlaySeries, _inactivesOverlaySeries };
     }
 
