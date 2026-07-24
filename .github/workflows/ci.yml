@@ -27,3 +27,25 @@ jobs:
 
       - name: Run pytest
         run: pytest backend/tests
+
+  dotnet-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore dotnet/CspAnalyzer.sln
+
+      - name: Build
+        run: dotnet build dotnet/CspAnalyzer.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test dotnet/CspAnalyzer.sln --configuration Release --no-build
