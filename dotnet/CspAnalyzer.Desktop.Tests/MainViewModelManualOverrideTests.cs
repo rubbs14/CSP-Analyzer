@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using CspAnalyzer.BackendInterop;
 using CspAnalyzer.Desktop.Services;
 using CspAnalyzer.Desktop.ViewModels;
+using LiveChartsCore.SkiaSharpView;
 using Xunit;
 
 namespace CspAnalyzer.Desktop.Tests;
@@ -31,6 +32,23 @@ public class MainViewModelManualOverrideTests
         Assert.Equal(1, vm.ActivesManualCount);
         Assert.Equal(0, vm.InactivesManualCount);
         Assert.Equal(1, vm.NotSetManualCount);
+    }
+
+    // Regression: with no explicit XAxes, LiveChartsCore auto-ranges the X
+    // axis to the single shared category (index 0) that all three
+    // single-value ColumnSeries plot at, producing a zero-width MinLimit==
+    // MaxLimit range that silently renders no bars at all - "Mark as
+    // Active/Inactive" looked like a no-op even though the underlying
+    // counts were correct. A real (non-zero-width) range fixes it.
+    [Fact]
+    public void RebuildManualResults_gives_the_chart_a_non_zero_width_x_axis_range()
+    {
+        MainViewModel vm = MakeViewModel(101, 102);
+
+        vm.MarkActiveCommand.Execute(null);
+
+        Axis axis = Assert.Single(vm.ManualResultsXAxes);
+        Assert.NotEqual(axis.MinLimit, axis.MaxLimit);
     }
 
     [Fact]

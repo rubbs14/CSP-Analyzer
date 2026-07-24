@@ -38,6 +38,12 @@ public partial class MainViewModel
     [ObservableProperty]
     private ISeries[] _manualResultsSeries = Array.Empty<ISeries>();
 
+    [ObservableProperty]
+    private Axis[] _manualResultsXAxes = Array.Empty<Axis>();
+
+    [ObservableProperty]
+    private Axis[] _manualResultsYAxes = Array.Empty<Axis>();
+
     [RelayCommand]
     private void MarkActive() => SetCurrentUserSelection("ACTIVE (MAN)");
 
@@ -93,5 +99,7 @@ public partial class MainViewModel
             new ColumnSeries<int> { Name = "Inact. (man)", Values = new[] { InactivesManualCount }, Fill = new SolidColorPaint(InactiveManualColor) },
             new ColumnSeries<int> { Name = "Not set (man)", Values = new[] { NotSetManualCount }, Fill = new SolidColorPaint(NotSetManualColor) },
         };
+        ManualResultsXAxes = new[] { new Axis { MinLimit = -1, MaxLimit = 1, IsVisible = false } };
+        ManualResultsYAxes = new[] { new Axis { MinLimit = 0 } };
     }
 }

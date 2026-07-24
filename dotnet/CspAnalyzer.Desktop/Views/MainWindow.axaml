@@ -338,7 +338,7 @@
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Manual Analysis Results" />
                             <Button DockPanel.Dock="Bottom" Content="Reset All Man. Flags" Command="{Binding ResetAllManualFlagsCommand}" HorizontalAlignment="Stretch" Margin="0,4,0,0" />
-                            <lvc:CartesianChart Series="{Binding ManualResultsSeries}" />
+                            <lvc:CartesianChart Series="{Binding ManualResultsSeries}" XAxes="{Binding ManualResultsXAxes}" YAxes="{Binding ManualResultsYAxes}" />
                         </DockPanel>
                     </Border>
                 </Grid>
