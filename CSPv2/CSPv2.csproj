@@ -250,9 +250,6 @@
     <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\841\pdata\1\peaklist.xml" />
     <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\871\pdata\1\peaklist.xml" />
     <Content Include="Demo-dataset\gpHUB1_FS_pool1_130416\91\pdata\1\peaklist.xml" />
-    <Content Include="GPL3.0-LICENSE.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
