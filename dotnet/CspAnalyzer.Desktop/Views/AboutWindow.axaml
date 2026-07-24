@@ -2,10 +2,45 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="CspAnalyzer.Desktop.Views.AboutWindow"
         Title="About CSP Analyzer"
-        Width="560" Height="620"
+        Width="600" Height="660"
         WindowStartupLocation="CenterOwner">
+    <Window.Styles>
+        <Style Selector="Button.link">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="#5B9BFF" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+        </Style>
+        <Style Selector="Button.link TextBlock">
+            <Setter Property="TextDecorations" Value="Underline" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="Button.link:pointerover">
+            <Setter Property="Foreground" Value="#8CB8FF" />
+        </Style>
+        <Style Selector="Button.link:pointerover TextBlock">
+            <Setter Property="Foreground" Value="#8CB8FF" />
+        </Style>
+        <Style Selector="TextBlock.section">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="#7FA8FF" />
+            <Setter Property="Margin" Value="0,10,0,0" />
+        </Style>
+        <Style Selector="Border.code">
+            <Setter Property="Background" Value="#1E1E1E" />
+            <Setter Property="BorderBrush" Value="#3A5CDC" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="8,6" />
+        </Style>
+    </Window.Styles>
+
     <DockPanel Margin="16">
         <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,10">
+            <Image Source="avares://CspAnalyzer.Desktop/Assets/About/banner.png" Height="70" HorizontalAlignment="Center" />
             <TextBlock Text="CSP Analyzer" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" />
             <TextBlock x:Name="VersionText" HorizontalAlignment="Center" FontSize="11" />
             <TextBlock Text="Developed by R. Byrne and R. Fino" HorizontalAlignment="Center" FontStyle="Italic" TextWrapping="Wrap" TextAlignment="Center" />
@@ -14,45 +49,70 @@
         <TabControl>
             <TabItem Header="About">
                 <ScrollViewer>
-                    <StackPanel Margin="8" Spacing="8">
+                    <StackPanel Margin="8" Spacing="6">
                         <TextBlock TextWrapping="Wrap" Text="The CSP-Analyzer is a small software package with a frontend designed in C# and a powerful backend that uses a Python Miniconda environment to run a machine-learning discriminator, in order to fastly and efficiently identify the most interesting experiments in 2-D NMR fragment screening analysis campaigns." />
                         <TextBlock TextWrapping="Wrap" Text="This version works on peaklist.xml files generated using Bruker TopSpin automatic peak-picking, meaning that the spectra are parsed and interpreted as scatter-plot fingerprints of the experiment." />
                         <TextBlock TextWrapping="Wrap" Text="The analysis is conducted using a combined SMOTE-ENN discrimination." />
                         <TextBlock TextWrapping="Wrap" Text="The XML files are parsed using Newtonsoft JSON serializer libraries and displayed using Beto Rodriguez' LiveCharts." />
                         <TextBlock TextWrapping="Wrap" Text="This version is distributed with features like export to PDF or to Excel and some useful hints on how to run peak picking." />
 
-                        <TextBlock Text="Reference" FontWeight="SemiBold" Margin="0,8,0,0" />
-                        <TextBlock TextWrapping="Wrap" Text="For more technical details please refer to: https://www.sciencedirect.com/science/article/pii/S2001037020300246?via%3Dihub" />
+                        <TextBlock Classes="section" Text="Reference" />
+                        <TextBlock TextWrapping="Wrap" Text="For more technical details please refer to:" />
+                        <Button Classes="link" Click="OnLinkClick" Tag="https://www.sciencedirect.com/science/article/pii/S2001037020300246?via%3Dihub">
+                            <TextBlock Text="sciencedirect.com: Introducing the CSP Analyzer" />
+                        </Button>
 
-                        <TextBlock Text="Citation" FontWeight="SemiBold" Margin="0,8,0,0" />
+                        <TextBlock Classes="section" Text="Citation" />
                         <TextBlock TextWrapping="Wrap" FontStyle="Italic" Text="Fino, R., Byrne, R., Softley, C. A., Sattler, M., Schneider, G., &amp; Popowicz, G. M. (2020). Introducing the CSP Analyzer: a Novel Machine Learning-based Application for Automated Analysis of two-dimensional NMR spectra in NMR Fragment-based Screening. Computational and Structural Biotechnology Journal." />
-                        <TextBlock TextWrapping="Wrap" Text="https://doi.org/10.1016/j.csbj.2020.02.015" />
+                        <Button Classes="link" Click="OnLinkClick" Tag="https://doi.org/10.1016/j.csbj.2020.02.015">
+                            <TextBlock Text="doi.org/10.1016/j.csbj.2020.02.015" />
+                        </Button>
 
-                        <TextBlock Text="License" FontWeight="SemiBold" Margin="0,8,0,0" />
+                        <TextBlock Classes="section" Text="License" />
                         <TextBlock TextWrapping="Wrap" Text="The software is available for free for both commercial and academic purposes under the GPL License v3.0." />
 
-                        <TextBlock Text="Funding" FontWeight="SemiBold" Margin="0,8,0,0" />
-                        <TextBlock TextWrapping="Wrap" Text="This work was made possible by the European Union's Framework Programme for Research and Innovation Horizon 2020 (2014-2020) under the Marie Sklodowska-Curie Grant Agreement No. 675555, Accelerated Early staGe drug dIScovery (AEGIS). www.aegis-itn.eu" />
-                        <TextBlock TextWrapping="Wrap" Text="Authors: Roberto Fino (Frontend) &amp; Ryan Byrne (Backend)" />
+                        <TextBlock Classes="section" Text="Funding" />
+                        <TextBlock TextWrapping="Wrap" Text="This work was made possible by the European Union's Framework Programme for Research and Innovation Horizon 2020 (2014-2020) under the Marie Sklodowska-Curie Grant Agreement No. 675555, Accelerated Early staGe drug dIScovery (AEGIS)." />
+                        <Button Classes="link" Click="OnLinkClick" Tag="https://www.aegis-itn.eu">
+                            <TextBlock Text="www.aegis-itn.eu" />
+                        </Button>
+                        <Image Source="avares://CspAnalyzer.Desktop/Assets/About/aegis-logo.png" Height="50" HorizontalAlignment="Left" Margin="0,4,0,0" />
+
+                        <TextBlock Classes="section" Text="Authors" />
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <TextBlock Text="Roberto Fino (Frontend) -" />
+                            <Button Classes="link" Click="OnLinkClick" Tag="http://www.aegis-itn.eu/fellows/roberto-fino/">
+                                <TextBlock Text="profile" />
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <TextBlock Text="Ryan Byrne (Backend) -" />
+                            <Button Classes="link" Click="OnLinkClick" Tag="http://www.aegis-itn.eu/fellows/ryan-byrne/">
+                                <TextBlock Text="profile" />
+                            </Button>
+                        </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
 
             <TabItem Header="Tips &amp; Tricks">
                 <ScrollViewer>
-                    <StackPanel Margin="8" Spacing="8">
+                    <StackPanel Margin="8" Spacing="6">
                         <TextBlock TextWrapping="Wrap" Text="The CSP-Analyzer uses the peaklist.xml files generated by TopSpin. It goes without saying that peak-picking must be done properly to get reliable results." />
                         <TextBlock TextWrapping="Wrap" Text="TopSpin has a very useful feature for batch processing spectra using the command line. To help find the right settings, the Help window provides a string-generator for the TopSpin command line." />
                         <TextBlock TextWrapping="Wrap" Text="Automatic peak-picking for 2-D datasets can be run firing a command that should look like this:" />
-                        <TextBlock FontFamily="monospace" TextWrapping="Wrap" Text="1 F1P 135; 2 F1P 11; 1 F2P 102; 2 F2P 6; MI 0.03; PPNUM 120; pp2d nodia" />
+                        <Border Classes="code">
+                            <TextBlock FontFamily="monospace" TextWrapping="Wrap" Foreground="#C8E6FF" Text="1 F1P 135; 2 F1P 11; 1 F2P 102; 2 F2P 6; MI 0.03; PPNUM 120; pp2d nodia" />
+                        </Border>
                         <TextBlock TextWrapping="Wrap" Text="Where: 1 F1P is the 15N upper-bound frequency limit; 2 F1P is the 1H upper-bound frequency limit; 1 F2P is the 15N lower-bound frequency limit; 2 F2P is the 1H lower-bound frequency limit; MI is the Minimum Intensity contour limit for the lowest intensity peak recognized as a signal peak and not noise; PPNUM is the desired number of peaks (usually tightly related to the number of residues in the protein screened); pp2d nodia runs the peak-picking in silent mode (without showing the pp windows)." />
                         <TextBlock TextWrapping="Wrap" Text="Unfortunately, to find the optimal settings, the user sometimes has to run the same command several times before reaching the optimum trade-off between the number of peaks correctly picked and those belonging to background noise." />
                         <TextBlock TextWrapping="Wrap" Text="As a rule of thumb, the number of peaks should be no higher than 150. Our approach is only reliable when the number of peaks is not too high and when the peaks don't tend to cluster very close together. If your protein has more than 150 peaks, try setting the MI contour parameter to include only the highest intensity peaks - this is a workaround and increases the risk of False Negatives, but it should work." />
 
-                        <TextBlock Text="Loading the full experiment data set" FontWeight="SemiBold" Margin="0,8,0,0" />
+                        <TextBlock Classes="section" Text="Loading the full experiment data set" />
                         <TextBlock TextWrapping="Wrap" Text="To load the dataset for your protein of interest, keep the same folder-tree structure generated by TopSpin: &lt;root&gt;\&lt;PROTEIN_NAME&gt;\&lt;EXP#&gt;\pdata\1. To load all the selected experiments at once, just select the folder at the &lt;PROTEIN_NAME&gt; level." />
+                        <Image Source="avares://CspAnalyzer.Desktop/Assets/About/folder-tree.png" Height="140" HorizontalAlignment="Left" Margin="0,4,0,0" />
 
-                        <TextBlock Text="PeakListExtractor" FontWeight="SemiBold" Margin="0,8,0,0" />
+                        <TextBlock Classes="section" Text="PeakListExtractor" />
                         <TextBlock TextWrapping="Wrap" Text="This small companion application retrieves the peaklist.xml files generated after peak-picking, preserving the same folder-tree structure as the TopSpin experiment folders (required for correct parsing by the CSP-Analyzer). If 1-D experiments were selected for peak-picking, they will be copied as well but not parsed by the CSP-Analyzer." />
                     </StackPanel>
                 </ScrollViewer>
@@ -60,23 +120,23 @@
 
             <TabItem Header="Known Issues">
                 <ScrollViewer>
-                    <StackPanel Margin="8" Spacing="8">
-                        <TextBlock Text="Memory exceptions" FontWeight="SemiBold" />
+                    <StackPanel Margin="8" Spacing="6">
+                        <TextBlock Classes="section" Text="Memory exceptions" Margin="0,0,0,0" />
                         <TextBlock TextWrapping="Wrap" Text="The ML backend runs in a Miniconda environment built with the specifics required by the Python ML classifier. This approach eases deployability but requires more resources (especially RAM). It may happen that the available memory is too low and the ML backend raises exceptions - in this case, free some memory and restart the application." />
 
-                        <TextBlock Text="No XML found" FontWeight="SemiBold" Margin="0,8,0,0" />
-                        <TextBlock TextWrapping="Wrap" Text="Load the dataset files as described in the Tips &amp; Tricks section and try again." />
+                        <TextBlock Classes="section" Text="No XML found" />
+                        <TextBlock TextWrapping="Wrap" Text="Load the dataset files as described in the Tips &amp; Tricks tab and try again." />
 
-                        <TextBlock Text="No Python.exe found" FontWeight="SemiBold" Margin="0,8,0,0" />
+                        <TextBlock Classes="section" Text="No Python.exe found" />
                         <TextBlock TextWrapping="Wrap" Text="Check that the Miniconda environment files are in the same folder from where the application was launched. If missing, manually copy the Miniconda3 folder to the application start path. Also check that the pickle_jar folder (containing the ML training repo) is there." />
 
-                        <TextBlock Text="Unable to show Analysis results" FontWeight="SemiBold" Margin="0,8,0,0" />
+                        <TextBlock Classes="section" Text="Unable to show Analysis results" />
                         <TextBlock TextWrapping="Wrap" Text="Usually caused by the Python backend running out of memory - free some memory and restart the application. If the backend ran successfully but you still get an error, the software may lack rights to write to the user's Temp folder - try rerunning with administrator rights." />
 
-                        <TextBlock Text="No Actives found" FontWeight="SemiBold" Margin="0,8,0,0" />
+                        <TextBlock Classes="section" Text="No Actives found" />
                         <TextBlock TextWrapping="Wrap" Text="This may be caused by incorrect or noisy peak picking. Refer to the Tips &amp; Tricks tab to troubleshoot this issue." />
 
-                        <TextBlock Text="Other errors" FontWeight="SemiBold" Margin="0,8,0,0" />
+                        <TextBlock Classes="section" Text="Other errors" />
                         <TextBlock TextWrapping="Wrap" Text="Please report any other errors and we'll try to figure out what's going on. To help with bug reporting, you may also attach the JSON files generated during the analysis." />
                     </StackPanel>
                 </ScrollViewer>
