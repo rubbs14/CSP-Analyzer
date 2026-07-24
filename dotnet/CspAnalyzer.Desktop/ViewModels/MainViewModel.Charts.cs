@@ -41,6 +41,17 @@ public partial class MainViewModel
     private static readonly SKColor CheckSpectrumTextColor = new(255, 193, 7, 255);
     private static readonly SKColor ActiveAutoColor = new(45, 161, 63, 200);
     private static readonly SKColor InactiveAutoColor = new(225, 9, 20, 180);
+
+    // Legacy CSPv2 Form1.cs:1637-1663's exact solidGaugeActives/
+    // solidGaugeInactives colors (LiveCharts.WinForms.SolidGauge's
+    // FromColor/ToColor arc gradient over a shared semi-transparent gray
+    // GaugeBackground) - WPF Color.FromArgb(a,r,g,b) reordered to
+    // SkiaSharp's SKColor(r,g,b,a) constructor.
+    private static readonly SKColor GaugeTrackColor = new(76, 76, 76, 76);
+    private static readonly SKColor ActiveGaugeFromColor = new(50, 205, 50, 255); // Colors.LimeGreen
+    private static readonly SKColor ActiveGaugeToColor = new(29, 195, 88, 76);
+    private static readonly SKColor InactiveGaugeFromColor = new(245, 245, 245, 255); // Colors.WhiteSmoke
+    private static readonly SKColor InactiveGaugeToColor = new(200, 0, 0, 50);
     private static readonly SKColor GridSeparatorColor = new(255, 255, 255, 30);
 
     // Axis.Name (the "ΔPeaks"/"Experiment No."-style axis title) has its
@@ -341,17 +352,19 @@ public partial class MainViewModel
             new GaugeItem(actives, series =>
             {
                 series.Name = "Actives";
-                series.Fill = new SolidColorPaint(ActiveAutoColor);
+                series.Fill = new LinearGradientPaint(ActiveGaugeFromColor, ActiveGaugeToColor);
                 series.DataLabelsPaint = null;
             }));
+        ((PieSeries<ObservableValue>)ActivesGaugeSeries[1]).Fill = new SolidColorPaint(GaugeTrackColor);
 
         InactivesGaugeSeries = GaugeGenerator.BuildSolidGauge(
             new GaugeItem(inactives, series =>
             {
                 series.Name = "Inactives";
-                series.Fill = new SolidColorPaint(InactiveAutoColor);
+                series.Fill = new LinearGradientPaint(InactiveGaugeFromColor, InactiveGaugeToColor);
                 series.DataLabelsPaint = null;
             }));
+        ((PieSeries<ObservableValue>)InactivesGaugeSeries[1]).Fill = new SolidColorPaint(GaugeTrackColor);
     }
 
     [ObservableProperty]
