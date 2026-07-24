@@ -23,11 +23,12 @@ public class BackendCliRunnerIntegrationTests
             return; // csp_modern conda env not present on this machine - see class doc.
         }
 
+        var executable = new BackendExecutable(python, new[] { "-m", "backend" });
         var jsonIn = Path.Combine(AppContext.BaseDirectory, "Fixtures", "demo.json");
         var outDir = Directory.CreateTempSubdirectory("backend_interop_test_").FullName;
 
         var result = BackendCliRunner.Run(
-            python,
+            executable,
             jsonIn,
             outDir,
             RepoPaths.RealModelArtifactsDir,
@@ -51,8 +52,9 @@ public class BackendCliRunnerIntegrationTests
             return;
         }
 
+        var executable = new BackendExecutable(python, new[] { "-m", "backend" });
         var result = BackendCliRunner.Run(
-            python,
+            executable,
             "/no/such/file.json",
             null,
             RepoPaths.RealModelArtifactsDir,
@@ -73,11 +75,12 @@ public class BackendCliRunnerIntegrationTests
             return;
         }
 
+        var executable = new BackendExecutable(python, new[] { "-m", "backend" });
         var jsonIn = Path.Combine(AppContext.BaseDirectory, "Fixtures", "demo.json");
         var outDir = Directory.CreateTempSubdirectory("backend_interop_async_test_").FullName;
 
         var result = await BackendCliRunner.RunAsync(
-            python,
+            executable,
             jsonIn,
             outDir,
             RepoPaths.RealModelArtifactsDir,
@@ -102,6 +105,7 @@ public class BackendCliRunnerIntegrationTests
             return;
         }
 
+        var executable = new BackendExecutable(python, new[] { "-m", "backend" });
         var jsonIn = Path.Combine(AppContext.BaseDirectory, "Fixtures", "demo.json");
         var outDir = Directory.CreateTempSubdirectory("backend_interop_cancel_test_").FullName;
         using var cts = new CancellationTokenSource();
@@ -110,7 +114,7 @@ public class BackendCliRunnerIntegrationTests
         var sw = Stopwatch.StartNew();
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
             BackendCliRunner.RunAsync(
-                python,
+                executable,
                 jsonIn,
                 outDir,
                 RepoPaths.RealModelArtifactsDir,

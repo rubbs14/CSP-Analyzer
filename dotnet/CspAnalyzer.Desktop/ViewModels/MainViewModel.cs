@@ -313,6 +313,7 @@ public partial class MainViewModel : ViewModelBase
             RunStatusText = "csp_modern python environment not found - cannot run.";
             return;
         }
+        var executable = new BackendExecutable(python, new[] { "-m", "backend" });
 
         _runCts = new CancellationTokenSource();
         IsRunning = true;
@@ -329,7 +330,7 @@ public partial class MainViewModel : ViewModelBase
             File.WriteAllText(jsonIn, PeaklistSpectrum.SerializeAll(allSpectra));
 
             BackendRunResult result = await BackendCliRunner.RunAsync(
-                python,
+                executable,
                 jsonIn,
                 runDir,
                 BackendEnvironment.ModelDir,

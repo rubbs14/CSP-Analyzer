@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace CspAnalyzer.BackendInterop;
 
 /// <summary>
-/// Result of one `python -m backend ...` invocation. See
+/// Result of one backend invocation. See
 /// docs/superpowers/specs/2026-07-22-sub-project-2-backend-ui-interface-spec.md
 /// for the full contract this mirrors.
 /// </summary>
@@ -20,30 +20,37 @@ public sealed record BackendRunResult(int ExitCode, string StdOut, string StdErr
 }
 
 /// <summary>
+/// The process to launch plus any args that must come before the shared
+/// jsonIn/outDir/model-dir/bins args (S14). A python interpreter needs
+/// `-m backend` prepended; a PyInstaller-frozen executable already *is*
+/// the backend entrypoint and needs nothing prepended.
+/// </summary>
+public sealed record BackendExecutable(string FileName, IReadOnlyList<string> LeadingArgs);
+
+/// <summary>
 /// Shells out to the python backend's stable CLI contract
-/// (`python -m backend &lt;json_in&gt; [out_dir] --model-dir DIR
-/// --bins-per-array-dimension N`). Does not search for a python executable -
-/// the caller resolves that (cross-platform discovery lives in
-/// BackendEnvironment/CondaPythonPaths).
+/// (`&lt;executable&gt; [leading-args] &lt;json_in&gt; [out_dir] --model-dir DIR
+/// --bins-per-array-dimension N`). Does not decide what executable/leading
+/// args to use - that's BackendEnvironment's job (cross-platform discovery,
+/// dev vs packaged layout).
 /// </summary>
 public static class BackendCliRunner
 {
     /// <param name="workingDirectory">
-    /// Directory containing the `backend/` package (i.e. the repo root), so
-    /// `python -m backend` can find it - `backend` isn't pip-installed, so
-    /// this can't be left to whatever CWD the caller process happens to
-    /// have, same reasoning as <paramref name="modelDir"/> needing to be
-    /// absolute.
+    /// In dev mode this must be the repo root (`python -m backend` needs
+    /// `backend/` importable from CWD, since it isn't pip-installed). In
+    /// packaged mode a frozen executable doesn't need this, but a real
+    /// directory is still required by ProcessStartInfo.
     /// </param>
     public static BackendRunResult Run(
-        string pythonExecutable,
+        BackendExecutable executable,
         string jsonIn,
         string? outDir,
         string modelDir,
         string workingDirectory,
         int? binsPerArrayDimension = null)
     {
-        using var process = new Process { StartInfo = BuildStartInfo(pythonExecutable, jsonIn, outDir, modelDir, workingDirectory, binsPerArrayDimension) };
+        using var process = new Process { StartInfo = BuildStartInfo(executable, jsonIn, outDir, modelDir, workingDirectory, binsPerArrayDimension) };
         process.Start();
 
         // Read both streams before WaitForExit to avoid deadlock if either
@@ -64,7 +71,7 @@ public static class BackendCliRunner
     /// returns a "cancelled" result value.
     /// </summary>
     public static async Task<BackendRunResult> RunAsync(
-        string pythonExecutable,
+        BackendExecutable executable,
         string jsonIn,
         string? outDir,
         string modelDir,
@@ -72,7 +79,7 @@ public static class BackendCliRunner
         int? binsPerArrayDimension,
         CancellationToken cancellationToken)
     {
-        using var process = new Process { StartInfo = BuildStartInfo(pythonExecutable, jsonIn, outDir, modelDir, workingDirectory, binsPerArrayDimension) };
+        using var process = new Process { StartInfo = BuildStartInfo(executable, jsonIn, outDir, modelDir, workingDirectory, binsPerArrayDimension) };
 
         using var killOnCancel = cancellationToken.Register(() =>
         {
@@ -101,8 +108,35 @@ public static class BackendCliRunner
         return new BackendRunResult(process.ExitCode, stdOut, stdErr);
     }
 
+    /// <summary>
+    /// Pure argument-list construction, split out from BuildStartInfo so
+    /// it's unit-testable without spawning a process (S14).
+    /// </summary>
+    public static IReadOnlyList<string> BuildArgumentList(
+        BackendExecutable executable,
+        string jsonIn,
+        string? outDir,
+        string modelDir,
+        int? binsPerArrayDimension)
+    {
+        var args = new List<string>(executable.LeadingArgs) { jsonIn };
+        if (outDir is not null)
+        {
+            args.Add(outDir);
+        }
+        args.Add("--model-dir");
+        args.Add(modelDir);
+        if (binsPerArrayDimension is int bins)
+        {
+            args.Add("--bins-per-array-dimension");
+            args.Add(bins.ToString());
+        }
+
+        return args;
+    }
+
     private static ProcessStartInfo BuildStartInfo(
-        string pythonExecutable,
+        BackendExecutable executable,
         string jsonIn,
         string? outDir,
         string modelDir,
@@ -111,7 +145,7 @@ public static class BackendCliRunner
     {
         var startInfo = new ProcessStartInfo
         {
-            FileName = pythonExecutable,
+            FileName = executable.FileName,
             WorkingDirectory = workingDirectory,
             UseShellExecute = false,
             RedirectStandardOutput = true,
@@ -122,19 +156,9 @@ public static class BackendCliRunner
         // ArgumentList, never a concatenated command string - this is the
         // exact injection-prone pattern (Form1.cs's cmd.exe /c string build)
         // the S6 contract replaces.
-        startInfo.ArgumentList.Add("-m");
-        startInfo.ArgumentList.Add("backend");
-        startInfo.ArgumentList.Add(jsonIn);
-        if (outDir is not null)
+        foreach (string arg in BuildArgumentList(executable, jsonIn, outDir, modelDir, binsPerArrayDimension))
         {
-            startInfo.ArgumentList.Add(outDir);
-        }
-        startInfo.ArgumentList.Add("--model-dir");
-        startInfo.ArgumentList.Add(modelDir);
-        if (binsPerArrayDimension is int bins)
-        {
-            startInfo.ArgumentList.Add("--bins-per-array-dimension");
-            startInfo.ArgumentList.Add(bins.ToString());
+            startInfo.ArgumentList.Add(arg);
         }
 
         return startInfo;
