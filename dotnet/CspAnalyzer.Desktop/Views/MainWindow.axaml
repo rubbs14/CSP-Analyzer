@@ -403,7 +403,7 @@
         </ScrollViewer>
 
         <!-- Content: chart zone (tableLayoutPanel3) + bottom bar (tableLayoutPanel6) -->
-        <Grid Grid.Column="1" RowDefinitions="*,130">
+        <Grid Grid.Column="1" RowDefinitions="*,165">
 
             <!-- Chart zone: left stacked bar charts + right spectra overlay -->
             <Grid Grid.Row="0" ColumnDefinitions="*,*">
