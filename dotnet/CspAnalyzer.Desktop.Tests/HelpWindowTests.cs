@@ -67,10 +67,28 @@ public class HelpWindowTests
             .Single(b => (string?)b.Content == "Copy");
         copyButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
-        string? clipboardText = await TopLevel.GetTopLevel(window)!.Clipboard!.GetTextAsync();
+        // HelpWindow's Click handler is `async void` - RaiseEvent doesn't wait
+        // for it, so reading the clipboard immediately races its SetTextAsync
+        // continuation. Usually wins locally; flaked intermittently on macOS
+        // CI runners. Poll briefly instead of asserting on the first read.
+        string? clipboardText = await PollClipboardTextAsync(window);
         Assert.Equal(
             "1 F1P 135; 2 F1P 11; 1 F2P 105; 2 F2P 6; MI 0.0001; PPNUM 90; pp2d nodia",
             clipboardText);
+    }
+
+    private static async Task<string?> PollClipboardTextAsync(HelpWindow window, int maxAttempts = 20, int delayMs = 10)
+    {
+        string? clipboardText = null;
+        for (int attempt = 0; attempt < maxAttempts && string.IsNullOrEmpty(clipboardText); attempt++)
+        {
+            clipboardText = await TopLevel.GetTopLevel(window)!.Clipboard!.GetTextAsync();
+            if (string.IsNullOrEmpty(clipboardText))
+            {
+                await Task.Delay(delayMs);
+            }
+        }
+        return clipboardText;
     }
 
     [AvaloniaFact]
