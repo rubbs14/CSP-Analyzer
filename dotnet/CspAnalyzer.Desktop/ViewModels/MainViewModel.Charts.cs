@@ -324,11 +324,17 @@ public partial class MainViewModel
         ActivesAutoCount = actives;
         InactivesAutoCount = inactives;
 
+        // BuildSolidGauge's default builder also draws the value as a
+        // built-in data label centered on the arc - suppressed here since
+        // MainWindow.axaml overlays its own (correctly positioned below the
+        // arc, matching the 0/max labels) and the two were rendering on top
+        // of each other.
         ActivesGaugeSeries = GaugeGenerator.BuildSolidGauge(
             new GaugeItem(actives, series =>
             {
                 series.Name = "Actives";
                 series.Fill = new SolidColorPaint(ActiveAutoColor);
+                series.DataLabelsPaint = null;
             }));
 
         InactivesGaugeSeries = GaugeGenerator.BuildSolidGauge(
@@ -336,6 +342,7 @@ public partial class MainViewModel
             {
                 series.Name = "Inactives";
                 series.Fill = new SolidColorPaint(InactiveAutoColor);
+                series.DataLabelsPaint = null;
             }));
     }
 

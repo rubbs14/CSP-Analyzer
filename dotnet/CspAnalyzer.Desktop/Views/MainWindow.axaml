@@ -419,7 +419,8 @@
                                                      XAxes="{Binding PeakDiffXAxes}"
                                                      YAxes="{Binding PeakDiffYAxes}"
                                                      Sections="{Binding PeakDiffSections}"
-                                                     ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}" />
+                                                     ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}"
+                                                     TooltipTextSize="11" />
                                 <!--
                                 Zone captions as a fixed-fraction screen-space overlay, not
                                 RectangularSection.Label: LiveChartsCore mispositions Label text
@@ -462,7 +463,8 @@
                                                  XAxes="{Binding ProbabilityXAxes}"
                                                  YAxes="{Binding ProbabilityYAxes}"
                                                  Sections="{Binding ProbabilitySections}"
-                                                 ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}" />
+                                                 ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}"
+                                                 TooltipTextSize="11" />
                         </DockPanel>
                     </Border>
                 </Grid>
@@ -499,7 +501,7 @@
                             <Button Grid.Column="0" Content="Fit Zoom to Import Limits" Command="{Binding ResetOverlayZoomCommand}" />
                             <Button Grid.Column="2" Content="Fit Zoom to Reference" Command="{Binding FitOverlayZoomToReferenceCommand}" />
                         </Grid>
-                        <lvc:CartesianChart Series="{Binding OverlaySeries}" XAxes="{Binding OverlayXAxes}" YAxes="{Binding OverlayYAxes}" ZoomMode="{x:Static lvcm:ZoomAndPanMode.Both}" />
+                        <lvc:CartesianChart Series="{Binding OverlaySeries}" XAxes="{Binding OverlayXAxes}" YAxes="{Binding OverlayYAxes}" ZoomMode="{x:Static lvcm:ZoomAndPanMode.Both}" TooltipTextSize="11" />
                     </DockPanel>
                 </Border>
             </Grid>
@@ -537,14 +539,24 @@
                             </StackPanel>
                             <Grid ColumnDefinitions="*,*">
                                 <Grid Grid.Column="0">
-                                    <lvc:PieChart Series="{Binding ActivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}" />
-                                    <TextBlock Text="{Binding ActivesAutoCount}" FontSize="20" FontWeight="Bold"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" />
+                                    <lvc:PieChart Series="{Binding ActivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}"
+                                                  InitialRotation="180" MaxAngle="180" TooltipTextSize="11" />
+                                    <Grid ColumnDefinitions="*,*" VerticalAlignment="Center" Margin="4,26,4,0" IsHitTestVisible="False">
+                                        <TextBlock Grid.Column="0" Text="0" FontSize="9" HorizontalAlignment="Left" />
+                                        <TextBlock Grid.Column="1" Text="{Binding DatasetSpectra.Count}" FontSize="9" HorizontalAlignment="Right" />
+                                    </Grid>
+                                    <TextBlock Text="{Binding ActivesAutoCount}" FontSize="18" FontWeight="Bold"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,38,0,0" IsHitTestVisible="False" />
                                 </Grid>
                                 <Grid Grid.Column="1">
-                                    <lvc:PieChart Series="{Binding InactivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}" />
-                                    <TextBlock Text="{Binding InactivesAutoCount}" FontSize="20" FontWeight="Bold"
-                                               HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" />
+                                    <lvc:PieChart Series="{Binding InactivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}"
+                                                  InitialRotation="180" MaxAngle="180" TooltipTextSize="11" />
+                                    <Grid ColumnDefinitions="*,*" VerticalAlignment="Center" Margin="4,26,4,0" IsHitTestVisible="False">
+                                        <TextBlock Grid.Column="0" Text="0" FontSize="9" HorizontalAlignment="Left" />
+                                        <TextBlock Grid.Column="1" Text="{Binding DatasetSpectra.Count}" FontSize="9" HorizontalAlignment="Right" />
+                                    </Grid>
+                                    <TextBlock Text="{Binding InactivesAutoCount}" FontSize="18" FontWeight="Bold"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,38,0,0" IsHitTestVisible="False" />
                                 </Grid>
                             </Grid>
                         </DockPanel>
