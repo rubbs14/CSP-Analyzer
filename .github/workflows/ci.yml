@@ -4,6 +4,7 @@ on:
   push:
     branches: [master]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   python-tests:
@@ -52,3 +53,53 @@ jobs:
 
       - name: Test
         run: dotnet test dotnet/CspAnalyzer.sln --configuration Release --no-build
+
+  package:
+    if: github.event_name == 'workflow_dispatch'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+            os-name: linux
+          - os: windows-latest
+            rid: win-x64
+            os-name: windows
+          - os: macos-latest
+            rid: osx-x64
+            os-name: macos
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: |
+            backend/requirements.txt
+            backend/requirements-dev.txt
+
+      - name: Install python dependencies
+        run: pip install -r backend/requirements.txt -r backend/requirements-dev.txt
+
+      - name: Freeze python backend with PyInstaller
+        working-directory: backend
+        run: pyinstaller csp-backend.spec --noconfirm
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish self-contained desktop app
+        run: dotnet publish dotnet/CspAnalyzer.Desktop/CspAnalyzer.Desktop.csproj -c Release -r ${{ matrix.rid }} --self-contained
+
+      - name: Assemble package
+        shell: pwsh
+        run: ./scripts/package/package.ps1 -Rid ${{ matrix.rid }} -OsName ${{ matrix.os-name }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: CspAnalyzer-${{ matrix.os-name }}-${{ matrix.rid }}
+          path: artifacts/CspAnalyzer-${{ matrix.os-name }}-${{ matrix.rid }}.zip
