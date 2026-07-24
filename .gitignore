@@ -355,6 +355,10 @@ CSPv2/Miniconda3/
 CSPv2/pickle_jar/
 CSPv2/Demo-dataset/
 
+# PyInstaller build output (S14 - frozen per-OS, not source, rebuilt in CI)
+backend/build/
+backend/dist/
+
 # Local git worktrees used for isolated subagent-driven implementation work
 .worktrees/
 .vscode/
