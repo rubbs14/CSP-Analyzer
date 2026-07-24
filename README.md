@@ -181,6 +181,8 @@ See `LICENSE` file for full details. Third-party dependency licenses are listed 
 
 ## Funding
 
+![AEGIS](dotnet/CspAnalyzer.Desktop/Assets/About/aegis-logo.png)
+
 CSP-Analyzer was developed with support from the **European Union's Horizon 2020 Research and Innovation Programme** (2014–2020) under the **Marie Sklodowska-Curie Grant Agreement No. 675555**, funding the **Accelerated Early staGe drug dIScovery (AEGIS)** Innovative Training Network.
 
 Learn more: [www.aegis-itn.eu](http://www.aegis-itn.eu)
