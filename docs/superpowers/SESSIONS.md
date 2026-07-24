@@ -302,8 +302,17 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
 
 ## Sub-project 6 — CI / packaging
 
-- [ ] **S13** — GitHub Actions: build + test matrix (python + .NET). Cross-platform
-  packaging (Linux/Windows/Mac artifacts).
+- [ ] **S13** — GitHub Actions CI: build + test matrix (python `pytest` +
+  .NET `dotnet test`) on push/PR. Split out of the original combined S13
+  scope during brainstorming - packaging isn't just CI config, it needs its
+  own design (see S14).
+- [ ] **S14** — Cross-platform packaging (Linux/Windows/Mac artifacts).
+  Blocked on a real design decision deferred from S11/S12:
+  `BackendEnvironment.FindRepoRoot()` requires a `.git` folder next to
+  `backend/`, which won't exist in a packaged install - needs a
+  packaged-mode repo-root/model-dir resolution strategy, plus a decision on
+  how the python backend itself ships (bundle a standalone python, or
+  require the user's own `csp_modern` conda env).
 
 ## Notes
 
