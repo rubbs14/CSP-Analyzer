@@ -255,7 +255,50 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
   About/Shortcuts services, `AvaloniaHelpWindowService.Show()` opens a new
   window instance on every call, so repeated `H` presses stack multiple Help
   windows - a branch-wide pattern, not something this session introduced.
-- [ ] **S12** — Polish, cross-platform smoke test (Linux + Windows), fix platform gaps.
+- [x] **S12** — Ported the last 9 legacy shortcuts (Enter/I, Ctrl+A, Ctrl+I,
+  Ctrl+Y, Ctrl+Alt+Space, Ctrl+Alt+F, Ctrl+Alt+Y, Ctrl+R) and fixed a real
+  S11c bug: Ctrl+C and Ctrl+Y's zoom-reset bindings were swapped (legacy
+  Ctrl+C resets the bar charts, Ctrl+Y resets the overlay chart; S11c had
+  bound the overlay-reset behavior to Ctrl+C and left Ctrl+Y unbound).
+  `LoadDatasetAsync` now tracks corrupted/out-of-range experiment names (not
+  just counts) behind two new `IInfoDialogService`-backed dialogs. Reset
+  Application (Ctrl+R) is an in-memory full-state reset that re-applies
+  persisted settings via the existing S11b `ApplySettings`/`SettingsService`
+  rather than a true process relaunch (no cross-platform `Application.
+  Restart()` equivalent in .NET 8). `MainViewModel`'s constructor grew to 8
+  params (added `IInfoDialogService`, `SettingsService`). 144 tests total, all
+  green (up from 118 at session start) - includes flipping two
+  `ShortcutsWindowTests.cs` assertions that S11d had left as intentionally
+  stale placeholders for Task 3/5's rows, plus a new blanket assertion that
+  no row anywhere still reads "not yet implemented". Windows verified only
+  via static code audit (no risk found - same `Window.ShowDialog` pattern as
+  the pre-existing dialogs, `SpecialFolder.ApplicationData`-based settings,
+  pure in-memory reset, `Path.GetFileName` - no new OS-specific API surface
+  in Tasks 1-6); no Windows box on this dev machine. Smoke-tested on Linux:
+  no `xdotool` on this box (still true per S9's note), so real keyboard/mouse
+  gestures weren't simulated into the live window; instead a temporary
+  auto-driving patch to `App.axaml.cs` (fake `IFilePickerService` pointed at
+  the real `CSPv2/Demo-dataset` paths, `NullConfirmDialogService` swapped in
+  so the app never blocks waiting on a click it can't receive; reverted
+  before commit, never landed) drove the real `MainViewModel` commands the
+  same keybindings call: loaded the real reference (83 peaks) and real
+  dataset (64/64 experiments, 0 corrupted, 0 out-of-range - this demo set
+  happens to have neither, so Ctrl+Alt+F/Ctrl+Alt+Y's live proof relies on
+  Task 4's dedicated classification unit tests instead), opened the About
+  window (bare I), toggled the auto actives/inactives filters (Ctrl+A/
+  Ctrl+I), exercised the zoom-reset commands (Ctrl+C/Ctrl+Y - no pointer-zoom
+  simulated, so this only proves no exception against live chart controls;
+  gesture-correctness itself is Task 2's headless-test territory), and ran a
+  real end-to-end CSP analysis via the real `csp_modern` conda env
+  (64 experiments classified, 1 active/63 inactive). Ctrl+R's confirm-then-
+  reset flow was not live-driven (would need a second faked service layered
+  on top and adds little beyond what Task 6's headless tests already prove)
+  - screenshots taken at each stage (launch, post-reference-load,
+  post-dataset-load, About window open, filters toggled, post-run populated
+  charts/overlay, next-experiment nav) confirm real rendering with no
+  exceptions in terminal output throughout. See
+  `docs/superpowers/specs/2026-07-23-sub-project-3-s12-remaining-shortcuts-polish-design.md`
+  and `docs/superpowers/plans/2026-07-23-s12-remaining-shortcuts-polish.md`.
 
 ## Sub-project 6 — CI / packaging
 
