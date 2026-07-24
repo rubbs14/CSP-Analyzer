@@ -167,9 +167,9 @@ If you use CSP Analyzer in your work, please cite:
 
 ## License
 
-CSP-Analyzer is distributed free of charge under the **GNU General Public License v3.0** for both commercial and academic purposes.
+CSP-Analyzer is distributed free of charge under the **MIT License** for both commercial and academic purposes.
 
-See `LICENSE` file for full details.
+See `LICENSE` file for full details. Third-party dependency licenses are listed in `THIRD_PARTY_LICENSES.md`.
 
 ## Authors
 
