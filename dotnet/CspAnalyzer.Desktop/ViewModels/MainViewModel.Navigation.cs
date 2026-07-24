@@ -186,6 +186,7 @@ public partial class MainViewModel
         NextCommand.NotifyCanExecuteChanged();
         LastCommand.NotifyCanExecuteChanged();
         RebuildOverlayPoints();
+        RebuildCurrentSpectrumMarkers();
     }
 
     [RelayCommand]

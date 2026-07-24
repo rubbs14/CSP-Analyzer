@@ -10,7 +10,6 @@ using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Extensions;
 using LiveChartsCore.SkiaSharpView.Painting;
-using LiveChartsCore.SkiaSharpView.VisualElements;
 using SkiaSharp;
 
 namespace CspAnalyzer.Desktop.ViewModels;
@@ -53,9 +52,6 @@ public partial class MainViewModel
     [ObservableProperty]
     private RectangularSection[] _peakDiffSections = Array.Empty<RectangularSection>();
 
-    [ObservableProperty]
-    private LabelVisual[] _peakDiffAnnotations = Array.Empty<LabelVisual>();
-
     public void BuildPeakDiffChart()
     {
         if (ReferenceSpectrum is null)
@@ -87,8 +83,9 @@ public partial class MainViewModel
         {
             new ColumnSeries<int> { Name = "ΔPeaks", Values = diffs, Fill = new SolidColorPaint(AllSpectraFillColor) },
         };
-        PeakDiffSections = BuildThresholdZoneSections(diffs.Length);
-        RebuildPeakDiffAnnotations(diffs);
+        PeakDiffSections = BuildThresholdZoneSections(diffs.Length)
+            .Concat(BuildCurrentSpectrumMarkerSections())
+            .ToArray();
     }
 
     // Port of CSPv2/Form1.cs:298-334's AxisSection zones: Broken [-80,-40]
@@ -127,21 +124,57 @@ public partial class MainViewModel
             .ToArray();
     }
 
-    private void RebuildPeakDiffAnnotations(int[] diffs)
+    // Marks which experiment the player/overlay are currently on, in both
+    // the peak-diff and probability charts - originally a LabelVisual
+    // pinned to a fixed data-space (X, Y) point, which drifted out of
+    // registration under zoom/pan just like the zone labels did, and
+    // never updated on navigation since nothing called its rebuild outside
+    // the initial chart build. A RectangularSection anchored purely to X
+    // (Yi/Yj left unset, so it spans the chart's full visible height) is
+    // both zoom-stable and trivial to keep in sync: RaiseNavigationChanged
+    // recomputes it on every Next/Previous/GoTo.
+    private RectangularSection[] BuildCurrentSpectrumMarkerSections()
     {
-        PeakDiffAnnotations = CurrentIndex >= 0 && CurrentIndex < diffs.Length
-            ? new[] { Label(CurrentIndex, diffs[CurrentIndex], "Current Spectrum") }
-            : Array.Empty<LabelVisual>();
+        if (CurrentIndex < 0 || CurrentIndex >= DatasetSpectra.Count)
+        {
+            return Array.Empty<RectangularSection>();
+        }
+
+        double halfWidth = Math.Max(DatasetSpectra.Count * 0.01, 0.5);
+        return new[]
+        {
+            new RectangularSection
+            {
+                Xi = CurrentIndex - halfWidth,
+                Xj = CurrentIndex + halfWidth,
+                Stroke = new SolidColorPaint(CurrentMarkerTextColor) { StrokeThickness = 1.5f },
+                Label = "Current Spectrum",
+                LabelPaint = new SolidColorPaint(CurrentMarkerTextColor),
+                LabelSize = 10,
+            },
+        };
     }
 
-    private static LabelVisual Label(double x, double y, string text) => new()
+    // Called from RaiseNavigationChanged so the marker actually tracks
+    // Next/Previous/GoTo - the zone/threshold sections don't depend on
+    // CurrentIndex, so recomputing them here alongside the marker is cheap
+    // and avoids a separate "just the marker changed" code path.
+    public void RebuildCurrentSpectrumMarkers()
     {
-        X = x,
-        Y = y,
-        Text = text,
-        TextSize = 10,
-        Paint = new SolidColorPaint(CurrentMarkerTextColor),
-    };
+        if (PeakDiffXAxes.Length > 0)
+        {
+            PeakDiffSections = BuildThresholdZoneSections(DatasetSpectra.Count)
+                .Concat(BuildCurrentSpectrumMarkerSections())
+                .ToArray();
+        }
+
+        if (ProbabilityXAxes.Length > 0)
+        {
+            ProbabilitySections = BuildProbabilityStaticSections()
+                .Concat(BuildCurrentSpectrumMarkerSections())
+                .ToArray();
+        }
+    }
 
     [ObservableProperty]
     private ISeries[] _probabilitySeries = Array.Empty<ISeries>();
@@ -154,9 +187,6 @@ public partial class MainViewModel
 
     [ObservableProperty]
     private RectangularSection[] _probabilitySections = Array.Empty<RectangularSection>();
-
-    [ObservableProperty]
-    private LabelVisual[] _probabilityAnnotations = Array.Empty<LabelVisual>();
 
     // User-adjustable decision boundary (a slider in MainWindow.axaml) -
     // defaults each run to the backend's own ProbThreshold (the minimum
@@ -230,38 +260,37 @@ public partial class MainViewModel
             new ColumnSeries<double?> { Name = "Inactive", Values = inactiveProbs, Fill = new SolidColorPaint(InactiveAutoColor) },
             new ColumnSeries<double?> { Name = "Active", Values = activeProbs, Fill = new SolidColorPaint(ActiveAutoColor) },
         };
-        ProbabilitySections = new[]
-        {
-            new RectangularSection { Yi = 0, Yj = 0.35, Fill = new SolidColorPaint(BrokenSpectrumColor) },
-            new RectangularSection { Yi = 0.35, Yj = 0.75, Fill = new SolidColorPaint(CheckSpectrumColor) },
-            new RectangularSection { Yi = 0.75, Yj = 1, Fill = new SolidColorPaint(FineSpectrumColor) },
-            new RectangularSection
-            {
-                Yi = ManualProbabilityThreshold,
-                Yj = ManualProbabilityThreshold,
-                Stroke = new SolidColorPaint(ActiveAutoColor) { StrokeThickness = 1.5f },
-            },
-            new RectangularSection
-            {
-                // Label on a second, narrow, centered section rather than
-                // the full-width threshold line itself, so the text sits
-                // centered instead of pinned to the line's left edge (same
-                // fix as the peak-diff chart's zone labels).
-                Yi = ManualProbabilityThreshold,
-                Yj = ManualProbabilityThreshold,
-                Xi = DatasetSpectra.Count / 2.0 - Math.Max(DatasetSpectra.Count * 0.15, 1),
-                Xj = DatasetSpectra.Count / 2.0 + Math.Max(DatasetSpectra.Count * 0.15, 1),
-                Label = "Decision Threshold",
-                LabelPaint = new SolidColorPaint(CurrentMarkerTextColor),
-                LabelSize = 10,
-            },
-        };
-
-        if (CurrentIndex >= 0 && CurrentIndex < probs.Length)
-        {
-            ProbabilityAnnotations = new[] { Label(CurrentIndex, probs[CurrentIndex], "Current Spectrum") };
-        }
+        ProbabilitySections = BuildProbabilityStaticSections()
+            .Concat(BuildCurrentSpectrumMarkerSections())
+            .ToArray();
     }
+
+    private RectangularSection[] BuildProbabilityStaticSections() => new[]
+    {
+        new RectangularSection { Yi = 0, Yj = 0.35, Fill = new SolidColorPaint(BrokenSpectrumColor) },
+        new RectangularSection { Yi = 0.35, Yj = 0.75, Fill = new SolidColorPaint(CheckSpectrumColor) },
+        new RectangularSection { Yi = 0.75, Yj = 1, Fill = new SolidColorPaint(FineSpectrumColor) },
+        new RectangularSection
+        {
+            Yi = ManualProbabilityThreshold,
+            Yj = ManualProbabilityThreshold,
+            Stroke = new SolidColorPaint(ActiveAutoColor) { StrokeThickness = 1.5f },
+        },
+        new RectangularSection
+        {
+            // Label on a second, narrow, centered section rather than
+            // the full-width threshold line itself, so the text sits
+            // centered instead of pinned to the line's left edge (same
+            // fix as the peak-diff chart's zone labels).
+            Yi = ManualProbabilityThreshold,
+            Yj = ManualProbabilityThreshold,
+            Xi = DatasetSpectra.Count / 2.0 - Math.Max(DatasetSpectra.Count * 0.15, 1),
+            Xj = DatasetSpectra.Count / 2.0 + Math.Max(DatasetSpectra.Count * 0.15, 1),
+            Label = "Decision Threshold",
+            LabelPaint = new SolidColorPaint(CurrentMarkerTextColor),
+            LabelSize = 10,
+        },
+    };
 
     [ObservableProperty]
     private ISeries[] _activesGaugeSeries = Array.Empty<ISeries>();

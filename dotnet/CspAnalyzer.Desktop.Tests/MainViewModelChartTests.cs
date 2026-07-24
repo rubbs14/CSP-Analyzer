@@ -37,13 +37,42 @@ public class MainViewModelChartTests
 
         vm.BuildPeakDiffChart();
 
-        Assert.Equal(12, vm.PeakDiffSections.Length);
-        Assert.Equal(2, vm.PeakDiffSections.Count(s => s.Label == "Broken Spectrum"));
-        Assert.Equal(2, vm.PeakDiffSections.Count(s => s.Label == "Check PP"));
-        Assert.Equal(2, vm.PeakDiffSections.Count(s => s.Label == "Safe range"));
+        var zoneSections = vm.PeakDiffSections.Where(s => s.Label != "Current Spectrum").ToList();
+        Assert.Equal(12, zoneSections.Count);
+        Assert.Equal(2, zoneSections.Count(s => s.Label == "Broken Spectrum"));
+        Assert.Equal(2, zoneSections.Count(s => s.Label == "Check PP"));
+        Assert.Equal(2, zoneSections.Count(s => s.Label == "Safe range"));
         Assert.All(
-            vm.PeakDiffSections.Where(s => !string.IsNullOrEmpty(s.Label)),
+            zoneSections.Where(s => !string.IsNullOrEmpty(s.Label)),
             s => Assert.True(s.Xi.HasValue && s.Xj.HasValue));
+    }
+
+    [Fact]
+    public void BuildPeakDiffChart_adds_a_current_spectrum_marker_section_at_CurrentIndex()
+    {
+        MainViewModel vm = MakeViewModel(80, 85, 40, 90);
+        vm.CurrentIndex = 1;
+
+        vm.BuildPeakDiffChart();
+
+        var marker = vm.PeakDiffSections.Single(s => s.Label == "Current Spectrum");
+        Assert.True(marker.Xi <= 1 && marker.Xj >= 1);
+    }
+
+    [Fact]
+    public void RaiseNavigationChanged_moves_the_current_spectrum_marker_to_the_new_index()
+    {
+        MainViewModel vm = MakeViewModel(80, 85, 40, 90);
+        vm.BuildPeakDiffChart();
+        vm.BuildProbabilityChart();
+
+        vm.CurrentIndex = 2;
+        vm.RaiseNavigationChanged();
+
+        var peakDiffMarker = vm.PeakDiffSections.Single(s => s.Label == "Current Spectrum");
+        Assert.True(peakDiffMarker.Xi <= 2 && peakDiffMarker.Xj >= 2);
+        var probabilityMarker = vm.ProbabilitySections.Single(s => s.Label == "Current Spectrum");
+        Assert.True(probabilityMarker.Xi <= 2 && probabilityMarker.Xj >= 2);
     }
 
     [Fact]

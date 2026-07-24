@@ -228,7 +228,6 @@
                                                  XAxes="{Binding PeakDiffXAxes}"
                                                  YAxes="{Binding PeakDiffYAxes}"
                                                  Sections="{Binding PeakDiffSections}"
-                                                 VisualElements="{Binding PeakDiffAnnotations}"
                                                  ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}" />
                         </DockPanel>
                     </Border>
@@ -246,7 +245,6 @@
                                                  XAxes="{Binding ProbabilityXAxes}"
                                                  YAxes="{Binding ProbabilityYAxes}"
                                                  Sections="{Binding ProbabilitySections}"
-                                                 VisualElements="{Binding ProbabilityAnnotations}"
                                                  ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}" />
                         </DockPanel>
                     </Border>

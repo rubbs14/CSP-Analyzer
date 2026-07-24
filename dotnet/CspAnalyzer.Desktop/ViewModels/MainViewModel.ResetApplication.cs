@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Input;
 using CspAnalyzer.Desktop.Models;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
-using LiveChartsCore.SkiaSharpView.VisualElements;
 
 namespace CspAnalyzer.Desktop.ViewModels;
 
@@ -79,13 +78,11 @@ public partial class MainViewModel
         PeakDiffXAxes = Array.Empty<Axis>();
         PeakDiffYAxes = Array.Empty<Axis>();
         PeakDiffSections = Array.Empty<RectangularSection>();
-        PeakDiffAnnotations = Array.Empty<LabelVisual>();
 
         ProbabilitySeries = Array.Empty<ISeries>();
         ProbabilityXAxes = Array.Empty<Axis>();
         ProbabilityYAxes = Array.Empty<Axis>();
         ProbabilitySections = Array.Empty<RectangularSection>();
-        ProbabilityAnnotations = Array.Empty<LabelVisual>();
 
         ActivesGaugeSeries = Array.Empty<ISeries>();
         InactivesGaugeSeries = Array.Empty<ISeries>();
