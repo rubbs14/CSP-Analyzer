@@ -307,8 +307,8 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanRun))]
     private async Task RunAsync()
     {
-        string? python = BackendEnvironment.PythonExecutable;
-        if (python is null)
+        BackendExecutable? executable = BackendEnvironment.Executable;
+        if (executable is null)
         {
             RunStatusText = "csp_modern python environment not found - cannot run.";
             return;
@@ -329,11 +329,11 @@ public partial class MainViewModel : ViewModelBase
             File.WriteAllText(jsonIn, PeaklistSpectrum.SerializeAll(allSpectra));
 
             BackendRunResult result = await BackendCliRunner.RunAsync(
-                python,
+                executable,
                 jsonIn,
                 runDir,
                 BackendEnvironment.ModelDir,
-                BackendEnvironment.RepoRoot,
+                BackendEnvironment.WorkingDirectory,
                 binsPerArrayDimension: BinsPerArrayDimension,
                 _runCts.Token);
 
