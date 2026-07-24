@@ -4,7 +4,16 @@
         Title="About CSP Analyzer"
         Width="600" Height="660"
         WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <SolidColorBrush x:Key="TabItemHeaderSelectedPipeFill" Color="#00A297" />
+        <Color x:Key="SystemAccentColor">#00A297</Color>
+        <Color x:Key="SystemAccentColorLight1">#4DBFB0</Color>
+        <Color x:Key="SystemAccentColorDark1">#00786F</Color>
+    </Window.Resources>
     <Window.Styles>
+        <Style Selector="TabItem:selected">
+            <Setter Property="Foreground" Value="#00A297" />
+        </Style>
         <Style Selector="Button.link">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
