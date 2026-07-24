@@ -31,13 +31,19 @@ public class MainViewModelChartTests
     }
 
     [Fact]
-    public void BuildPeakDiffChart_sets_five_threshold_zone_sections()
+    public void BuildPeakDiffChart_sets_six_labeled_threshold_zone_sections()
     {
         MainViewModel vm = MakeViewModel(80, 85);
 
         vm.BuildPeakDiffChart();
 
-        Assert.Equal(5, vm.PeakDiffSections.Length);
+        Assert.Equal(12, vm.PeakDiffSections.Length);
+        Assert.Equal(2, vm.PeakDiffSections.Count(s => s.Label == "Broken Spectrum"));
+        Assert.Equal(2, vm.PeakDiffSections.Count(s => s.Label == "Check PP"));
+        Assert.Equal(2, vm.PeakDiffSections.Count(s => s.Label == "Safe range"));
+        Assert.All(
+            vm.PeakDiffSections.Where(s => !string.IsNullOrEmpty(s.Label)),
+            s => Assert.True(s.Xi.HasValue && s.Xj.HasValue));
     }
 
     [Fact]
@@ -49,9 +55,11 @@ public class MainViewModelChartTests
 
         vm.BuildProbabilityChart();
 
-        var series = Assert.Single(vm.ProbabilitySeries);
-        var column = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<double>>(series);
-        Assert.Equal(new[] { 0.91, 0.1 }, column.Values);
+        Assert.Equal(2, vm.ProbabilitySeries.Length);
+        var inactive = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<double?>>(vm.ProbabilitySeries[0]);
+        var active = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<double?>>(vm.ProbabilitySeries[1]);
+        Assert.Equal(new double?[] { null, 0.1 }, inactive.Values);
+        Assert.Equal(new double?[] { 0.91, null }, active.Values);
     }
 
     [Fact]

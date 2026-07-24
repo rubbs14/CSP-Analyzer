@@ -75,40 +75,51 @@ public partial class MainViewModel
         {
             new ColumnSeries<int> { Name = "ΔPeaks", Values = diffs, Fill = new SolidColorPaint(AllSpectraFillColor) },
         };
-        PeakDiffSections = BuildThresholdZoneSections();
+        PeakDiffSections = BuildThresholdZoneSections(diffs.Length);
         RebuildPeakDiffAnnotations(diffs);
     }
 
     // Port of CSPv2/Form1.cs:298-334's AxisSection zones: Broken [-80,-40]
-    // and [40,80], Check [-45,-25] and [25,45], Safe/Fine [-30,30].
-    private static RectangularSection[] BuildThresholdZoneSections() => new[]
+    // and [40,80], Check [-45,-25] and [25,45], Safe/Fine [-30,30] (split
+    // into +/- halves so each gets its own centered "Safe range" label,
+    // matching legacy's six-label layout). Each zone is two sections: a
+    // full-width one carrying the background Fill, and a second, narrow
+    // one - Xi/Xj pinned to a window centered on the dataset - carrying
+    // only the Label, so the text sits centered in the band instead of
+    // pinned to the section's left edge. A RectangularSection's Label is
+    // positioned relative to the chart's current visible area (unlike a
+    // LabelVisual's fixed data-space X/Y), so both stay put under zoom/pan
+    // instead of drifting.
+    private static RectangularSection[] BuildThresholdZoneSections(int datasetCount)
     {
-        new RectangularSection { Yi = -80, Yj = -40, Fill = new SolidColorPaint(BrokenSpectrumColor) },
-        new RectangularSection { Yi = 25, Yj = 45, Fill = new SolidColorPaint(CheckSpectrumColor) },
-        new RectangularSection { Yi = -45, Yj = -25, Fill = new SolidColorPaint(CheckSpectrumColor) },
-        new RectangularSection { Yi = 40, Yj = 80, Fill = new SolidColorPaint(BrokenSpectrumColor) },
-        new RectangularSection { Yi = -30, Yj = 30, Fill = new SolidColorPaint(FineSpectrumColor) },
-    };
+        double center = datasetCount / 2.0;
+        double halfWidth = Math.Max(datasetCount * 0.15, 1);
+
+        RectangularSection[] Zone(double yi, double yj, SKColor fill, string label) => new[]
+        {
+            new RectangularSection { Yi = yi, Yj = yj, Fill = new SolidColorPaint(fill) },
+            new RectangularSection
+            {
+                Yi = yi, Yj = yj,
+                Xi = center - halfWidth, Xj = center + halfWidth,
+                Label = label, LabelPaint = new SolidColorPaint(CurrentMarkerTextColor), LabelSize = 10,
+            },
+        };
+
+        return Zone(-80, -40, BrokenSpectrumColor, "Broken Spectrum")
+            .Concat(Zone(-45, -25, CheckSpectrumColor, "Check PP"))
+            .Concat(Zone(-30, 0, FineSpectrumColor, "Safe range"))
+            .Concat(Zone(0, 30, FineSpectrumColor, "Safe range"))
+            .Concat(Zone(25, 45, CheckSpectrumColor, "Check PP"))
+            .Concat(Zone(40, 80, BrokenSpectrumColor, "Broken Spectrum"))
+            .ToArray();
+    }
 
     private void RebuildPeakDiffAnnotations(int[] diffs)
     {
-        double center = diffs.Length / 2.0;
-        var annotations = new List<LabelVisual>
-        {
-            Label(center, 15, "Safe range"),
-            Label(center, -15, "Safe range"),
-            Label(center, 35, "Check PP"),
-            Label(center, -35, "Check PP"),
-            Label(center, 65, "Broken Spectrum"),
-            Label(center, -65, "Broken Spectrum"),
-        };
-
-        if (CurrentIndex >= 0 && CurrentIndex < diffs.Length)
-        {
-            annotations.Add(Label(CurrentIndex, diffs[CurrentIndex], "Current Spectrum"));
-        }
-
-        PeakDiffAnnotations = annotations.ToArray();
+        PeakDiffAnnotations = CurrentIndex >= 0 && CurrentIndex < diffs.Length
+            ? new[] { Label(CurrentIndex, diffs[CurrentIndex], "Current Spectrum") }
+            : Array.Empty<LabelVisual>();
     }
 
     private static LabelVisual Label(double x, double y, string text) => new()
@@ -191,9 +202,18 @@ public partial class MainViewModel
 
         ProbabilityXAxes = new[] { xAxis };
         ProbabilityYAxes = new[] { new Axis { Name = "Probability", MinLimit = 0, MaxLimit = 1 } };
+
+        // Each bar colored by its own active/inactive classification (like
+        // legacy's per-bar coloring) rather than one flat color for every
+        // bar - two same-length, index-aligned series with nulls at the
+        // indices that belong to the other category, so each renders only
+        // its own bars without a zero-height column at the rest.
+        double?[] activeProbs = probs.Select(p => p >= ManualProbabilityThreshold ? (double?)p : null).ToArray();
+        double?[] inactiveProbs = probs.Select(p => p < ManualProbabilityThreshold ? (double?)p : null).ToArray();
         ProbabilitySeries = new ISeries[]
         {
-            new ColumnSeries<double> { Name = "Probability", Values = probs, Fill = new SolidColorPaint(InactiveAutoColor) },
+            new ColumnSeries<double?> { Name = "Inactive", Values = inactiveProbs, Fill = new SolidColorPaint(InactiveAutoColor) },
+            new ColumnSeries<double?> { Name = "Active", Values = activeProbs, Fill = new SolidColorPaint(ActiveAutoColor) },
         };
         ProbabilitySections = new[]
         {
@@ -205,6 +225,17 @@ public partial class MainViewModel
                 Yi = ManualProbabilityThreshold,
                 Yj = ManualProbabilityThreshold,
                 Stroke = new SolidColorPaint(ActiveAutoColor) { StrokeThickness = 1.5f },
+            },
+            new RectangularSection
+            {
+                // Label on a second, narrow, centered section rather than
+                // the full-width threshold line itself, so the text sits
+                // centered instead of pinned to the line's left edge (same
+                // fix as the peak-diff chart's zone labels).
+                Yi = ManualProbabilityThreshold,
+                Yj = ManualProbabilityThreshold,
+                Xi = DatasetSpectra.Count / 2.0 - Math.Max(DatasetSpectra.Count * 0.15, 1),
+                Xj = DatasetSpectra.Count / 2.0 + Math.Max(DatasetSpectra.Count * 0.15, 1),
                 Label = "Decision Threshold",
                 LabelPaint = new SolidColorPaint(CurrentMarkerTextColor),
                 LabelSize = 10,
