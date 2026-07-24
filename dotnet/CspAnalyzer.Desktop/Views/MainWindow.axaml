@@ -193,6 +193,17 @@
             <Setter Property="CornerRadius" Value="5" />
         </Style>
 
+        <!-- Field: numeric inputs in the 210px Options panel - FluentTheme's
+             default TextBox MinWidth is wider than the Import
+             Control/Peak Filtering grid columns can offer, so it was
+             pushing the boxes past the panel border instead of shrinking. -->
+        <Style Selector="TextBox.field">
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Padding" Value="4,3" />
+            <Setter Property="FontSize" Value="11" />
+        </Style>
+
         <!-- Swatch: the 20x20 flat-colour background pickers - circular hover/press ring only -->
         <Style Selector="Button.swatch">
             <Setter Property="CornerRadius" Value="10" />
@@ -318,19 +329,19 @@
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="Min" FontStyle="Italic" FontSize="10" HorizontalAlignment="Center" Margin="2" />
                         <TextBlock Grid.Row="0" Grid.Column="2" Text="Max" FontStyle="Italic" FontSize="10" HorizontalAlignment="Center" Margin="2" />
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="15N (ppm)" FontStyle="Italic" VerticalAlignment="Center" Margin="2" />
-                        <TextBox x:Name="NMinTextBox" Grid.Row="1" Grid.Column="1" Text="{Binding NMin}" HorizontalContentAlignment="Center" Margin="2" />
-                        <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding NMax}" HorizontalContentAlignment="Center" Margin="2" />
+                        <TextBox x:Name="NMinTextBox" Classes="field" Grid.Row="1" Grid.Column="1" Text="{Binding NMin}" HorizontalContentAlignment="Center" Margin="2" />
+                        <TextBox Classes="field" Grid.Row="1" Grid.Column="2" Text="{Binding NMax}" HorizontalContentAlignment="Center" Margin="2" />
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="1H (ppm)" FontStyle="Italic" VerticalAlignment="Center" Margin="2" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding HMin}" HorizontalContentAlignment="Center" Margin="2" />
-                        <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding HMax}" HorizontalContentAlignment="Center" Margin="2" />
+                        <TextBox Classes="field" Grid.Row="2" Grid.Column="1" Text="{Binding HMin}" HorizontalContentAlignment="Center" Margin="2" />
+                        <TextBox Classes="field" Grid.Row="2" Grid.Column="2" Text="{Binding HMax}" HorizontalContentAlignment="Center" Margin="2" />
                     </Grid>
                     <Button Content="Reset to Default" Command="{Binding ResetImportControlsCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="0,2" />
 
                     <TextBlock Text="Peak Filtering" FontWeight="SemiBold" FontSize="11" Margin="0,4,0,0" HorizontalAlignment="Center" />
                     <TextBlock Text="Lowest Intensity threshold" FontStyle="Italic" FontSize="10" HorizontalAlignment="Center" />
                     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
-                        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding ReferenceIntensityThreshold}" HorizontalContentAlignment="Center" Margin="2" />
-                        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DatasetIntensityThreshold}" HorizontalContentAlignment="Center" Margin="2" />
+                        <TextBox Classes="field" Grid.Row="0" Grid.Column="0" Text="{Binding ReferenceIntensityThreshold}" HorizontalContentAlignment="Center" Margin="2" />
+                        <TextBox Classes="field" Grid.Row="0" Grid.Column="1" Text="{Binding DatasetIntensityThreshold}" HorizontalContentAlignment="Center" Margin="2" />
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Reference" HorizontalAlignment="Center" Margin="2" />
                         <TextBlock Grid.Row="1" Grid.Column="1" Text="Dataset" HorizontalAlignment="Center" Margin="2" />
                     </Grid>
@@ -560,42 +571,44 @@
                             <Button Content="Go" Command="{Binding GoToExperimentCommand}" Classes="accent" />
                         </StackPanel>
                     </Grid>
-                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto">
-                        <Grid Grid.Column="0" ColumnDefinitions="*,*,*,*" Margin="4" VerticalAlignment="Top">
-                            <Button Grid.Column="0" Command="{Binding FirstCommand}" Classes="player" HorizontalAlignment="Stretch">
-                                <StackPanel Spacing="2" HorizontalAlignment="Center">
-                                    <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/first.png" Width="18" Height="18" />
-                                    <TextBlock Text="First" FontSize="9" HorizontalAlignment="Center" />
-                                </StackPanel>
-                            </Button>
-                            <Button Grid.Column="1" Command="{Binding PreviousCommand}" Classes="player" HorizontalAlignment="Stretch">
-                                <StackPanel Spacing="2" HorizontalAlignment="Center">
-                                    <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/previous.png" Width="18" Height="18" />
-                                    <TextBlock Text="Previous" FontSize="9" HorizontalAlignment="Center" />
-                                </StackPanel>
-                            </Button>
-                            <Button Grid.Column="2" Command="{Binding NextCommand}" Classes="player" HorizontalAlignment="Stretch">
-                                <StackPanel Spacing="2" HorizontalAlignment="Center">
-                                    <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/next.png" Width="18" Height="18" />
-                                    <TextBlock Text="Next" FontSize="9" HorizontalAlignment="Center" />
-                                </StackPanel>
-                            </Button>
-                            <Button Grid.Column="3" Command="{Binding LastCommand}" Classes="player" HorizontalAlignment="Stretch">
-                                <StackPanel Spacing="2" HorizontalAlignment="Center">
-                                    <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/last.png" Width="18" Height="18" />
-                                    <TextBlock Text="Last" FontSize="9" HorizontalAlignment="Center" />
-                                </StackPanel>
-                            </Button>
-                        </Grid>
-                        <StackPanel Grid.Column="1" Margin="4" Spacing="2">
-                            <TextBlock Text="{Binding CurrentReadPeaks, StringFormat='Read Peaks: {0}'}" FontSize="10" />
-                            <TextBlock Text="{Binding CurrentMinIntensity, StringFormat='Min. Int.: {0:F0}'}" FontSize="10" />
-                            <TextBlock Text="{Binding CurrentMaxIntensity, StringFormat='Max. Int.: {0:F0}'}" FontSize="10" />
-                            <TextBlock Text="{Binding CurrentPeakDifference, StringFormat='ΔPeaks: {0}'}" FontSize="10" />
-                            <TextBlock Text="{Binding CurrentAutomaticStatusText, StringFormat='Auto Status: {0}'}" FontSize="10" FontWeight="Bold" />
-                            <TextBlock Text="{Binding CurrentManualStatusText, StringFormat='Man. Status: {0}'}" FontSize="10" />
+                    <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0" Margin="4" Spacing="2">
+                            <Grid ColumnDefinitions="*,*,*,*" VerticalAlignment="Top">
+                                <Button Grid.Column="0" Command="{Binding FirstCommand}" Classes="player" HorizontalAlignment="Stretch">
+                                    <StackPanel Spacing="2" HorizontalAlignment="Center">
+                                        <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/first.png" Width="18" Height="18" />
+                                        <TextBlock Text="First" FontSize="9" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Grid.Column="1" Command="{Binding PreviousCommand}" Classes="player" HorizontalAlignment="Stretch">
+                                    <StackPanel Spacing="2" HorizontalAlignment="Center">
+                                        <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/previous.png" Width="18" Height="18" />
+                                        <TextBlock Text="Previous" FontSize="9" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Grid.Column="2" Command="{Binding NextCommand}" Classes="player" HorizontalAlignment="Stretch">
+                                    <StackPanel Spacing="2" HorizontalAlignment="Center">
+                                        <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/next.png" Width="18" Height="18" />
+                                        <TextBlock Text="Next" FontSize="9" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Grid.Column="3" Command="{Binding LastCommand}" Classes="player" HorizontalAlignment="Stretch">
+                                    <StackPanel Spacing="2" HorizontalAlignment="Center">
+                                        <Image Source="avares://CspAnalyzer.Desktop/Assets/Player/last.png" Width="18" Height="18" />
+                                        <TextBlock Text="Last" FontSize="9" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" Margin="0,4,0,0">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding CurrentReadPeaks, StringFormat='Read Peaks: {0}'}" FontSize="10" />
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentMinIntensity, StringFormat='Min. Int.: {0:F0}'}" FontSize="10" />
+                                <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding CurrentMaxIntensity, StringFormat='Max. Int.: {0:F0}'}" FontSize="10" />
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding CurrentPeakDifference, StringFormat='ΔPeaks: {0}'}" FontSize="10" Margin="0,2,0,0" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentAutomaticStatusText, StringFormat='Auto: {0}'}" FontSize="10" FontWeight="Bold" Margin="0,2,0,0" />
+                                <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding CurrentManualStatusText, StringFormat='Man.: {0}'}" FontSize="10" Margin="0,2,0,0" />
+                            </Grid>
                         </StackPanel>
-                        <StackPanel Grid.Column="2" Margin="4" Spacing="2">
+                        <StackPanel Grid.Column="1" Margin="4" Spacing="2">
                             <Grid ColumnDefinitions="*,*">
                                 <Button Grid.Column="0" Content="Ref PP Details" Command="{Binding ShowReferencePpDetailsCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="0,0,1,0" />
                                 <Button Grid.Column="1" Content="Exp PP Details" Command="{Binding ShowExperimentPpDetailsCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="1,0,0,0" />
