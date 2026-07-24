@@ -143,7 +143,15 @@ public partial class MainViewModel
     // recomputes it on every Next/Previous/GoTo.
     private RectangularSection[] BuildCurrentSpectrumMarkerSections()
     {
-        if (CurrentIndex < 0 || CurrentIndex >= DatasetSpectra.Count)
+        // The chart's X axis always spans the FULL DatasetSpectra list, but
+        // CurrentIndex is an index into CurrentView - the actives/inactives
+        // filtered subset (S10b). With a filter active those two diverge
+        // (e.g. CurrentIndex 0..7 for 8 filtered actives vs. their real,
+        // scattered positions among 64 total experiments), so the marker
+        // must be placed at the current spectrum's index within
+        // DatasetSpectra, not at CurrentIndex directly.
+        int fullIndex = CurrentSpectrum is null ? -1 : DatasetSpectra.IndexOf(CurrentSpectrum);
+        if (fullIndex < 0)
         {
             return Array.Empty<RectangularSection>();
         }
@@ -153,8 +161,8 @@ public partial class MainViewModel
         {
             new RectangularSection
             {
-                Xi = CurrentIndex - halfWidth,
-                Xj = CurrentIndex + halfWidth,
+                Xi = fullIndex - halfWidth,
+                Xj = fullIndex + halfWidth,
                 Stroke = new SolidColorPaint(CurrentMarkerTextColor) { StrokeThickness = 1.5f },
                 Label = "Current Spectrum",
                 LabelPaint = new SolidColorPaint(CurrentMarkerTextColor),
