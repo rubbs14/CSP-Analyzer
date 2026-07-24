@@ -11,6 +11,7 @@ type: software
 authors:
   - family-names: "Fino"
     given-names: "Roberto"
+    orcid: "https://orcid.org/0000-0001-5323-4562"
   - family-names: "Byrne"
     given-names: "Ryan"
 version: "2.0.0"
@@ -32,6 +33,7 @@ preferred-citation:
   authors:
     - family-names: "Fino"
       given-names: "Roberto"
+      orcid: "https://orcid.org/0000-0001-5323-4562"
     - family-names: "Byrne"
       given-names: "Ryan"
     - family-names: "Softley"
