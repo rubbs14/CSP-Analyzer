@@ -1,4 +1,6 @@
 {
+  "biotoolsID": "csp-analyzer",
+  "biotoolsCURIE": "biotools:csp-analyzer",
   "name": "CSP-Analyzer",
   "description": "A machine-learning desktop application for automated analysis of two-dimensional NMR spectra in fragment-based screening. It reads Bruker TopSpin peak lists, compares each experiment spectrum against a reference using computer-vision descriptors, and classifies spectra as active or inactive via a SMOTE-ENN, PCA and SVM pipeline. Cross-platform (.NET 8 / Avalonia) with a bundled Python backend; no separate Python install required.",
   "homepage": "https://github.com/rubbs14/CSP-Analyzer",
