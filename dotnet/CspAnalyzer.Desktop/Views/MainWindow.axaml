@@ -223,12 +223,35 @@
                     <Border Grid.Row="1" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Peaks Difference Distribution" />
-                            <lvc:CartesianChart x:Name="PeakDiffChart"
-                                                 Series="{Binding PeakDiffSeries}"
-                                                 XAxes="{Binding PeakDiffXAxes}"
-                                                 YAxes="{Binding PeakDiffYAxes}"
-                                                 Sections="{Binding PeakDiffSections}"
-                                                 ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}" />
+                            <Grid>
+                                <lvc:CartesianChart x:Name="PeakDiffChart"
+                                                     Series="{Binding PeakDiffSeries}"
+                                                     XAxes="{Binding PeakDiffXAxes}"
+                                                     YAxes="{Binding PeakDiffYAxes}"
+                                                     Sections="{Binding PeakDiffSections}"
+                                                     ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}" />
+                                <!--
+                                Zone captions as a fixed-fraction screen-space overlay, not
+                                RectangularSection.Label: LiveChartsCore mispositions Label text
+                                once more than one finite-Yi/Yj section shares an X window (each
+                                caption rendered one zone-slot away from its own section - see
+                                MainViewModel.Charts.cs's BuildThresholdZoneSections). Row heights
+                                are the |dPeaks|<=15/<=30/>30 zone widths as fractions of the
+                                fixed -80..80 Y range, so each caption centers in its own band
+                                and stays there under zoom/pan (it's outside the chart's data
+                                space entirely). Margin approximates the chart's own Y-axis-label
+                                and X-axis-label reserved space so rows line up with the zones.
+                                -->
+                                <Grid IsHitTestVisible="False" Margin="46,4,4,50"
+                                      RowDefinitions="0.3125*,0.09375*,0.09375*,0.09375*,0.09375*,0.3125*">
+                                    <TextBlock Grid.Row="0" Text="Broken Spectrum" Foreground="#DC3545" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Row="1" Text="Check PP" Foreground="#FFC107" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Row="2" Text="Safe range" Foreground="#DCDCDC" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Row="3" Text="Safe range" Foreground="#DCDCDC" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Row="4" Text="Check PP" Foreground="#FFC107" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Row="5" Text="Broken Spectrum" Foreground="#DC3545" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Grid>
+                            </Grid>
                         </DockPanel>
                     </Border>
                     <Border Grid.Row="2" Classes="section">

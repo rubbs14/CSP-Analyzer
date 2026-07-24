@@ -19,51 +19,52 @@ public class MainViewModelChartTests
     }
 
     [Fact]
-    public void BuildPeakDiffChart_produces_one_bar_per_experiment_valued_at_TotReadPeaks_minus_reference()
+    public void BuildPeakDiffChart_produces_one_bar_per_experiment_valued_at_TotReadPeaks_minus_reference_split_by_zone()
     {
+        // ref=80: diffs are 5 (safe), -40 (broken), 0 (safe).
         MainViewModel vm = MakeViewModel(80, 85, 40, 80);
 
         vm.BuildPeakDiffChart();
 
-        var series = Assert.Single(vm.PeakDiffSeries);
-        var column = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<int>>(series);
-        Assert.Equal(new[] { 5, -40, 0 }, column.Values);
+        Assert.Equal(3, vm.PeakDiffSeries.Length);
+        var safe = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<int?>>(vm.PeakDiffSeries[0]);
+        var check = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<int?>>(vm.PeakDiffSeries[1]);
+        var broken = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<int?>>(vm.PeakDiffSeries[2]);
+        Assert.Equal(new int?[] { 5, null, 0 }, safe.Values);
+        Assert.Equal(new int?[] { null, null, null }, check.Values);
+        Assert.Equal(new int?[] { null, -40, null }, broken.Values);
     }
 
     [Fact]
-    public void BuildPeakDiffChart_sets_six_labeled_threshold_zone_sections()
+    public void BuildPeakDiffChart_sets_six_background_only_threshold_zone_sections()
     {
+        // No Label here - LiveChartsCore mispositions RectangularSection.Label
+        // once multiple finite-Yi/Yj sections share an X window, so zone
+        // captions are a static XAML overlay in MainWindow.axaml instead.
         MainViewModel vm = MakeViewModel(80, 85);
 
         vm.BuildPeakDiffChart();
 
         var zoneSections = vm.PeakDiffSections.Where(s => s.Label != "Current Spectrum").ToList();
-        Assert.Equal(12, zoneSections.Count);
-        Assert.Equal(2, zoneSections.Count(s => s.Label == "Broken Spectrum"));
-        Assert.Equal(2, zoneSections.Count(s => s.Label == "Check PP"));
-        Assert.Equal(2, zoneSections.Count(s => s.Label == "Safe range"));
-        Assert.All(
-            zoneSections.Where(s => !string.IsNullOrEmpty(s.Label)),
-            s => Assert.True(s.Xi.HasValue && s.Xj.HasValue));
+        Assert.Equal(6, zoneSections.Count);
+        Assert.All(zoneSections, s => Assert.True(string.IsNullOrEmpty(s.Label)));
     }
 
     // |ΔPeaks| <=15 safe, <=30 check, >30 broken - specular around zero.
     [Theory]
-    [InlineData("Safe range", -15, 0)]
-    [InlineData("Safe range", 0, 15)]
-    [InlineData("Check PP", -30, -15)]
-    [InlineData("Check PP", 15, 30)]
-    [InlineData("Broken Spectrum", -80, -30)]
-    [InlineData("Broken Spectrum", 30, 80)]
-    public void BuildPeakDiffChart_threshold_zone_bounds_match_the_ppm_spec(string label, double yi, double yj)
+    [InlineData(-15, 0)]
+    [InlineData(0, 15)]
+    [InlineData(-30, -15)]
+    [InlineData(15, 30)]
+    [InlineData(-80, -30)]
+    [InlineData(30, 80)]
+    public void BuildPeakDiffChart_threshold_zone_bounds_match_the_ppm_spec(double yi, double yj)
     {
         MainViewModel vm = MakeViewModel(80, 85);
 
         vm.BuildPeakDiffChart();
 
-        Assert.Contains(
-            vm.PeakDiffSections,
-            s => s.Label == label && s.Yi == yi && s.Yj == yj);
+        Assert.Contains(vm.PeakDiffSections, s => s.Yi == yi && s.Yj == yj);
     }
 
     [Fact]

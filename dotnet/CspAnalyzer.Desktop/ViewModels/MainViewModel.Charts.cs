@@ -85,49 +85,42 @@ public partial class MainViewModel
         {
             new Axis { Name = "ΔPeaks", TextSize = 7, MinLimit = -80, MaxLimit = 80 },
         };
+        // Bars colored per-experiment by the same |ΔPeaks| semaphore
+        // thresholds as the background zones, mirroring the probability
+        // chart's active/inactive masking below (three same-length,
+        // index-aligned series, each null everywhere but its own zone).
+        int?[] safeDiffs = diffs.Select(d => Math.Abs(d) <= 15 ? (int?)d : null).ToArray();
+        int?[] checkDiffs = diffs.Select(d => Math.Abs(d) > 15 && Math.Abs(d) <= 30 ? (int?)d : null).ToArray();
+        int?[] brokenDiffs = diffs.Select(d => Math.Abs(d) > 30 ? (int?)d : null).ToArray();
         PeakDiffSeries = new ISeries[]
         {
-            new ColumnSeries<int> { Name = "ΔPeaks", Values = diffs, Fill = new SolidColorPaint(AllSpectraFillColor) },
+            new ColumnSeries<int?> { Name = "Safe range", Values = safeDiffs, Fill = new SolidColorPaint(FineSpectrumTextColor) },
+            new ColumnSeries<int?> { Name = "Check PP", Values = checkDiffs, Fill = new SolidColorPaint(CheckSpectrumTextColor) },
+            new ColumnSeries<int?> { Name = "Broken Spectrum", Values = brokenDiffs, Fill = new SolidColorPaint(BrokenSpectrumTextColor) },
         };
-        PeakDiffSections = BuildThresholdZoneSections(diffs.Length)
+        PeakDiffSections = BuildThresholdZoneSections()
             .Concat(BuildCurrentSpectrumMarkerSections())
             .ToArray();
     }
 
     // Thresholds on |ΔPeaks|: <=15 safe, <=30 check, >30 broken - specular
-    // around the X axis (each zone split into +/- halves so each gets its
-    // own centered label, matching legacy's six-label layout). Each zone is
-    // two sections: a full-width one carrying the background Fill, and a
-    // second, narrow one - Xi/Xj pinned to a window centered on the
-    // dataset - carrying only the Label, so the text sits centered in the
-    // band instead of pinned to the section's left edge. A
-    // RectangularSection's Label is positioned relative to the chart's
-    // current visible area (unlike a LabelVisual's fixed data-space X/Y),
-    // so both stay put under zoom/pan instead of drifting.
-    private static RectangularSection[] BuildThresholdZoneSections(int datasetCount)
+    // around the X axis. Background-only (Fill, no Label): LiveChartsCore
+    // mispositions RectangularSection.Label once more than one finite-Yi/Yj
+    // section shares an X window (confirmed by measuring rendered label
+    // pixel positions against their Yi/Yj - each text landed one zone-slot
+    // off from where its own section was drawn), so the zone captions are
+    // rendered as a static XAML overlay instead (MainWindow.axaml, over
+    // PeakDiffChart) which is immune to that and, being screen-space, also
+    // can't drift under zoom/pan.
+    private static RectangularSection[] BuildThresholdZoneSections() => new[]
     {
-        double center = datasetCount / 2.0;
-        double halfWidth = Math.Max(datasetCount * 0.15, 1);
-
-        RectangularSection[] Zone(double yi, double yj, SKColor fill, SKColor textColor, string label) => new[]
-        {
-            new RectangularSection { Yi = yi, Yj = yj, Fill = new SolidColorPaint(fill) },
-            new RectangularSection
-            {
-                Yi = yi, Yj = yj,
-                Xi = center - halfWidth, Xj = center + halfWidth,
-                Label = label, LabelPaint = new SolidColorPaint(textColor), LabelSize = 10,
-            },
-        };
-
-        return Zone(-80, -30, BrokenSpectrumColor, BrokenSpectrumTextColor, "Broken Spectrum")
-            .Concat(Zone(-30, -15, CheckSpectrumColor, CheckSpectrumTextColor, "Check PP"))
-            .Concat(Zone(-15, 0, FineSpectrumColor, FineSpectrumTextColor, "Safe range"))
-            .Concat(Zone(0, 15, FineSpectrumColor, FineSpectrumTextColor, "Safe range"))
-            .Concat(Zone(15, 30, CheckSpectrumColor, CheckSpectrumTextColor, "Check PP"))
-            .Concat(Zone(30, 80, BrokenSpectrumColor, BrokenSpectrumTextColor, "Broken Spectrum"))
-            .ToArray();
-    }
+        new RectangularSection { Yi = -80, Yj = -30, Fill = new SolidColorPaint(BrokenSpectrumColor) },
+        new RectangularSection { Yi = -30, Yj = -15, Fill = new SolidColorPaint(CheckSpectrumColor) },
+        new RectangularSection { Yi = -15, Yj = 0, Fill = new SolidColorPaint(FineSpectrumColor) },
+        new RectangularSection { Yi = 0, Yj = 15, Fill = new SolidColorPaint(FineSpectrumColor) },
+        new RectangularSection { Yi = 15, Yj = 30, Fill = new SolidColorPaint(CheckSpectrumColor) },
+        new RectangularSection { Yi = 30, Yj = 80, Fill = new SolidColorPaint(BrokenSpectrumColor) },
+    };
 
     // Marks which experiment the player/overlay are currently on, in both
     // the peak-diff and probability charts - originally a LabelVisual
@@ -168,7 +161,7 @@ public partial class MainViewModel
     {
         if (PeakDiffXAxes.Length > 0)
         {
-            PeakDiffSections = BuildThresholdZoneSections(DatasetSpectra.Count)
+            PeakDiffSections = BuildThresholdZoneSections()
                 .Concat(BuildCurrentSpectrumMarkerSections())
                 .ToArray();
         }
