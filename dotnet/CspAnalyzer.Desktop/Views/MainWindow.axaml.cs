@@ -77,9 +77,9 @@ public partial class MainWindow : Window
 
     private bool IsTextBoxFocused() => FocusManager?.GetFocusedElement() is TextBox;
 
-    private void OnChartPointClicked(IChartView chart, ChartPoint point)
+    private void OnChartPointClicked(IChartView chart, ChartPoint? point)
     {
-        if (DataContext is MainViewModel vm)
+        if (DataContext is MainViewModel vm && point is not null)
         {
             vm.NavigateToChartIndex(point.Index);
         }

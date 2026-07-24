@@ -95,9 +95,9 @@ public partial class MainViewModel
 
         ManualResultsSeries = new ISeries[]
         {
-            new ColumnSeries<int> { Name = "Act. (man)", Values = new[] { ActivesManualCount }, Fill = new SolidColorPaint(ActiveManualColor) },
-            new ColumnSeries<int> { Name = "Inact. (man)", Values = new[] { InactivesManualCount }, Fill = new SolidColorPaint(InactiveManualColor) },
-            new ColumnSeries<int> { Name = "Not set (man)", Values = new[] { NotSetManualCount }, Fill = new SolidColorPaint(NotSetManualColor) },
+            new ColumnSeries<int> { Name = "Active", Values = new[] { ActivesManualCount }, Fill = new SolidColorPaint(ActiveManualColor) },
+            new ColumnSeries<int> { Name = "Inactive", Values = new[] { InactivesManualCount }, Fill = new SolidColorPaint(InactiveManualColor) },
+            new ColumnSeries<int> { Name = "Not set", Values = new[] { NotSetManualCount }, Fill = new SolidColorPaint(NotSetManualColor) },
         };
         ManualResultsXAxes = new[] { new Axis { MinLimit = -1, MaxLimit = 1, IsVisible = false } };
         ManualResultsYAxes = new[] { new Axis { MinLimit = 0 } };

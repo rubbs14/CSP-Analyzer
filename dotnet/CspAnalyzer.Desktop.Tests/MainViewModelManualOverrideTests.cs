@@ -52,6 +52,23 @@ public class MainViewModelManualOverrideTests
     }
 
     [Fact]
+    public void RebuildManualResults_produces_one_bar_series_per_category()
+    {
+        MainViewModel vm = MakeViewModel(101, 102, 103);
+        vm.MarkActiveCommand.Execute(null);
+        vm.NextCommand.Execute(null);
+        vm.MarkInactiveCommand.Execute(null);
+
+        Assert.Equal(3, vm.ManualResultsSeries.Length);
+        var active = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<int>>(vm.ManualResultsSeries[0]);
+        var inactive = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<int>>(vm.ManualResultsSeries[1]);
+        var notSet = Assert.IsType<LiveChartsCore.SkiaSharpView.ColumnSeries<int>>(vm.ManualResultsSeries[2]);
+        Assert.Equal(new[] { 1 }, active.Values);
+        Assert.Equal(new[] { 1 }, inactive.Values);
+        Assert.Equal(new[] { 1 }, notSet.Values);
+    }
+
+    [Fact]
     public void MarkInactive_then_ResetManualStatus_returns_to_Not_set()
     {
         MainViewModel vm = MakeViewModel(101);
