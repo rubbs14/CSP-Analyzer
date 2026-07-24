@@ -55,6 +55,26 @@ if (-not $IsWindows) {
 if (Test-Path $zipPath) {
     Remove-Item $zipPath
 }
-Compress-Archive -Path "$outputDir/*" -DestinationPath $zipPath
+
+if ($IsWindows) {
+    Compress-Archive -Path "$outputDir/*" -DestinationPath $zipPath
+} else {
+    # Compress-Archive (System.IO.Compression.ZipFile under the hood) does
+    # not preserve Unix executable permission bits in the zip's own
+    # metadata, regardless of the source files' actual permissions -
+    # confirmed by a real CI run producing a non-executable app after
+    # download+unzip even after the files were chmod +x'd on disk first.
+    # The native `zip` CLI (preinstalled on GitHub's ubuntu-latest/
+    # macos-latest runner images) does preserve them correctly.
+    Push-Location $outputDir
+    try {
+        & zip -r -q $zipPath .
+        if ($LASTEXITCODE -ne 0) {
+            throw "zip exited with code $LASTEXITCODE"
+        }
+    } finally {
+        Pop-Location
+    }
+}
 
 Write-Host "Packaged: $zipPath"
