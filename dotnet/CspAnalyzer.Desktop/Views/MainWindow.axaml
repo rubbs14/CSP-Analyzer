@@ -45,6 +45,167 @@
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
+
+        <!--
+        Button styling (S12 visual pass): a shared rounded/shadow/hover
+        base applied to every Button, plus a small set of semantic
+        Classes= variants layered on top so primary actions (Run CSP,
+        Load Reference/Dataset, Go, Export, Mark as Active) read as more
+        important than secondary/utility ones (Reset to Default, theme
+        toggles, nav arrows) at a glance:
+
+          - Classes="accent"  : filled blue/indigo gradient - primary CTA.
+          - Classes="success" : filled green gradient - "Mark as Active"
+            (replaces the old flat Background="LightGreen").
+          - Classes="danger"  : filled rose/red gradient - "Mark as
+            Inactive" (replaces flat Background="LightPink") and Cancel
+            (interrupts a running analysis - same "stop" language).
+          - Classes="compact" : tighter padding/font for buttons that sit
+            in cramped rows (About/Shortcuts/Help, Light/Dark/System, the
+            |</</>/>| nav strip, Ref/Exp PP Details) so the rounder/
+            padded look doesn't wrap or overflow those narrow containers.
+          - Classes="swatch"  : the 5 tiny 20x20 background-colour picker
+            buttons - keeps their flat colour fill (set locally per
+            button and thus untouched by these Setters), just adds a
+            circular shape and a hover/press ring instead of turning
+            them into gradient pill buttons.
+
+        No Command=/Click=/Content= bindings are touched by any of this -
+        only Classes= plus, on the two Mark as Active/Inactive buttons,
+        removal of the old inline Background (now supplied by the
+        success/danger classes as a gradient instead of a flat fill).
+        -->
+        <Style Selector="Button">
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseLowBrush}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.12" />
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.12" />
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button:pointerover">
+            <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+        </Style>
+        <Style Selector="Button:pressed">
+            <Setter Property="Opacity" Value="0.82" />
+        </Style>
+        <Style Selector="Button:disabled">
+            <Setter Property="Cursor" Value="Arrow" />
+        </Style>
+
+        <!-- Primary/accent: Run CSP, Load Reference/Dataset, Go, Export -->
+        <Style Selector="Button.accent">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="#2C4BC7" />
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Color="#4E7DF0" Offset="0" />
+                    <GradientStop Color="#2C4BC7" Offset="1" />
+                </LinearGradientBrush>
+            </Setter>
+        </Style>
+        <Style Selector="Button.accent:pointerover">
+            <Setter Property="BorderBrush" Value="#3A5CDC" />
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Color="#6493F5" Offset="0" />
+                    <GradientStop Color="#3A5CDC" Offset="1" />
+                </LinearGradientBrush>
+            </Setter>
+        </Style>
+        <Style Selector="Button.accent:pressed">
+            <Setter Property="Background" Value="#28409E" />
+        </Style>
+        <Style Selector="Button.accent:disabled">
+            <Setter Property="Background" Value="#5A6B99" />
+            <Setter Property="Foreground" Value="#DDE3F5" />
+        </Style>
+
+        <!-- Success/active: "Mark as Active" -->
+        <Style Selector="Button.success">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="#1E7A3D" />
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Color="#57C06B" Offset="0" />
+                    <GradientStop Color="#1E7A3D" Offset="1" />
+                </LinearGradientBrush>
+            </Setter>
+        </Style>
+        <Style Selector="Button.success:pointerover">
+            <Setter Property="BorderBrush" Value="#28994C" />
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Color="#6BD37E" Offset="0" />
+                    <GradientStop Color="#28994C" Offset="1" />
+                </LinearGradientBrush>
+            </Setter>
+        </Style>
+        <Style Selector="Button.success:pressed">
+            <Setter Property="Background" Value="#186633" />
+        </Style>
+        <Style Selector="Button.success:disabled">
+            <Setter Property="Background" Value="#6E9B7A" />
+            <Setter Property="Foreground" Value="#E3F3E7" />
+        </Style>
+
+        <!-- Danger/stop: "Mark as Inactive" and Cancel (interrupts a run) -->
+        <Style Selector="Button.danger">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="BorderBrush" Value="#B72336" />
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Color="#E8576B" Offset="0" />
+                    <GradientStop Color="#B72336" Offset="1" />
+                </LinearGradientBrush>
+            </Setter>
+        </Style>
+        <Style Selector="Button.danger:pointerover">
+            <Setter Property="BorderBrush" Value="#C93347" />
+            <Setter Property="Background">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Color="#F06D80" Offset="0" />
+                    <GradientStop Color="#C93347" Offset="1" />
+                </LinearGradientBrush>
+            </Setter>
+        </Style>
+        <Style Selector="Button.danger:pressed">
+            <Setter Property="Background" Value="#8F1B29" />
+        </Style>
+        <Style Selector="Button.danger:disabled">
+            <Setter Property="Background" Value="#B08A8F" />
+            <Setter Property="Foreground" Value="#F5E3E5" />
+        </Style>
+
+        <!-- Compact: tight rows that must not wrap/overflow their container -->
+        <Style Selector="Button.compact">
+            <Setter Property="Padding" Value="6,3" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="CornerRadius" Value="5" />
+        </Style>
+
+        <!-- Swatch: the 20x20 flat-colour background pickers - circular hover/press ring only -->
+        <Style Selector="Button.swatch">
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.swatch:pointerover">
+            <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
+        </Style>
+        <Style Selector="Button.swatch:pressed">
+            <Setter Property="BorderBrush" Value="#4E7DF0" />
+            <Setter Property="Opacity" Value="1" />
+        </Style>
     </Window.Styles>
 
     <Window.KeyBindings>
@@ -115,8 +276,8 @@
             <Border Grid.Row="0" Classes="section">
                 <StackPanel>
                     <TextBlock Classes="sectionHeader" Text="File I/O" />
-                    <Button Content="Load Reference" Command="{Binding LoadReferenceCommand}" HorizontalAlignment="Stretch" Margin="0,2" />
-                    <Button Content="Load Dataset" Command="{Binding LoadDatasetCommand}" IsEnabled="{Binding IsReferenceLoaded}" HorizontalAlignment="Stretch" Margin="0,2" />
+                    <Button Content="Load Reference" Command="{Binding LoadReferenceCommand}" Classes="accent" HorizontalAlignment="Stretch" Margin="0,2" />
+                    <Button Content="Load Dataset" Command="{Binding LoadDatasetCommand}" IsEnabled="{Binding IsReferenceLoaded}" Classes="accent" HorizontalAlignment="Stretch" Margin="0,2" />
                 </StackPanel>
             </Border>
 
@@ -146,7 +307,7 @@
                         <TextBlock Grid.Row="3" Grid.Column="0" Text="HMax" VerticalAlignment="Center" />
                         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding HMax}" />
                     </Grid>
-                    <Button Content="Reset to Default" Command="{Binding ResetImportControlsCommand}" HorizontalAlignment="Stretch" Margin="0,2" />
+                    <Button Content="Reset to Default" Command="{Binding ResetImportControlsCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="0,2" />
 
                     <TextBlock Text="Peak Filtering" FontWeight="SemiBold" FontSize="11" Margin="0,4,0,0" />
                     <Grid ColumnDefinitions="62,*" RowDefinitions="Auto,Auto">
@@ -155,12 +316,12 @@
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Dataset" VerticalAlignment="Center" />
                         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DatasetIntensityThreshold}" />
                     </Grid>
-                    <Button Content="Reset to Default" Command="{Binding ResetPeakFilteringCommand}" HorizontalAlignment="Stretch" Margin="0,2" />
+                    <Button Content="Reset to Default" Command="{Binding ResetPeakFilteringCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="0,2" />
 
                     <TextBlock Text="{Binding TotalSubfoldersFound, StringFormat='Subfolders scanned: {0}'}" FontSize="11" Margin="0,4,0,0" />
                     <TextBlock Text="{Binding PeaklistFilesFoundCount, StringFormat='Peaklist files found: {0}'}" FontSize="11" />
-                    <Button Content="Run CSP" Command="{Binding RunCommand}" HorizontalAlignment="Stretch" Margin="0,8,0,0" />
-                    <Button Content="Cancel" Command="{Binding CancelRunCommand}" HorizontalAlignment="Stretch" Margin="0,2" />
+                    <Button Content="Run CSP" Command="{Binding RunCommand}" Classes="accent" HorizontalAlignment="Stretch" Margin="0,8,0,0" />
+                    <Button Content="Cancel" Command="{Binding CancelRunCommand}" Classes="danger" HorizontalAlignment="Stretch" Margin="0,2" />
                 </StackPanel>
             </Border>
 
@@ -181,9 +342,9 @@
                 <StackPanel Spacing="4">
                     <Button Content="Save MCC Stats" HorizontalAlignment="Stretch" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                        <Button Content="About" Command="{Binding OpenAboutWindowCommand}" />
-                        <Button Content="Shortcuts" Command="{Binding OpenShortcutsWindowCommand}" />
-                        <Button Content="Help" Command="{Binding OpenHelpWindowCommand}" />
+                        <Button Content="About" Command="{Binding OpenAboutWindowCommand}" Classes="compact" />
+                        <Button Content="Shortcuts" Command="{Binding OpenShortcutsWindowCommand}" Classes="compact" />
+                        <Button Content="Help" Command="{Binding OpenHelpWindowCommand}" Classes="compact" />
                     </StackPanel>
                     <TextBlock Text="Developed by R. Byrne and R. Fino" FontSize="9" FontStyle="Italic"
                                HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" />
@@ -194,18 +355,18 @@
                 <StackPanel Spacing="4">
                     <TextBlock Classes="sectionHeader" Text="Appearance" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                        <Button Content="Light" Click="OnThemeLightClick" />
-                        <Button Content="Dark" Click="OnThemeDarkClick" />
-                        <Button Content="System" Click="OnThemeSystemClick" />
+                        <Button Content="Light" Click="OnThemeLightClick" Classes="compact" />
+                        <Button Content="Dark" Click="OnThemeDarkClick" Classes="compact" />
+                        <Button Content="System" Click="OnThemeSystemClick" Classes="compact" />
                     </StackPanel>
                     <TextBlock Text="Background Color" FontSize="10" HorizontalAlignment="Center" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
-                        <Button Width="20" Height="20" Padding="0" Background="#1E1E2E" Click="OnBackgroundColorClick" Tag="#1E1E2E" />
-                        <Button Width="20" Height="20" Padding="0" Background="#F5F5F5" Click="OnBackgroundColorClick" Tag="#F5F5F5" />
-                        <Button Width="20" Height="20" Padding="0" Background="#1B2A38" Click="OnBackgroundColorClick" Tag="#1B2A38" />
-                        <Button Width="20" Height="20" Padding="0" Background="#1F2E24" Click="OnBackgroundColorClick" Tag="#1F2E24" />
-                        <Button Width="20" Height="20" Padding="0" Background="#2E1F2A" Click="OnBackgroundColorClick" Tag="#2E1F2A" />
-                        <Button Content="Reset" FontSize="10" Click="OnBackgroundColorResetClick" />
+                        <Button Width="20" Height="20" Padding="0" Background="#1E1E2E" Click="OnBackgroundColorClick" Tag="#1E1E2E" Classes="swatch" />
+                        <Button Width="20" Height="20" Padding="0" Background="#F5F5F5" Click="OnBackgroundColorClick" Tag="#F5F5F5" Classes="swatch" />
+                        <Button Width="20" Height="20" Padding="0" Background="#1B2A38" Click="OnBackgroundColorClick" Tag="#1B2A38" Classes="swatch" />
+                        <Button Width="20" Height="20" Padding="0" Background="#1F2E24" Click="OnBackgroundColorClick" Tag="#1F2E24" Classes="swatch" />
+                        <Button Width="20" Height="20" Padding="0" Background="#2E1F2A" Click="OnBackgroundColorClick" Tag="#2E1F2A" Classes="swatch" />
+                        <Button Content="Reset" FontSize="10" Click="OnBackgroundColorResetClick" Classes="compact" />
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -300,8 +461,8 @@
                                 </StackPanel>
                             </StackPanel>
                             <StackPanel Grid.Column="1" Spacing="2">
-                                <Button Content="Mark as Active" Command="{Binding MarkActiveCommand}" Background="LightGreen" HorizontalAlignment="Stretch" />
-                                <Button Content="Mark as Inactive" Command="{Binding MarkInactiveCommand}" Background="LightPink" HorizontalAlignment="Stretch" />
+                                <Button Content="Mark as Active" Command="{Binding MarkActiveCommand}" Classes="success" HorizontalAlignment="Stretch" />
+                                <Button Content="Mark as Inactive" Command="{Binding MarkInactiveCommand}" Classes="danger" HorizontalAlignment="Stretch" />
                                 <Button Content="Reset Flag Status" Command="{Binding ResetManualStatusCommand}" HorizontalAlignment="Stretch" />
                             </StackPanel>
                         </Grid>
@@ -378,15 +539,15 @@
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="4" Spacing="4">
                             <TextBlock Text="Go To Experiment:" VerticalAlignment="Center" />
                             <TextBox x:Name="GoToExperimentTextBox" Width="60" Text="{Binding GoToExperimentText}" />
-                            <Button Content="Go" Command="{Binding GoToExperimentCommand}" />
+                            <Button Content="Go" Command="{Binding GoToExperimentCommand}" Classes="accent" />
                         </StackPanel>
                     </Grid>
                     <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto">
                         <Grid Grid.Column="0" ColumnDefinitions="*,*,*,*" Margin="4" VerticalAlignment="Top">
-                            <Button Grid.Column="0" Content="|&lt;" Command="{Binding FirstCommand}" HorizontalAlignment="Stretch" />
-                            <Button Grid.Column="1" Content="&lt;" Command="{Binding PreviousCommand}" HorizontalAlignment="Stretch" />
-                            <Button Grid.Column="2" Content="&gt;" Command="{Binding NextCommand}" HorizontalAlignment="Stretch" />
-                            <Button Grid.Column="3" Content="&gt;|" Command="{Binding LastCommand}" HorizontalAlignment="Stretch" />
+                            <Button Grid.Column="0" Content="|&lt;" Command="{Binding FirstCommand}" Classes="compact" HorizontalAlignment="Stretch" />
+                            <Button Grid.Column="1" Content="&lt;" Command="{Binding PreviousCommand}" Classes="compact" HorizontalAlignment="Stretch" />
+                            <Button Grid.Column="2" Content="&gt;" Command="{Binding NextCommand}" Classes="compact" HorizontalAlignment="Stretch" />
+                            <Button Grid.Column="3" Content="&gt;|" Command="{Binding LastCommand}" Classes="compact" HorizontalAlignment="Stretch" />
                         </Grid>
                         <StackPanel Grid.Column="1" Margin="4" Spacing="2">
                             <TextBlock Text="{Binding CurrentReadPeaks, StringFormat='Read Peaks: {0}'}" FontSize="10" />
@@ -397,9 +558,9 @@
                             <TextBlock Text="{Binding CurrentManualStatusText, StringFormat='Man. Status: {0}'}" FontSize="10" />
                         </StackPanel>
                         <StackPanel Grid.Column="2" Margin="4" Spacing="2">
-                            <Button Content="Ref PP Details" Command="{Binding ShowReferencePpDetailsCommand}" HorizontalAlignment="Stretch" FontSize="10" />
-                            <Button Content="Exp PP Details" Command="{Binding ShowExperimentPpDetailsCommand}" HorizontalAlignment="Stretch" FontSize="10" />
-                            <Button Content="Export" Command="{Binding OpenResultsWindowCommand}" HorizontalAlignment="Stretch" />
+                            <Button Content="Ref PP Details" Command="{Binding ShowReferencePpDetailsCommand}" Classes="compact" HorizontalAlignment="Stretch" />
+                            <Button Content="Exp PP Details" Command="{Binding ShowExperimentPpDetailsCommand}" Classes="compact" HorizontalAlignment="Stretch" />
+                            <Button Content="Export" Command="{Binding OpenResultsWindowCommand}" Classes="accent" HorizontalAlignment="Stretch" />
                         </StackPanel>
                     </Grid>
                 </Grid>
