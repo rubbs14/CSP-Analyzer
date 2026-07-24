@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using CspAnalyzer.BackendInterop;
 using LiveChartsCore;
 using LiveChartsCore.Defaults;
+using LiveChartsCore.Measure;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Extensions;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -29,8 +30,16 @@ public partial class MainViewModel
     private static readonly SKColor CheckSpectrumColor = new(204, 204, 204, 25);
     private static readonly SKColor AllSpectraFillColor = new(250, 163, 0, 180);
     private static readonly SKColor CurrentMarkerTextColor = new(255, 255, 255, 200);
+
+    // Same hues as the (near-transparent) zone Fill colors above, but
+    // opaque - used for each zone's Label text so it visually matches the
+    // band it names instead of every label sharing one plain white color.
+    private static readonly SKColor BrokenSpectrumTextColor = new(254, 132, 132, 255);
+    private static readonly SKColor FineSpectrumTextColor = new(45, 161, 63, 255);
+    private static readonly SKColor CheckSpectrumTextColor = new(204, 204, 204, 255);
     private static readonly SKColor ActiveAutoColor = new(45, 161, 63, 200);
     private static readonly SKColor InactiveAutoColor = new(225, 9, 20, 180);
+    private static readonly SKColor GridSeparatorColor = new(255, 255, 255, 30);
 
     [ObservableProperty]
     private ISeries[] _peakDiffSeries = Array.Empty<ISeries>();
@@ -62,6 +71,9 @@ public partial class MainViewModel
             {
                 Name = "Experiment No.",
                 LabelsRotation = 30,
+                TextSize = 9,
+                ShowSeparatorLines = true,
+                SeparatorsPaint = new SolidColorPaint(GridSeparatorColor),
                 MinLimit = 0,
                 MaxLimit = DatasetSpectra.Count,
                 Labels = DatasetSpectra.Select(s => s.ExpNumber.ToString()).ToList(),
@@ -69,7 +81,7 @@ public partial class MainViewModel
         };
         PeakDiffYAxes = new[]
         {
-            new Axis { Name = "ΔPeaks", MinLimit = -80, MaxLimit = 80 },
+            new Axis { Name = "ΔPeaks", TextSize = 9, MinLimit = -80, MaxLimit = 80 },
         };
         PeakDiffSeries = new ISeries[]
         {
@@ -95,23 +107,23 @@ public partial class MainViewModel
         double center = datasetCount / 2.0;
         double halfWidth = Math.Max(datasetCount * 0.15, 1);
 
-        RectangularSection[] Zone(double yi, double yj, SKColor fill, string label) => new[]
+        RectangularSection[] Zone(double yi, double yj, SKColor fill, SKColor textColor, string label) => new[]
         {
             new RectangularSection { Yi = yi, Yj = yj, Fill = new SolidColorPaint(fill) },
             new RectangularSection
             {
                 Yi = yi, Yj = yj,
                 Xi = center - halfWidth, Xj = center + halfWidth,
-                Label = label, LabelPaint = new SolidColorPaint(CurrentMarkerTextColor), LabelSize = 10,
+                Label = label, LabelPaint = new SolidColorPaint(textColor), LabelSize = 10,
             },
         };
 
-        return Zone(-80, -40, BrokenSpectrumColor, "Broken Spectrum")
-            .Concat(Zone(-45, -25, CheckSpectrumColor, "Check PP"))
-            .Concat(Zone(-30, 0, FineSpectrumColor, "Safe range"))
-            .Concat(Zone(0, 30, FineSpectrumColor, "Safe range"))
-            .Concat(Zone(25, 45, CheckSpectrumColor, "Check PP"))
-            .Concat(Zone(40, 80, BrokenSpectrumColor, "Broken Spectrum"))
+        return Zone(-80, -40, BrokenSpectrumColor, BrokenSpectrumTextColor, "Broken Spectrum")
+            .Concat(Zone(-45, -25, CheckSpectrumColor, CheckSpectrumTextColor, "Check PP"))
+            .Concat(Zone(-30, 0, FineSpectrumColor, FineSpectrumTextColor, "Safe range"))
+            .Concat(Zone(0, 30, FineSpectrumColor, FineSpectrumTextColor, "Safe range"))
+            .Concat(Zone(25, 45, CheckSpectrumColor, CheckSpectrumTextColor, "Check PP"))
+            .Concat(Zone(40, 80, BrokenSpectrumColor, BrokenSpectrumTextColor, "Broken Spectrum"))
             .ToArray();
     }
 
@@ -187,6 +199,9 @@ public partial class MainViewModel
         {
             Name = "Experiment No.",
             LabelsRotation = 30,
+            TextSize = 9,
+            ShowSeparatorLines = true,
+            SeparatorsPaint = new SolidColorPaint(GridSeparatorColor),
             MinLimit = 0,
             MaxLimit = DatasetSpectra.Count,
             Labels = DatasetSpectra.Select(s => s.ExpNumber.ToString()).ToList(),
@@ -201,7 +216,7 @@ public partial class MainViewModel
         }
 
         ProbabilityXAxes = new[] { xAxis };
-        ProbabilityYAxes = new[] { new Axis { Name = "Probability", MinLimit = 0, MaxLimit = 1 } };
+        ProbabilityYAxes = new[] { new Axis { Name = "Probability", TextSize = 9, MinLimit = 0, MaxLimit = 1 } };
 
         // Each bar colored by its own active/inactive classification (like
         // legacy's per-bar coloring) rather than one flat color for every
@@ -318,7 +333,18 @@ public partial class MainViewModel
     public void BuildOverlayAxes()
     {
         OverlayXAxes = new[] { new Axis { Name = "1H ppm", MinLimit = -HMax, MaxLimit = -HMin, Labeler = value => Math.Abs(value).ToString("0.##") } };
-        OverlayYAxes = new[] { new Axis { Name = "15N ppm", MinLimit = -NMax, MaxLimit = -NMin, Labeler = value => Math.Abs(value).ToString("0.##") } };
+        OverlayYAxes = new[]
+        {
+            new Axis
+            {
+                Name = "15N ppm",
+                Position = AxisPosition.End,
+                TextSize = 9,
+                MinLimit = -NMax,
+                MaxLimit = -NMin,
+                Labeler = value => Math.Abs(value).ToString("0.##"),
+            },
+        };
         OverlaySeries = new ISeries[] { _referenceOverlaySeries, _currentOverlaySeries, _activesOverlaySeries, _inactivesOverlaySeries };
     }
 
