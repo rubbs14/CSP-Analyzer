@@ -25,6 +25,24 @@ jobs:
       - name: Install python dependencies
         run: pip install -r backend/requirements.txt -r backend/requirements-dev.txt
 
+      - name: DEBUG diagnostics (temporary)
+        shell: python
+        run: |
+          import sys, os
+          print("sys.executable=", sys.executable)
+          print("cwd=", os.getcwd())
+          print("PYTHONPATH env=", os.environ.get("PYTHONPATH"))
+          print("sys.path=", sys.path)
+          print("backend/__init__.py exists=", os.path.exists(os.path.join(os.getcwd(), "backend", "__init__.py")))
+          print("backend dir listing=", os.listdir(os.path.join(os.getcwd(), "backend")) if os.path.isdir("backend") else "NO BACKEND DIR")
+          try:
+              import backend
+              print("import backend OK, file=", backend.__file__)
+          except Exception as e:
+              print("import backend FAILED:", repr(e))
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
       - name: Run pytest
         run: pytest backend/tests
         env:
