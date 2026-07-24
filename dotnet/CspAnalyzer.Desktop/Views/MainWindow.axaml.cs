@@ -183,6 +183,26 @@ public partial class MainWindow : Window
         WindowState = settings.WindowState == "Maximized"
             ? Avalonia.Controls.WindowState.Maximized
             : Avalonia.Controls.WindowState.Normal;
+
+        // The assignment above, made before the native platform window
+        // exists (App.axaml.cs calls this pre-Show()), gets silently
+        // dropped on X11: the window ends up Normal at whatever small
+        // default size Avalonia picked, clipping content that assumes a
+        // full-size window (S12 bug report: legend text and the
+        // Go-To-Experiment button clipped by the window edge). Re-applying
+        // once more on Opened, after the platform window is realized,
+        // makes it actually stick - a no-op if the window was already
+        // shown (e.g. in tests that call Show() before this method).
+        if (settings.WindowState == "Maximized")
+        {
+            void SetMaximizedOnOpen(object? sender, EventArgs e)
+            {
+                WindowState = Avalonia.Controls.WindowState.Maximized;
+                Opened -= SetMaximizedOnOpen;
+            }
+
+            Opened += SetMaximizedOnOpen;
+        }
     }
 
     public void PopulateAppearanceSettings(AppSettings settings)

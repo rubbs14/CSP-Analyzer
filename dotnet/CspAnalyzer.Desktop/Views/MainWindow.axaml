@@ -38,6 +38,7 @@
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="FontSize" Value="12" />
             <Setter Property="Margin" Value="0,0,0,4" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
         <Style Selector="TextBlock.placeholder">
             <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}" />
@@ -564,23 +565,25 @@
                     <Border Grid.Column="2" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Manual Analysis Results" />
-                            <Button DockPanel.Dock="Bottom" Content="Reset All Man. Flags" Command="{Binding ResetAllManualFlagsCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="0,4,0,0" />
+                            <Button DockPanel.Dock="Bottom" Command="{Binding ResetAllManualFlagsCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="0,4,0,0">
+                                <TextBlock Text="Reset Man. Flags" TextWrapping="Wrap" TextAlignment="Center" />
+                            </Button>
                             <lvc:CartesianChart Series="{Binding ManualResultsSeries}" XAxes="{Binding ManualResultsXAxes}" YAxes="{Binding ManualResultsYAxes}" TooltipTextSize="9" />
                         </DockPanel>
                     </Border>
                 </Grid>
 
                 <Grid Grid.Column="1" RowDefinitions="Auto,*">
-                    <Grid Grid.Row="0" ColumnDefinitions="*,*">
+                    <Grid Grid.Row="0" ColumnDefinitions="Auto,*">
                         <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="4" Spacing="4">
                             <TextBlock Text="Current Experiment:" VerticalAlignment="Center" />
                             <TextBlock Text="{Binding CurrentExperimentNumber}" VerticalAlignment="Center" />
                             <TextBlock Text="{Binding CurrentCounterText}" VerticalAlignment="Center" />
                         </StackPanel>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="4" Spacing="4">
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="4" Spacing="2" HorizontalAlignment="Right">
                             <TextBlock Text="Go To Experiment:" VerticalAlignment="Center" />
-                            <TextBox x:Name="GoToExperimentTextBox" Width="60" Text="{Binding GoToExperimentText}" />
-                            <Button Content="Go" Command="{Binding GoToExperimentCommand}" Classes="accent" />
+                            <TextBox x:Name="GoToExperimentTextBox" Classes="field" Width="50" Text="{Binding GoToExperimentText}" />
+                            <Button Content="Go" Command="{Binding GoToExperimentCommand}" Classes="accent compact" />
                         </StackPanel>
                     </Grid>
                     <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
