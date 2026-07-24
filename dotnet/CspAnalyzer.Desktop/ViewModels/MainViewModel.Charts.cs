@@ -43,6 +43,14 @@ public partial class MainViewModel
     private static readonly SKColor InactiveAutoColor = new(225, 9, 20, 180);
     private static readonly SKColor GridSeparatorColor = new(255, 255, 255, 30);
 
+    // Axis.Name (the "ΔPeaks"/"Experiment No."-style axis title) has its
+    // own NameTextSize/NamePaint, separate from TextSize/LabelsPaint which
+    // only style the tick labels - left unset, it renders at the theme's
+    // default size (much larger than the TextSize=7 tick labels) in the
+    // default text color, indistinguishable from any other text.
+    private static readonly SKColor AxisNameColor = new(100, 181, 246, 255);
+    private const double AxisNameTextSize = 11;
+
     [ObservableProperty]
     private ISeries[] _peakDiffSeries = Array.Empty<ISeries>();
 
@@ -69,6 +77,8 @@ public partial class MainViewModel
             new Axis
             {
                 Name = "Experiment No.",
+                NameTextSize = AxisNameTextSize,
+                NamePaint = new SolidColorPaint(AxisNameColor),
                 LabelsRotation = 30,
                 TextSize = 7,
                 LabelsDensity = 0,
@@ -83,7 +93,7 @@ public partial class MainViewModel
         };
         PeakDiffYAxes = new[]
         {
-            new Axis { Name = "ΔPeaks", TextSize = 7, MinLimit = -80, MaxLimit = 80 },
+            new Axis { Name = "ΔPeaks", NameTextSize = AxisNameTextSize, NamePaint = new SolidColorPaint(AxisNameColor), TextSize = 7, MinLimit = -80, MaxLimit = 80 },
         };
         // Bars colored per-experiment by the same |ΔPeaks| semaphore
         // thresholds as the background zones, mirroring the probability
@@ -226,6 +236,8 @@ public partial class MainViewModel
         var xAxis = new Axis
         {
             Name = "Experiment No.",
+            NameTextSize = AxisNameTextSize,
+            NamePaint = new SolidColorPaint(AxisNameColor),
             LabelsRotation = 30,
             TextSize = 7,
             LabelsDensity = 0,
@@ -247,7 +259,7 @@ public partial class MainViewModel
         }
 
         ProbabilityXAxes = new[] { xAxis };
-        ProbabilityYAxes = new[] { new Axis { Name = "Probability", TextSize = 7, MinLimit = 0, MaxLimit = 1 } };
+        ProbabilityYAxes = new[] { new Axis { Name = "Probability", NameTextSize = AxisNameTextSize, NamePaint = new SolidColorPaint(AxisNameColor), TextSize = 7, MinLimit = 0, MaxLimit = 1 } };
 
         // Each bar colored by its own active/inactive classification (like
         // legacy's per-bar coloring) rather than one flat color for every
@@ -362,12 +374,14 @@ public partial class MainViewModel
 
     public void BuildOverlayAxes()
     {
-        OverlayXAxes = new[] { new Axis { Name = "1H ppm", TextSize = 9, MinLimit = -HMax, MaxLimit = -HMin, Labeler = value => Math.Abs(value).ToString("0.##") } };
+        OverlayXAxes = new[] { new Axis { Name = "1H ppm", NameTextSize = AxisNameTextSize, NamePaint = new SolidColorPaint(AxisNameColor), TextSize = 9, MinLimit = -HMax, MaxLimit = -HMin, Labeler = value => Math.Abs(value).ToString("0.##") } };
         OverlayYAxes = new[]
         {
             new Axis
             {
                 Name = "15N ppm",
+                NameTextSize = AxisNameTextSize,
+                NamePaint = new SolidColorPaint(AxisNameColor),
                 Position = AxisPosition.End,
                 TextSize = 9,
                 MinLimit = -NMax,

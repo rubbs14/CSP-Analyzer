@@ -239,10 +239,18 @@
                                 are the |dPeaks|<=15/<=30/>30 zone widths as fractions of the
                                 fixed -80..80 Y range, so each caption centers in its own band
                                 and stays there under zoom/pan (it's outside the chart's data
-                                space entirely). Margin approximates the chart's own Y-axis-label
-                                and X-axis-label reserved space so rows line up with the zones.
+                                space entirely). Margin's Top and Bottom are equal on purpose:
+                                the chart's real top/bottom axis-label reserves are NOT equal
+                                (bottom has rotated tick labels + a title, top has neither), but
+                                giving the overlay a matching asymmetric margin desynced the row
+                                fractions from the true plot rectangle enough that captions landed
+                                in the wrong zone - a UpdateFinished-driven exact measurement was
+                                tried and abandoned (the event never fired in testing). Equal
+                                margins sacrifice pixel-perfect gridline alignment for a mirror
+                                that's guaranteed correct by construction, which is what matters
+                                here.
                                 -->
-                                <Grid IsHitTestVisible="False" Margin="46,4,4,50"
+                                <Grid x:Name="PeakDiffZoneLabels" IsHitTestVisible="False" Margin="42,48,4,48"
                                       RowDefinitions="0.3125*,0.09375*,0.09375*,0.09375*,0.09375*,0.3125*">
                                     <TextBlock Grid.Row="0" Text="Broken Spectrum" Foreground="#DC3545" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     <TextBlock Grid.Row="1" Text="Check PP" Foreground="#FFC107" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
