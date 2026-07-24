@@ -357,3 +357,4 @@ CSPv2/Demo-dataset/
 
 # Local git worktrees used for isolated subagent-driven implementation work
 .worktrees/
+.vscode/
