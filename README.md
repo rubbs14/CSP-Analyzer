@@ -7,6 +7,8 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/rubbs14/CSP-Analyzer/ci.yml?branch=master&label=CI)](https://github.com/rubbs14/CSP-Analyzer/actions/workflows/ci.yml)
 [![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey)](#installation)
 [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)](#installation)
+[![Published in CSBJ](https://img.shields.io/badge/published-CSBJ%202020-blueviolet)](#citation)
+[![DOI](https://img.shields.io/badge/DOI-10.1016%2Fj.csbj.2020.02.015-blue)](https://doi.org/10.1016/j.csbj.2020.02.015)
 
 A fast, machine-learning-based analyzer for multi-spectrum 2-D NMR Fragment Screening data.
 
@@ -136,27 +138,15 @@ Please report any other errors and we'll try to figure out what's going on. To h
 
 ## Background
 
-CSP-Analyzer implements the method described in the paper below. Fragment-based
-drug discovery relies on NMR screening to detect chemical shift perturbations
-(CSPs) that indicate protein-ligand binding, but manually reviewing hundreds
-of 2D spectra per campaign is slow and inconsistent - the same spectrum can
-get classified differently depending on where it falls in a long review
-session.
+> 📄 **CSP-Analyzer implements the method published in:**
+> **Fino, R., Byrne, R., Softley, C.A., Sattler, M., Schneider, G. and Popowicz, G.M. (2020).** *Introducing the CSP Analyzer: A novel Machine Learning-based application for automated analysis of two-dimensional NMR spectra in NMR fragment-based screening.* **Computational and Structural Biotechnology Journal**, 18, pp.603-611.
+> [![DOI](https://img.shields.io/badge/DOI-10.1016%2Fj.csbj.2020.02.015-blue)](https://doi.org/10.1016/j.csbj.2020.02.015) [![Open Access](https://img.shields.io/badge/read-open%20access-brightgreen)](https://pmc.ncbi.nlm.nih.gov/articles/PMC7096735/)
 
-The approach: each 2D HSQC spectrum is reduced to a 15-element descriptor
-vector by comparing it against a reference spectrum using computer-vision
-techniques (histograms of oriented gradients, phase cross-correlation
-registration, ORB point-matching, structural similarity, Hu moments,
-MSE/PSNR, and Jensen-Shannon entropy). SMOTE-ENN balances the training
-classes, PCA reduces dimensionality, and an RBF-kernel SVM (with Platt
-scaling for calibrated probabilities) classifies each spectrum as active or
-inactive.
+Fragment-based drug discovery relies on NMR screening to detect chemical shift perturbations (CSPs) that indicate protein-ligand binding, but manually reviewing hundreds of 2D spectra per campaign is slow and inconsistent — the same spectrum can get classified differently depending on where it falls in a long review session.
 
-Validated on 1,611 2D HSQC spectra across 4 protein targets, trained on
-just 100 labeled spectra (6.2% of the total): 0.87 average accuracy, 0.72
-sensitivity, 0.88 specificity, 3.10% false-negative rate, 10.30%
-false-positive rate - deliberately tuned to minimize missed actives over
-minimizing false alarms.
+The approach: each 2D HSQC spectrum is reduced to a 15-element descriptor vector by comparing it against a reference spectrum using computer-vision techniques (histograms of oriented gradients, phase cross-correlation registration, ORB point-matching, structural similarity, Hu moments, MSE/PSNR, and Jensen-Shannon entropy). SMOTE-ENN balances the training classes, PCA reduces dimensionality, and an RBF-kernel SVM (with Platt scaling for calibrated probabilities) classifies each spectrum as active or inactive.
+
+Validated on 1,611 2D HSQC spectra across 4 protein targets, trained on just 100 labeled spectra (6.2% of the total): **0.87** average accuracy, **0.72** sensitivity, **0.88** specificity, **3.10%** false-negative rate, **10.30%** false-positive rate — deliberately tuned to minimize missed actives over minimizing false alarms.
 
 ## Citation
 
@@ -164,9 +154,25 @@ If you use CSP Analyzer in your work, please cite:
 
 > Fino, R., Byrne, R., Softley, C.A., Sattler, M., Schneider, G. and Popowicz, G.M., 2020. Introducing the CSP Analyzer: A novel Machine Learning-based application for automated analysis of two-dimensional NMR spectra in NMR fragment-based screening. *Computational and Structural Biotechnology Journal*, 18, pp.603-611.
 
-**DOI:** [10.1016/j.csbj.2020.02.015](https://doi.org/10.1016/j.csbj.2020.02.015)
+**DOI:** [10.1016/j.csbj.2020.02.015](https://doi.org/10.1016/j.csbj.2020.02.015) · **Open access full text:** [PMC7096735](https://pmc.ncbi.nlm.nih.gov/articles/PMC7096735/) · **Publisher page:** [ScienceDirect](https://www.sciencedirect.com/science/article/pii/S2001037020300246)
 
-**Full text:** [https://www.sciencedirect.com/science/article/pii/S2001037020300246](https://www.sciencedirect.com/science/article/pii/S2001037020300246)
+<details>
+<summary>BibTeX</summary>
+
+```bibtex
+@article{fino2020introducing,
+  title   = {Introducing the {CSP} Analyzer: A novel Machine Learning-based application for automated analysis of two-dimensional {NMR} spectra in {NMR} fragment-based screening},
+  author  = {Fino, Roberto and Byrne, Ryan and Softley, Claire A. and Sattler, Michael and Schneider, Gisbert and Popowicz, Grzegorz M.},
+  journal = {Computational and Structural Biotechnology Journal},
+  volume  = {18},
+  pages   = {603--611},
+  year    = {2020},
+  publisher = {Elsevier},
+  doi     = {10.1016/j.csbj.2020.02.015}
+}
+```
+
+</details>
 
 ## License
 
