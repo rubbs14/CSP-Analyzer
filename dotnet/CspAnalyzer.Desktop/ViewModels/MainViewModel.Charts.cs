@@ -24,18 +24,21 @@ namespace CspAnalyzer.Desktop.ViewModels;
 /// </summary>
 public partial class MainViewModel
 {
-    private static readonly SKColor BrokenSpectrumColor = new(254, 132, 132, 5);
-    private static readonly SKColor FineSpectrumColor = new(45, 161, 63, 5);
-    private static readonly SKColor CheckSpectrumColor = new(204, 204, 204, 25);
+    // Semaphore scheme: normal is a neutral gray (not "safe green" - a
+    // quiet zone shouldn't draw the eye), check is amber/warning, broken is
+    // red/danger - the escalating zones are what should stand out.
+    private static readonly SKColor BrokenSpectrumColor = new(220, 53, 69, 32);
+    private static readonly SKColor FineSpectrumColor = new(158, 158, 158, 8);
+    private static readonly SKColor CheckSpectrumColor = new(255, 193, 7, 22);
     private static readonly SKColor AllSpectraFillColor = new(250, 163, 0, 180);
     private static readonly SKColor CurrentMarkerTextColor = new(255, 255, 255, 200);
 
     // Same hues as the (near-transparent) zone Fill colors above, but
     // opaque - used for each zone's Label text so it visually matches the
     // band it names instead of every label sharing one plain white color.
-    private static readonly SKColor BrokenSpectrumTextColor = new(254, 132, 132, 255);
-    private static readonly SKColor FineSpectrumTextColor = new(45, 161, 63, 255);
-    private static readonly SKColor CheckSpectrumTextColor = new(204, 204, 204, 255);
+    private static readonly SKColor BrokenSpectrumTextColor = new(220, 53, 69, 255);
+    private static readonly SKColor FineSpectrumTextColor = new(220, 220, 220, 255);
+    private static readonly SKColor CheckSpectrumTextColor = new(255, 193, 7, 255);
     private static readonly SKColor ActiveAutoColor = new(45, 161, 63, 200);
     private static readonly SKColor InactiveAutoColor = new(225, 9, 20, 180);
     private static readonly SKColor GridSeparatorColor = new(255, 255, 255, 30);
@@ -67,7 +70,10 @@ public partial class MainViewModel
             {
                 Name = "Experiment No.",
                 LabelsRotation = 30,
-                TextSize = 9,
+                TextSize = 7,
+                LabelsDensity = 0,
+                MinStep = 1,
+                ForceStepToMin = true,
                 ShowSeparatorLines = true,
                 SeparatorsPaint = new SolidColorPaint(GridSeparatorColor),
                 MinLimit = 0,
@@ -77,7 +83,7 @@ public partial class MainViewModel
         };
         PeakDiffYAxes = new[]
         {
-            new Axis { Name = "ΔPeaks", TextSize = 9, MinLimit = -80, MaxLimit = 80 },
+            new Axis { Name = "ΔPeaks", TextSize = 7, MinLimit = -80, MaxLimit = 80 },
         };
         PeakDiffSeries = new ISeries[]
         {
@@ -88,17 +94,16 @@ public partial class MainViewModel
             .ToArray();
     }
 
-    // Port of CSPv2/Form1.cs:298-334's AxisSection zones: Broken [-80,-40]
-    // and [40,80], Check [-45,-25] and [25,45], Safe/Fine [-30,30] (split
-    // into +/- halves so each gets its own centered "Safe range" label,
-    // matching legacy's six-label layout). Each zone is two sections: a
-    // full-width one carrying the background Fill, and a second, narrow
-    // one - Xi/Xj pinned to a window centered on the dataset - carrying
-    // only the Label, so the text sits centered in the band instead of
-    // pinned to the section's left edge. A RectangularSection's Label is
-    // positioned relative to the chart's current visible area (unlike a
-    // LabelVisual's fixed data-space X/Y), so both stay put under zoom/pan
-    // instead of drifting.
+    // Thresholds on |ΔPeaks|: <=15 safe, <=30 check, >30 broken - specular
+    // around the X axis (each zone split into +/- halves so each gets its
+    // own centered label, matching legacy's six-label layout). Each zone is
+    // two sections: a full-width one carrying the background Fill, and a
+    // second, narrow one - Xi/Xj pinned to a window centered on the
+    // dataset - carrying only the Label, so the text sits centered in the
+    // band instead of pinned to the section's left edge. A
+    // RectangularSection's Label is positioned relative to the chart's
+    // current visible area (unlike a LabelVisual's fixed data-space X/Y),
+    // so both stay put under zoom/pan instead of drifting.
     private static RectangularSection[] BuildThresholdZoneSections(int datasetCount)
     {
         double center = datasetCount / 2.0;
@@ -115,12 +120,12 @@ public partial class MainViewModel
             },
         };
 
-        return Zone(-80, -40, BrokenSpectrumColor, BrokenSpectrumTextColor, "Broken Spectrum")
-            .Concat(Zone(-45, -25, CheckSpectrumColor, CheckSpectrumTextColor, "Check PP"))
-            .Concat(Zone(-30, 0, FineSpectrumColor, FineSpectrumTextColor, "Safe range"))
-            .Concat(Zone(0, 30, FineSpectrumColor, FineSpectrumTextColor, "Safe range"))
-            .Concat(Zone(25, 45, CheckSpectrumColor, CheckSpectrumTextColor, "Check PP"))
-            .Concat(Zone(40, 80, BrokenSpectrumColor, BrokenSpectrumTextColor, "Broken Spectrum"))
+        return Zone(-80, -30, BrokenSpectrumColor, BrokenSpectrumTextColor, "Broken Spectrum")
+            .Concat(Zone(-30, -15, CheckSpectrumColor, CheckSpectrumTextColor, "Check PP"))
+            .Concat(Zone(-15, 0, FineSpectrumColor, FineSpectrumTextColor, "Safe range"))
+            .Concat(Zone(0, 15, FineSpectrumColor, FineSpectrumTextColor, "Safe range"))
+            .Concat(Zone(15, 30, CheckSpectrumColor, CheckSpectrumTextColor, "Check PP"))
+            .Concat(Zone(30, 80, BrokenSpectrumColor, BrokenSpectrumTextColor, "Broken Spectrum"))
             .ToArray();
     }
 
@@ -229,7 +234,10 @@ public partial class MainViewModel
         {
             Name = "Experiment No.",
             LabelsRotation = 30,
-            TextSize = 9,
+            TextSize = 7,
+            LabelsDensity = 0,
+            MinStep = 1,
+            ForceStepToMin = true,
             ShowSeparatorLines = true,
             SeparatorsPaint = new SolidColorPaint(GridSeparatorColor),
             MinLimit = 0,
@@ -246,7 +254,7 @@ public partial class MainViewModel
         }
 
         ProbabilityXAxes = new[] { xAxis };
-        ProbabilityYAxes = new[] { new Axis { Name = "Probability", TextSize = 9, MinLimit = 0, MaxLimit = 1 } };
+        ProbabilityYAxes = new[] { new Axis { Name = "Probability", TextSize = 7, MinLimit = 0, MaxLimit = 1 } };
 
         // Each bar colored by its own active/inactive classification (like
         // legacy's per-bar coloring) rather than one flat color for every
@@ -361,7 +369,7 @@ public partial class MainViewModel
 
     public void BuildOverlayAxes()
     {
-        OverlayXAxes = new[] { new Axis { Name = "1H ppm", MinLimit = -HMax, MaxLimit = -HMin, Labeler = value => Math.Abs(value).ToString("0.##") } };
+        OverlayXAxes = new[] { new Axis { Name = "1H ppm", TextSize = 9, MinLimit = -HMax, MaxLimit = -HMin, Labeler = value => Math.Abs(value).ToString("0.##") } };
         OverlayYAxes = new[]
         {
             new Axis

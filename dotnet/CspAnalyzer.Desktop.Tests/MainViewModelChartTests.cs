@@ -47,6 +47,25 @@ public class MainViewModelChartTests
             s => Assert.True(s.Xi.HasValue && s.Xj.HasValue));
     }
 
+    // |ΔPeaks| <=15 safe, <=30 check, >30 broken - specular around zero.
+    [Theory]
+    [InlineData("Safe range", -15, 0)]
+    [InlineData("Safe range", 0, 15)]
+    [InlineData("Check PP", -30, -15)]
+    [InlineData("Check PP", 15, 30)]
+    [InlineData("Broken Spectrum", -80, -30)]
+    [InlineData("Broken Spectrum", 30, 80)]
+    public void BuildPeakDiffChart_threshold_zone_bounds_match_the_ppm_spec(string label, double yi, double yj)
+    {
+        MainViewModel vm = MakeViewModel(80, 85);
+
+        vm.BuildPeakDiffChart();
+
+        Assert.Contains(
+            vm.PeakDiffSections,
+            s => s.Label == label && s.Yi == yi && s.Yj == yj);
+    }
+
     [Fact]
     public void BuildPeakDiffChart_adds_a_current_spectrum_marker_section_at_CurrentIndex()
     {
