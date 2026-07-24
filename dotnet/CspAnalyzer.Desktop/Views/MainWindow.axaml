@@ -369,7 +369,7 @@
 
             <Border Grid.Row="4" Classes="section">
                 <StackPanel Spacing="4">
-                    <Button Content="Save MCC Stats" HorizontalAlignment="Stretch" />
+                    <Button Content="Save MCC Stats" Command="{Binding SaveMccStatsCommand}" HorizontalAlignment="Stretch" />
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4">
                         <Button Content="About" Command="{Binding OpenAboutWindowCommand}" Classes="compact" />
                         <Button Content="Shortcuts" Command="{Binding OpenShortcutsWindowCommand}" Classes="compact" />
@@ -420,7 +420,7 @@
                                                      YAxes="{Binding PeakDiffYAxes}"
                                                      Sections="{Binding PeakDiffSections}"
                                                      ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}"
-                                                     TooltipTextSize="11" />
+                                                     TooltipTextSize="9" />
                                 <!--
                                 Zone captions as a fixed-fraction screen-space overlay, not
                                 RectangularSection.Label: LiveChartsCore mispositions Label text
@@ -464,7 +464,7 @@
                                                  YAxes="{Binding ProbabilityYAxes}"
                                                  Sections="{Binding ProbabilitySections}"
                                                  ZoomMode="{x:Static lvcm:ZoomAndPanMode.X}"
-                                                 TooltipTextSize="11" />
+                                                 TooltipTextSize="9" />
                         </DockPanel>
                     </Border>
                 </Grid>
@@ -501,7 +501,7 @@
                             <Button Grid.Column="0" Content="Fit Zoom to Import Limits" Command="{Binding ResetOverlayZoomCommand}" />
                             <Button Grid.Column="2" Content="Fit Zoom to Reference" Command="{Binding FitOverlayZoomToReferenceCommand}" />
                         </Grid>
-                        <lvc:CartesianChart Series="{Binding OverlaySeries}" XAxes="{Binding OverlayXAxes}" YAxes="{Binding OverlayYAxes}" ZoomMode="{x:Static lvcm:ZoomAndPanMode.Both}" TooltipTextSize="11" />
+                        <lvc:CartesianChart Series="{Binding OverlaySeries}" XAxes="{Binding OverlayXAxes}" YAxes="{Binding OverlayYAxes}" ZoomMode="{x:Static lvcm:ZoomAndPanMode.Both}" TooltipTextSize="9" />
                     </DockPanel>
                 </Border>
             </Grid>
@@ -513,21 +513,17 @@
                     <Border Grid.Column="0" Classes="section">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Analysis Info" />
-                            <Grid ColumnDefinitions="*,*">
-                                <StackPanel Grid.Column="0" Spacing="1">
-                                    <TextBlock Text="Reference" FontWeight="SemiBold" FontSize="10" />
-                                    <TextBlock Text="{Binding ReferencePeakCount, StringFormat='Read Peaks: {0}'}" FontSize="11" />
-                                    <TextBlock Text="{Binding ReferenceMinIntensity, StringFormat='Min. Int.: {0:F0}'}" FontSize="11" />
-                                    <TextBlock Text="{Binding ReferenceMaxIntensity, StringFormat='Max Int.: {0:F0}'}" FontSize="11" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="1" Spacing="1">
-                                    <TextBlock Text="Dataset" FontWeight="SemiBold" FontSize="10" />
-                                    <TextBlock Text="{Binding DatasetAveragePeakCount, StringFormat='Avg Peak Count: {0:F0}'}" FontSize="11" />
-                                    <TextBlock Text="{Binding DatasetAverageMinIntensity, StringFormat='Avg Min. Int.: {0:F0}'}" FontSize="11" />
-                                    <TextBlock Text="{Binding DatasetAverageMaxIntensity, StringFormat='Avg Max Int.: {0:F0}'}" FontSize="11" />
-                                    <TextBlock Text="{Binding DatasetSpectra.Count, StringFormat='#Exps: {0}'}" FontSize="11" />
-                                </StackPanel>
-                            </Grid>
+                            <StackPanel Spacing="1">
+                                <TextBlock Text="Reference" FontWeight="SemiBold" FontSize="10" />
+                                <TextBlock Text="{Binding ReferencePeakCount, StringFormat='Read Peaks: {0}'}" FontSize="10" />
+                                <TextBlock Text="{Binding ReferenceMinIntensity, StringFormat='Min. Int.: {0:F0}'}" FontSize="10" />
+                                <TextBlock Text="{Binding ReferenceMaxIntensity, StringFormat='Max Int.: {0:F0}'}" FontSize="10" />
+                                <TextBlock Text="Dataset" FontWeight="SemiBold" FontSize="10" Margin="0,4,0,0" />
+                                <TextBlock Text="{Binding DatasetAveragePeakCount, StringFormat='Avg Peak Count: {0:F0}'}" FontSize="10" />
+                                <TextBlock Text="{Binding DatasetAverageMinIntensity, StringFormat='Avg Min. Int.: {0:F0}'}" FontSize="10" />
+                                <TextBlock Text="{Binding DatasetAverageMaxIntensity, StringFormat='Avg Max Int.: {0:F0}'}" FontSize="10" />
+                                <TextBlock Text="{Binding DatasetSpectra.Count, StringFormat='#Exps: {0}'}" FontSize="10" />
+                            </StackPanel>
                         </DockPanel>
                     </Border>
                     <Border Grid.Column="1" Classes="section">
@@ -540,7 +536,7 @@
                             <Grid ColumnDefinitions="*,*">
                                 <Grid Grid.Column="0">
                                     <lvc:PieChart Series="{Binding ActivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}"
-                                                  InitialRotation="180" MaxAngle="180" TooltipTextSize="11" />
+                                                  InitialRotation="180" MaxAngle="180" TooltipTextSize="9" />
                                     <Grid ColumnDefinitions="*,*" VerticalAlignment="Center" Margin="4,26,4,0" IsHitTestVisible="False">
                                         <TextBlock Grid.Column="0" Text="0" FontSize="9" HorizontalAlignment="Left" />
                                         <TextBlock Grid.Column="1" Text="{Binding DatasetSpectra.Count}" FontSize="9" HorizontalAlignment="Right" />
@@ -550,7 +546,7 @@
                                 </Grid>
                                 <Grid Grid.Column="1">
                                     <lvc:PieChart Series="{Binding InactivesGaugeSeries}" MaxValue="{Binding DatasetSpectra.Count}"
-                                                  InitialRotation="180" MaxAngle="180" TooltipTextSize="11" />
+                                                  InitialRotation="180" MaxAngle="180" TooltipTextSize="9" />
                                     <Grid ColumnDefinitions="*,*" VerticalAlignment="Center" Margin="4,26,4,0" IsHitTestVisible="False">
                                         <TextBlock Grid.Column="0" Text="0" FontSize="9" HorizontalAlignment="Left" />
                                         <TextBlock Grid.Column="1" Text="{Binding DatasetSpectra.Count}" FontSize="9" HorizontalAlignment="Right" />
@@ -565,7 +561,7 @@
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Top" Classes="sectionHeader" Text="Manual Analysis Results" />
                             <Button DockPanel.Dock="Bottom" Content="Reset All Man. Flags" Command="{Binding ResetAllManualFlagsCommand}" Classes="compact" HorizontalAlignment="Stretch" Margin="0,4,0,0" />
-                            <lvc:CartesianChart Series="{Binding ManualResultsSeries}" XAxes="{Binding ManualResultsXAxes}" YAxes="{Binding ManualResultsYAxes}" TooltipTextSize="11" />
+                            <lvc:CartesianChart Series="{Binding ManualResultsSeries}" XAxes="{Binding ManualResultsXAxes}" YAxes="{Binding ManualResultsYAxes}" TooltipTextSize="9" />
                         </DockPanel>
                     </Border>
                 </Grid>

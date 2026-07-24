@@ -126,6 +126,11 @@ public partial class MainViewModel : ViewModelBase
 
     private CancellationTokenSource? _runCts;
 
+    // Set after a successful run - the backend's raw processed_spectra.json,
+    // which SaveMccStatsCommand copies out on demand (port of Form1.cs's
+    // buttonSaveMCCstats_Click, which copied the same temp file).
+    private string? _lastProcessedSpectraPath;
+
     public bool IsReferenceLoaded => ReferenceSpectrum is not null;
 
     public MainViewModel() : this(
@@ -340,9 +345,11 @@ public partial class MainViewModel : ViewModelBase
                 {
                     RunResults.Add(r);
                 }
+                _lastProcessedSpectraPath = result.OutputPath;
                 OpenResultsWindowCommand.NotifyCanExecuteChanged();
                 ToggleAutoActivesFilterCommand.NotifyCanExecuteChanged();
                 ToggleAutoInactivesFilterCommand.NotifyCanExecuteChanged();
+                SaveMccStatsCommand.NotifyCanExecuteChanged();
                 CurrentIndex = 0;
                 // Bypass the ManualProbabilityThreshold setter here (it
                 // would trigger its own Build*/RaiseNavigationChanged via
@@ -396,6 +403,21 @@ public partial class MainViewModel : ViewModelBase
     {
         ReferenceIntensityThreshold = 5000;
         DatasetIntensityThreshold = 2000;
+    }
+
+    private bool CanSaveMccStats() => _lastProcessedSpectraPath is not null;
+
+    [RelayCommand(CanExecute = nameof(CanSaveMccStats))]
+    private async Task SaveMccStatsAsync()
+    {
+        string? path = await _filePicker.PickSaveFileAsync("processed_spectra.json", "json");
+        if (path is null)
+        {
+            return;
+        }
+
+        File.Copy(_lastProcessedSpectraPath!, path, overwrite: true);
+        RunStatusText = $"MCC stats saved to {path}";
     }
 
     [RelayCommand]
