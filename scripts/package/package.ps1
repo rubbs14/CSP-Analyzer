@@ -40,6 +40,18 @@ Copy-Item -Path "$publishDir/*" -Destination $outputDir -Recurse -Force
 Copy-Item -Path $modelArtifactsDir -Destination (Join-Path $outputDir "model_artifacts") -Recurse -Force
 Copy-Item -Path $frozenBackendDistDir -Destination (Join-Path $outputDir "csp-backend") -Recurse -Force
 
+if (-not $IsWindows) {
+    $executablesToMarkRunnable = @(
+        (Join-Path $outputDir "CspAnalyzer.Desktop"),
+        (Join-Path $outputDir "csp-backend" "csp-backend")
+    )
+    foreach ($executablePath in $executablesToMarkRunnable) {
+        if (Test-Path $executablePath) {
+            chmod +x $executablePath
+        }
+    }
+}
+
 if (Test-Path $zipPath) {
     Remove-Item $zipPath
 }
