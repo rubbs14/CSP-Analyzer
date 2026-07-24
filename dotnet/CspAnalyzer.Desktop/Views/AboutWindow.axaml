@@ -87,11 +87,19 @@
                             <Button Classes="link" Click="OnLinkClick" Tag="http://www.aegis-itn.eu/fellows/roberto-fino/">
                                 <TextBlock Text="profile" />
                             </Button>
+                            <TextBlock Text="-" />
+                            <Button Classes="link" Click="OnLinkClick" Tag="https://www.linkedin.com/in/robertofino/">
+                                <TextBlock Text="LinkedIn" />
+                            </Button>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Spacing="4">
                             <TextBlock Text="Ryan Byrne (Backend) -" />
                             <Button Classes="link" Click="OnLinkClick" Tag="http://www.aegis-itn.eu/fellows/ryan-byrne/">
                                 <TextBlock Text="profile" />
+                            </Button>
+                            <TextBlock Text="-" />
+                            <Button Classes="link" Click="OnLinkClick" Tag="https://www.linkedin.com/in/ryanjosephbyrne/">
+                                <TextBlock Text="LinkedIn" />
                             </Button>
                         </StackPanel>
                     </StackPanel>
