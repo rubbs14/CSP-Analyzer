@@ -188,16 +188,30 @@ public partial class MainWindow : Window
         // exists (App.axaml.cs calls this pre-Show()), gets silently
         // dropped on X11: the window ends up Normal at whatever small
         // default size Avalonia picked, clipping content that assumes a
-        // full-size window (S12 bug report: legend text and the
-        // Go-To-Experiment button clipped by the window edge). Re-applying
-        // once more on Opened, after the platform window is realized,
-        // makes it actually stick - a no-op if the window was already
-        // shown (e.g. in tests that call Show() before this method).
+        // full-size window (S12 bug report: legend text, the gauge panel
+        // checkboxes, and the Go-To-Experiment button all clipped by the
+        // window edge). Re-applying once more on Opened, after the
+        // platform window is realized, was tried first but is itself
+        // unreliable - this X11/WM combination doesn't consistently honor
+        // a native maximize request even post-Show (confirmed by a live
+        // run that still opened at ~1197x810 with this alone). Explicitly
+        // sizing/positioning to the primary screen's working area is a
+        // deterministic fallback that doesn't depend on the WM granting
+        // the maximize request at all.
         if (settings.WindowState == "Maximized")
         {
             void SetMaximizedOnOpen(object? sender, EventArgs e)
             {
                 WindowState = Avalonia.Controls.WindowState.Maximized;
+
+                if (Screens.Primary is { } screen)
+                {
+                    PixelRect area = screen.WorkingArea;
+                    Position = new PixelPoint(area.X, area.Y);
+                    Width = area.Width / screen.Scaling;
+                    Height = area.Height / screen.Scaling;
+                }
+
                 Opened -= SetMaximizedOnOpen;
             }
 
