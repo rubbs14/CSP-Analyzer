@@ -56,6 +56,42 @@ public partial class MainWindow : Window
 
         this.FindControl<CartesianChart>("PeakDiffChart")!.ChartPointPointerDown += OnChartPointClicked;
         this.FindControl<CartesianChart>("ProbabilityChart")!.ChartPointPointerDown += OnChartPointClicked;
+
+        // LiveChartsCore's own UpdateFinished event (IChartView) never
+        // fired in testing, even well after a real load+run - so this uses
+        // Avalonia's own LayoutUpdated instead, which is guaranteed to run
+        // after every arrange pass regardless of LiveCharts internals. The
+        // chart's real draw margin only exists once its axes have actual
+        // content (tick label text/rotation, which depends on the loaded
+        // spectra), so a margin computed before that is stale by
+        // definition - this re-measures on every layout pass instead of
+        // once, so it can't be stale after data loads.
+        this.FindControl<CartesianChart>("PeakDiffChart")!.LayoutUpdated += OnPeakDiffChartLayoutUpdated;
+    }
+
+    private void OnPeakDiffChartLayoutUpdated(object? sender, EventArgs e)
+    {
+        var chartControl = this.FindControl<CartesianChart>("PeakDiffChart");
+        var overlay = this.FindControl<Grid>("PeakDiffZoneLabels");
+        if (chartControl is null || overlay is null || ((IChartView)chartControl).CoreChart is not { } coreChart)
+        {
+            return;
+        }
+
+        LiveChartsCore.Drawing.LvcPoint location = coreChart.DrawMarginLocation;
+        LiveChartsCore.Drawing.LvcSize size = coreChart.DrawMarginSize;
+        if (size.Width <= 0 || size.Height <= 0)
+        {
+            return;
+        }
+
+        double right = Math.Max(0, chartControl.Bounds.Width - location.X - size.Width);
+        double bottom = Math.Max(0, chartControl.Bounds.Height - location.Y - size.Height);
+        var margin = new Thickness(location.X, location.Y, right, bottom);
+        if (overlay.Margin != margin)
+        {
+            overlay.Margin = margin;
+        }
     }
 
     // See the comment above the <Window.KeyBindings> block in

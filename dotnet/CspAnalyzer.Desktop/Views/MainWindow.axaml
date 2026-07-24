@@ -239,16 +239,12 @@
                                 are the |dPeaks|<=15/<=30/>30 zone widths as fractions of the
                                 fixed -80..80 Y range, so each caption centers in its own band
                                 and stays there under zoom/pan (it's outside the chart's data
-                                space entirely). Margin's Top and Bottom are equal on purpose:
-                                the chart's real top/bottom axis-label reserves are NOT equal
-                                (bottom has rotated tick labels + a title, top has neither), but
-                                giving the overlay a matching asymmetric margin desynced the row
-                                fractions from the true plot rectangle enough that captions landed
-                                in the wrong zone - a UpdateFinished-driven exact measurement was
-                                tried and abandoned (the event never fired in testing). Equal
-                                margins sacrifice pixel-perfect gridline alignment for a mirror
-                                that's guaranteed correct by construction, which is what matters
-                                here.
+                                space entirely). Margin below is only the pre-data placeholder -
+                                MainWindow.axaml.cs's OnPeakDiffChartLayoutUpdated overwrites it
+                                with the chart's actual measured draw-margin rectangle on every
+                                layout pass, since the real margin only exists once the axes have
+                                real tick-label content (which depends on the loaded spectra) and
+                                a value guessed before that is stale by construction.
                                 -->
                                 <Grid x:Name="PeakDiffZoneLabels" IsHitTestVisible="False" Margin="42,48,4,48"
                                       RowDefinitions="0.3125*,0.09375*,0.09375*,0.09375*,0.09375*,0.3125*">
