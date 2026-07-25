@@ -90,6 +90,9 @@ All notable changes to CSP-Analyzer are documented here. This project follows se
 
 - JSON tuple serialization: legacy backend incorrectly serialized tuples as JSON arrays; now emits plain booleans
 - SVM dual_coef_ sign convention: re-serialization corrected scikit-learn 0.19→1.9 compatibility issue via module aliasing bridge
+- Cross-platform CI failure: a stray legacy `Backend/` folder (dead since early in the rewrite) collided on case-insensitive macOS/Windows filesystems with the real `backend/` package, causing `ModuleNotFoundError` in CI; removed the dead folder
+- Keyboard shortcuts hijacking text input: single-letter and arrow-key shortcuts (e.g. `T`, arrow keys, Ctrl+C/Ctrl+X) were firing while typing in a focused textbox instead of editing the text; shortcuts now yield to text-input focus
+- Zoom-reset shortcuts swapped: `Ctrl+C`/`Ctrl+Y` were bound to each other's legacy behavior (bar-chart reset vs. overlay-chart reset); corrected to match the original app
 
 ---
 
