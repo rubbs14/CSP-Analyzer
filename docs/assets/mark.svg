@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" fill="none" role="img" aria-label="CSP-Analyzer mark">
+  <g transform="rotate(-20 50 50)" stroke="#00A297" stroke-linecap="round" fill="none">
+    <ellipse cx="50" cy="50" rx="31"   ry="25"   stroke-width="2.5" opacity=".55"/>
+    <ellipse cx="50" cy="50" rx="21"   ry="16.5" stroke-width="2.8" opacity=".8"/>
+    <ellipse cx="50" cy="50" rx="11.5" ry="9"    stroke-width="3.1"/>
+  </g>
+  <circle cx="50" cy="50" r="5" fill="#00A297"/>
+</svg>
