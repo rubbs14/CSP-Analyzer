@@ -125,7 +125,7 @@ jobs:
         if: matrix.os-name == 'linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y rpm
+          sudo apt-get install -y rpm imagemagick
           sudo gem install --no-document fpm
 
       - name: Resolve rpm version
@@ -159,8 +159,10 @@ jobs:
           docker run --rm -v ${{ github.workspace }}/artifacts:/artifacts rockylinux:9 bash -c "
             rpm -i /artifacts/*.rpm &&
             test -x /opt/csp-analyzer/CspAnalyzer.Desktop &&
+            test -x /opt/csp-analyzer/csp-backend/csp-backend &&
             test -x /usr/bin/csp-analyzer &&
-            test -f /usr/share/applications/csp-analyzer.desktop
+            test -f /usr/share/applications/csp-analyzer.desktop &&
+            test -f /usr/share/icons/hicolor/256x256/apps/csp-analyzer.png
           "
 
       - name: Upload rpm artifact

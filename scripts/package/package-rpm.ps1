@@ -77,11 +77,12 @@ Terminal=false
 '@
 
 $iconPngPath = Join-Path $iconDir "csp-analyzer.png"
-# "${iconIco}[0]" (curly braces) rather than "$iconIco[0]" - the latter is
-# parsed by PowerShell as string-indexing inside a double-quoted string.
-# The "[0]" here is ImageMagick's own frame-select syntax, picking the
-# largest frame out of the multi-resolution .ico.
-& convert "${iconIco}[0]" -resize 256x256 $iconPngPath
+# Frames are stored smallest-first in this .ico; "-delete 0--2" drops all
+# but the last (largest) frame, then "!" forces an exact 256x256 output
+# regardless of the source frame's exact aspect ratio. "${iconIco}" (curly
+# braces) rather than "$iconIco" avoids PowerShell parsing "[...]" as
+# string-indexing inside the double-quoted string that follows.
+& convert "${iconIco}" -delete 0--2 -resize "256x256!" $iconPngPath
 if ($LASTEXITCODE -ne 0) {
     throw "convert exited with code $LASTEXITCODE"
 }

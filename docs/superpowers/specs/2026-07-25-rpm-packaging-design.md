@@ -28,7 +28,7 @@ Runs after `package.ps1` has already assembled `artifacts/CspAnalyzer-linux-linu
   Categories=Science;Chemistry;
   Terminal=false
   ```
-- `/usr/share/icons/hicolor/256x256/apps/csp-analyzer.png` — converted from the existing `dotnet/CspAnalyzer.Desktop/Assets/cspanalyzer_SPd_icon.ico` via ImageMagick (`convert cspanalyzer_SPd_icon.ico[0] -resize 256x256 csp-analyzer.png`; `[0]` selects the largest frame in the multi-res `.ico`). `convert` is preinstalled on the `ubuntu-latest` GitHub-hosted runner image.
+- `/usr/share/icons/hicolor/256x256/apps/csp-analyzer.png` — converted from the existing `dotnet/CspAnalyzer.Desktop/Assets/cspanalyzer_SPd_icon.ico` via ImageMagick (`convert cspanalyzer_SPd_icon.ico -delete 0--2 -resize "256x256!" csp-analyzer.png`; frames in this `.ico` are stored smallest-first, so `-delete 0--2` drops every frame except the last (largest) one rather than relying on a hardcoded index). `imagemagick` (providing `convert`) is explicitly installed in the CI "Install rpm build tools" step rather than assumed present on the runner image.
 
 Then invokes `fpm`:
 ```
