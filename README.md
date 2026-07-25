@@ -76,6 +76,8 @@ CSP-Analyzer expects experiments to follow the standard TopSpin folder structure
 
 To load all selected experiments at once, select the folder at the `<PROTEIN_NAME>` level. CSP-Analyzer will recursively scan for all `peaklist.xml` files and process them in batch.
 
+> **Try it first:** every downloaded package includes a `Demo-dataset/` folder next to the executable — load `Demo-dataset/gpHUB1_FR_REF_pool1_130416` as the Reference and `Demo-dataset/gpHUB1_FS_pool1_130416` as the Dataset to try CSP-Analyzer immediately, no TopSpin data of your own required.
+
 ### Preparing Peak-Picking Data
 
 Use the **PeakListExtractor** companion application to retrieve `peaklist.xml` files generated after peak-picking in TopSpin. PeakListExtractor preserves the original folder-tree structure required by CSP-Analyzer for correct parsing.

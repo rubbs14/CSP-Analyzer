@@ -39,15 +39,26 @@ public static class BackendEnvironment
     public static string WorkingDirectory => IsPackagedLayout ? AppContext.BaseDirectory : RepoRoot;
 
     /// <summary>
-    /// Path to the csp_modern conda env's python, or null if that exact
-    /// env isn't present on the current machine under any known conda
-    /// distro (miniforge3/miniconda3/anaconda3). Dev-mode only - packaged
-    /// installs don't use this.
+    /// Path to a python interpreter with the backend's dependencies
+    /// installed, or null if none is discoverable. Dev-mode only - packaged
+    /// installs don't use this. Checks the CSP_ANALYZER_PYTHON environment
+    /// variable first - CI runners have no csp_modern conda env (the
+    /// conda-path guess below never finds anything there), so the
+    /// dotnet-tests CI job sets this to whatever interpreter it just pip
+    /// installed backend/requirements.txt into. Falls back to probing for
+    /// the csp_modern conda env under any known conda distro
+    /// (miniforge3/miniconda3/anaconda3) for real dev-machine use.
     /// </summary>
     public static string? PythonExecutable
     {
         get
         {
+            string? overridePath = Environment.GetEnvironmentVariable("CSP_ANALYZER_PYTHON");
+            if (!string.IsNullOrEmpty(overridePath))
+            {
+                return overridePath;
+            }
+
             var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             return CondaPythonPaths.BuildCandidates(CurrentPlatform(), home, "csp_modern")
                 .FirstOrDefault(File.Exists);

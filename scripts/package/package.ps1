@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
   Assembles a self-contained CspAnalyzer package: dotnet publish output +
-  model_artifacts/ + the PyInstaller-frozen csp-backend dist, then zips it.
-  Run from the repo root, after both `dotnet publish` and `pyinstaller`
-  have already produced their outputs (the CI packaging job runs both
-  first - see .github/workflows/ci.yml's `package` job).
+  model_artifacts/ + the PyInstaller-frozen csp-backend dist + the demo
+  dataset, then zips it. Run from the repo root, after both `dotnet publish`
+  and `pyinstaller` have already produced their outputs (the CI packaging
+  job runs both first - see .github/workflows/ci.yml's `package` job).
 #>
 param(
     [Parameter(Mandatory = $true)][string]$Rid,      # e.g. win-x64, linux-x64, osx-x64
@@ -17,6 +17,7 @@ $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
 $publishDir = Join-Path $repoRoot "dotnet/CspAnalyzer.Desktop/bin/Release/net8.0/$Rid/publish"
 $modelArtifactsDir = Join-Path $repoRoot "backend/model_artifacts"
 $frozenBackendDistDir = Join-Path $repoRoot "backend/dist/csp-backend"
+$demoDatasetDir = Join-Path $repoRoot "CSPv2/Demo-dataset"
 $artifactsDir = Join-Path $repoRoot "artifacts"
 $outputDir = Join-Path $artifactsDir "CspAnalyzer-$OsName-$Rid"
 $zipPath = Join-Path $artifactsDir "CspAnalyzer-$OsName-$Rid.zip"
@@ -30,6 +31,9 @@ if (-not (Test-Path $frozenBackendDistDir)) {
 if (-not (Test-Path $modelArtifactsDir)) {
     throw "model_artifacts/ not found at $modelArtifactsDir."
 }
+if (-not (Test-Path $demoDatasetDir)) {
+    throw "Demo dataset not found at $demoDatasetDir."
+}
 
 if (Test-Path $outputDir) {
     Remove-Item -Recurse -Force $outputDir
@@ -39,6 +43,7 @@ New-Item -ItemType Directory -Force -Path $outputDir | Out-Null
 Copy-Item -Path "$publishDir/*" -Destination $outputDir -Recurse -Force
 Copy-Item -Path $modelArtifactsDir -Destination (Join-Path $outputDir "model_artifacts") -Recurse -Force
 Copy-Item -Path $frozenBackendDistDir -Destination (Join-Path $outputDir "csp-backend") -Recurse -Force
+Copy-Item -Path $demoDatasetDir -Destination (Join-Path $outputDir "Demo-dataset") -Recurse -Force
 
 if (-not $IsWindows) {
     $executablesToMarkRunnable = @(

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PeakList modified="2018-02-23T12:50:20">
+  <PeakList2D>
+    <PeakList2DHeader creator="roberto.fino@pc57231.scidom.de" date="2018-02-23T12:50:20" expNo="121" name="gpHUB1_FS_pool1_130416" owner="roberto.fino" procNo="1" source="/ms/data/roberto.fino/home/nmr/HUB1">
+      <PeakPickDetails># F2 peak picking range ( ppm )
+# 2 F1P=11.1937, 2 F2P=5.5915
+# F1 peak picking range ( ppm )
+# 1 F1P=130.9905, 1 F2P=103.5034
+# MI=0.00875735 (= 22245.790468037503), MAXI=1.0 (= 2540242.25)
+# PEAK RESOL.=1, INTERPOL. TYPE=PARABOLIC, DIAG. GAP=-1, MAX. # PEAKS=2147483647
+</PeakPickDetails>
+    </PeakList2DHeader>
+    <Peak2D F1="113.5307" F2="7.1166" intensity="24099.43" type="0"/>
+    <Peak2D F1="124.5471" F2="7.7450" intensity="27520.03" type="0"/>
+    <Peak2D F1="122.6584" F2="9.2055" intensity="29436.16" type="0"/>
+    <Peak2D F1="119.6676" F2="7.4981" intensity="29735.65" type="0"/>
+    <Peak2D F1="119.6428" F2="7.5157" intensity="30089.79" type="0"/>
+    <Peak2D F1="110.5037" F2="8.5095" intensity="30365.74" type="0"/>
+    <Peak2D F1="120.4913" F2="8.5387" intensity="32469.40" type="0"/>
+    <Peak2D F1="119.4391" F2="8.3153" intensity="32497.12" type="0"/>
+    <Peak2D F1="113.4620" F2="6.6205" intensity="32872.94" type="0"/>
+    <Peak2D F1="127.8029" F2="9.2571" intensity="33106.27" type="0"/>
+    <Peak2D F1="116.2579" F2="9.6700" intensity="33897.23" type="0"/>
+    <Peak2D F1="119.0806" F2="7.4033" intensity="34743.91" type="0"/>
+    <Peak2D F1="122.4173" F2="6.4271" intensity="35482.16" type="0"/>
+    <Peak2D F1="109.1927" F2="9.4733" intensity="36114.37" type="0"/>
+    <Peak2D F1="110.5104" F2="8.3162" intensity="36723.14" type="0"/>
+    <Peak2D F1="113.4134" F2="7.4074" intensity="37905.35" type="0"/>
+    <Peak2D F1="122.0384" F2="8.4934" intensity="38380.42" type="0"/>
+    <Peak2D F1="119.0924" F2="9.0525" intensity="40537.22" type="0"/>
+    <Peak2D F1="123.1728" F2="8.2370" intensity="41355.43" type="0"/>
+    <Peak2D F1="126.9291" F2="8.2006" intensity="41626.77" type="0"/>
+    <Peak2D F1="119.8056" F2="7.7643" intensity="42412.45" type="0"/>
+    <Peak2D F1="104.7764" F2="9.0424" intensity="43347.31" type="0"/>
+    <Peak2D F1="122.6226" F2="8.6643" intensity="43616.65" type="0"/>
+    <Peak2D F1="113.4695" F2="6.9990" intensity="43713.65" type="0"/>
+    <Peak2D F1="118.8368" F2="7.0173" intensity="43789.91" type="0"/>
+    <Peak2D F1="117.4776" F2="8.5282" intensity="43888.52" type="0"/>
+    <Peak2D F1="119.1382" F2="8.8391" intensity="43942.11" type="0"/>
+    <Peak2D F1="121.9415" F2="8.1346" intensity="44113.69" type="0"/>
+    <Peak2D F1="120.8413" F2="8.7809" intensity="44145.24" type="0"/>
+    <Peak2D F1="124.5633" F2="8.0489" intensity="44657.15" type="0"/>
+    <Peak2D F1="108.1090" F2="8.9225" intensity="44939.39" type="0"/>
+    <Peak2D F1="122.6907" F2="9.1685" intensity="45981.50" type="0"/>
+    <Peak2D F1="123.2986" F2="8.8589" intensity="46226.82" type="0"/>
+    <Peak2D F1="114.0000" F2="6.8853" intensity="46320.12" type="0"/>
+    <Peak2D F1="116.8067" F2="8.7718" intensity="47067.18" type="0"/>
+    <Peak2D F1="115.6441" F2="8.0807" intensity="47095.78" type="0"/>
+    <Peak2D F1="119.7875" F2="8.8223" intensity="47370.72" type="0"/>
+    <Peak2D F1="110.3706" F2="8.4251" intensity="47680.43" type="0"/>
+    <Peak2D F1="118.0590" F2="7.5207" intensity="48064.39" type="0"/>
+    <Peak2D F1="121.0008" F2="8.4623" intensity="48776.26" type="0"/>
+    <Peak2D F1="111.5806" F2="7.1506" intensity="49149.09" type="0"/>
+    <Peak2D F1="113.7582" F2="8.6279" intensity="49158.78" type="0"/>
+    <Peak2D F1="123.7647" F2="8.5401" intensity="49532.40" type="0"/>
+    <Peak2D F1="106.3679" F2="8.0052" intensity="49705.19" type="0"/>
+    <Peak2D F1="108.2101" F2="7.8985" intensity="49763.50" type="0"/>
+    <Peak2D F1="120.5505" F2="9.1120" intensity="50648.39" type="0"/>
+    <Peak2D F1="126.6871" F2="8.6281" intensity="50811.53" type="0"/>
+    <Peak2D F1="126.8450" F2="7.6210" intensity="52420.73" type="0"/>
+    <Peak2D F1="118.8057" F2="7.7588" intensity="52601.04" type="0"/>
+    <Peak2D F1="124.6651" F2="8.8271" intensity="52983.02" type="0"/>
+    <Peak2D F1="114.3268" F2="7.9253" intensity="53167.70" type="0"/>
+    <Peak2D F1="123.3053" F2="8.7683" intensity="53651.29" type="0"/>
+    <Peak2D F1="111.9363" F2="8.2175" intensity="54816.85" type="0"/>
+    <Peak2D F1="112.2317" F2="7.2297" intensity="54897.42" type="0"/>
+    <Peak2D F1="124.6645" F2="9.0684" intensity="55152.12" type="0"/>
+    <Peak2D F1="112.3110" F2="6.5154" intensity="55342.49" type="0"/>
+    <Peak2D F1="117.3575" F2="8.1770" intensity="55629.40" type="0"/>
+    <Peak2D F1="124.4114" F2="7.9663" intensity="55750.07" type="0"/>
+    <Peak2D F1="121.7375" F2="8.7726" intensity="55799.29" type="0"/>
+    <Peak2D F1="126.5390" F2="8.5347" intensity="55801.56" type="0"/>
+    <Peak2D F1="128.8261" F2="8.8571" intensity="56055.26" type="0"/>
+    <Peak2D F1="120.8341" F2="7.7591" intensity="56111.51" type="0"/>
+    <Peak2D F1="124.4038" F2="8.8136" intensity="56203.05" type="0"/>
+    <Peak2D F1="113.0070" F2="7.5699" intensity="56312.61" type="0"/>
+    <Peak2D F1="117.9693" F2="8.6657" intensity="56376.96" type="0"/>
+    <Peak2D F1="124.6879" F2="6.8446" intensity="56834.63" type="0"/>
+    <Peak2D F1="111.5705" F2="6.8530" intensity="57138.05" type="0"/>
+    <Peak2D F1="121.1657" F2="8.8433" intensity="57434.61" type="0"/>
+    <Peak2D F1="114.5535" F2="7.5724" intensity="58906.22" type="0"/>
+    <Peak2D F1="121.4813" F2="8.3053" intensity="59319.56" type="0"/>
+    <Peak2D F1="126.7208" F2="8.2471" intensity="60867.32" type="0"/>
+    <Peak2D F1="122.2287" F2="7.7423" intensity="61934.09" type="0"/>
+    <Peak2D F1="119.0363" F2="7.5768" intensity="63560.75" type="0"/>
+    <Peak2D F1="112.4394" F2="7.9592" intensity="64516.24" type="0"/>
+    <Peak2D F1="129.9045" F2="10.2431" intensity="70092.13" type="0"/>
+    <Peak2D F1="124.8296" F2="8.8744" intensity="72840.38" type="0"/>
+    <Peak2D F1="121.1506" F2="8.7193" intensity="75912.01" type="0"/>
+    <Peak2D F1="111.0899" F2="6.9124" intensity="78182.63" type="0"/>
+    <Peak2D F1="111.0878" F2="7.4576" intensity="81570.90" type="0"/>
+    <Peak2D F1="121.9514" F2="8.3991" intensity="83302.61" type="0"/>
+    <Peak2D F1="122.2314" F2="7.9848" intensity="88412.55" type="0"/>
+    <Peak2D F1="121.3603" F2="7.9731" intensity="92199.99" type="0"/>
+    <Peak2D F1="120.1742" F2="8.2000" intensity="92741.75" type="0"/>
+    <Peak2D F1="121.6902" F2="7.6147" intensity="94465.95" type="0"/>
+    <Peak2D F1="129.0972" F2="10.1721" intensity="95649.87" type="0"/>
+    <Peak2D F1="123.2587" F2="8.2774" intensity="97260.85" type="0"/>
+    <Peak2D F1="111.3498" F2="6.6792" intensity="99463.79" type="0"/>
+    <Peak2D F1="111.3639" F2="7.2176" intensity="101390.59" type="0"/>
+  </PeakList2D>
+</PeakList>

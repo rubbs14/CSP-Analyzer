@@ -13,9 +13,9 @@ internal static class RepoPaths
 
     /// <summary>
     /// Delegates to BackendEnvironment.PythonExecutable (S11) rather than
-    /// duplicating its own path-discovery logic. Null if the csp_modern
-    /// conda env isn't present on the current machine (the integration
-    /// test skips itself in that case).
+    /// duplicating its own path-discovery logic. Null if no python is
+    /// resolvable - neither CSP_ANALYZER_PYTHON nor a local csp_modern
+    /// conda env (the integration test skips itself in that case).
     /// </summary>
     public static string? CspModernPythonExecutable => BackendEnvironment.PythonExecutable;
 
