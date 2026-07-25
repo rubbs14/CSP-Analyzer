@@ -2,26 +2,13 @@
 
 All notable changes to CSP-Analyzer are documented here. This project follows semantic versioning; see `git tag` for the complete release history.
 
-## [Unreleased]
+## [2.0.1] - 2026-07-25
 
 ### Added
 
 - **Windows installer** — Inno Setup-based per-user installer alongside existing zip artifacts; includes proper version detection for upgrades
 - **Linux RPM packaging** — fpm-based RPM package for Linux distributions, installable via package managers
 - **Demo dataset bundled** — includes demo-dataset in repo for onboarding and real-dataset CI coverage
-
-### Fixed
-
-- Windows installer: icon shortcut handling and upgrade robustness
-- RPM packaging: icon frame and binary permission handling (chmod +x)
-- CI robustness: script injection vulnerability in rpm build step, `CSP_ANALYZER_PYTHON` path resolution
-
----
-
-## [2.0.1] - 2026-07-25
-
-### Added
-
 - **App icon refresh** — new B1 logo with animated banner (plays once on startup, holds final frame)
 - **Citation metadata** — `CITATION.cff` file for GitHub's "Cite this repository" button
 - **Zenodo archival** — `.zenodo.json` metadata for correct software archive registration; Zenodo software DOI badge and concept DOI in README
@@ -34,6 +21,9 @@ All notable changes to CSP-Analyzer are documented here. This project follows se
 
 ### Fixed
 
+- Windows installer: icon shortcut handling and upgrade robustness
+- RPM packaging: icon frame and binary permission handling (chmod +x)
+- CI robustness: script injection vulnerability in rpm build step, `CSP_ANALYZER_PYTHON` path resolution
 - HelpWindow clipboard test: fixed race condition in async void (was intermittently flaky in CI)
 
 ---
