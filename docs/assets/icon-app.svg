@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="CSP-Analyzer app icon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3B78F5"/>
+      <stop offset="1" stop-color="#23306B"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <g transform="rotate(-18 256 256)" fill="none" stroke="#FFFFFF" stroke-linecap="round">
+    <!-- eccentric contours: centres drift toward the peak (upper-right) -->
+    <ellipse cx="238" cy="286" rx="168" ry="138" stroke-width="12" opacity=".62"/>
+    <ellipse cx="266" cy="250" rx="112" ry="90"  stroke-width="14" opacity=".82"/>
+    <ellipse cx="290" cy="220" rx="60"  ry="47"  stroke-width="16"/>
+  </g>
+  <circle cx="300" cy="208" r="29" fill="#14C6B6"/>
+</svg>

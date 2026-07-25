@@ -1,6 +1,7 @@
 # CSP-Analyzer
 
-![CSPanalyzer](https://user-images.githubusercontent.com/20106786/70804975-2169ef00-1db8-11ea-850c-fa2fd092f7f2.png)
+<img src="docs/assets/logo-animated.svg" alt="CSP-Analyzer" width="100%">
+
 
 [![License: MIT](https://img.shields.io/github/license/rubbs14/CSP-Analyzer)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/rubbs14/CSP-Analyzer)](https://github.com/rubbs14/CSP-Analyzer/releases)
