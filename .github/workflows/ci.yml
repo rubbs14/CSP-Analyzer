@@ -127,6 +127,7 @@ jobs:
         run: |
           $rawVersion = git describe --tags --abbrev=0 2>$null
           if (-not $rawVersion) { $rawVersion = "v0.0.0-dev" }
+          $global:LASTEXITCODE = 0
           $installerVersion = $rawVersion -replace '^v', '' -replace '-', '.'
           "INSTALLER_VERSION=$installerVersion" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
 
@@ -144,7 +145,8 @@ jobs:
           INSTALLER_VERSION: ${{ env.INSTALLER_VERSION }}
         run: |
           $installerPath = "artifacts\CspAnalyzer-Setup-$env:INSTALLER_VERSION.exe"
-          Start-Process -FilePath $installerPath -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait
+          $process = Start-Process -FilePath $installerPath -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "installer exited with code $($process.ExitCode)" }
 
           $installDir = Join-Path $env:LOCALAPPDATA "CspAnalyzer"
           if (-not (Test-Path (Join-Path $installDir "CspAnalyzer.Desktop.exe"))) {
@@ -187,7 +189,7 @@ jobs:
           }
 
       - name: Upload installer artifact
-        if: matrix.os-name == 'windows'
+        if: always() && matrix.os-name == 'windows'
         uses: actions/upload-artifact@v4
         with:
           name: CspAnalyzer-windows-installer

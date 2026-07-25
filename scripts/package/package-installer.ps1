@@ -51,17 +51,19 @@ DefaultDirName={localappdata}\CspAnalyzer
 DefaultGroupName=CSP Analyzer
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
-OutputDir=$artifactsDir
+OutputDir="$artifactsDir"
 OutputBaseFilename=CspAnalyzer-Setup-$Version
-SetupIconFile=$iconIco
-Compression=lzma
+SetupIconFile="$iconIco"
+UninstallDisplayIcon={app}\CspAnalyzer.Desktop.exe
+ArchitecturesAllowed=x64compatible
+Compression=lzma2
 SolidCompression=yes
 
 [Files]
-Source: "$assembledDir\*"; DestDir: "{app}"; Flags: recursesubdirs
+Source: "$assembledDir\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 
 [Icons]
-Name: "{group}\CSP Analyzer"; Filename: "{app}\CspAnalyzer.Desktop.exe"; IconFilename: "$iconIco"
+Name: "{group}\CSP Analyzer"; Filename: "{app}\CspAnalyzer.Desktop.exe"
 "@
 
 Set-Content -Path $issPath -Value $issContent

@@ -16,7 +16,7 @@ Runs after `package.ps1` has already assembled `artifacts/CspAnalyzer-windows-wi
   - `DefaultDirName={localappdata}\CspAnalyzer` (per-user install location)
   - `DefaultGroupName=CSP Analyzer` (Start Menu folder)
   - `OutputDir=artifacts`, `OutputBaseFilename=CspAnalyzer-Setup-<Version>`
-  - `SetupIconFile` and shortcut icon both point at the existing `dotnet/CspAnalyzer.Desktop/Assets/cspanalyzer_SPd_icon.ico` — used directly, no format conversion needed (unlike the rpm work, which had to convert `.ico` → `.png` for freedesktop icon theming)
+  - `SetupIconFile` (compile-time only) points at the existing `dotnet/CspAnalyzer.Desktop/Assets/cspanalyzer_SPd_icon.ico` directly, no format conversion needed (unlike the rpm work, which had to convert `.ico` → `.png` for freedesktop icon theming). The `[Icons]` Start Menu shortcut has no `IconFilename` and instead relies on the icon already embedded in `CspAnalyzer.Desktop.exe` via the `.csproj`'s `<ApplicationIcon>` — `IconFilename` on an `[Icons]` entry resolves on the end user's machine, where a build-machine `.ico` path wouldn't exist.
   - `[Files]` section: bundles the entire `artifacts/CspAnalyzer-windows-win-x64/` tree verbatim (recursive, `Flags: recursesubdirs`) into `{app}`
   - `[Icons]` section: one Start Menu shortcut, `{group}\CSP Analyzer.lnk` → `{app}\CspAnalyzer.Desktop.exe`
   - Uninstaller is automatic (Inno Setup always generates `unins000.exe` + a `HKCU\...\Uninstall\{AppId}_is1` registry entry when `PrivilegesRequired=lowest`)
