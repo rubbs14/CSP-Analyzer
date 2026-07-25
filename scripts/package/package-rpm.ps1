@@ -46,6 +46,18 @@ New-Item -ItemType Directory -Force -Path $optDir, $binDir, $appsDir, $iconDir |
 
 Copy-Item -Path "$assembledDir/*" -Destination $optDir -Recurse -Force
 
+# Defensively re-assert executable bits on the binaries, since Copy-Item on
+# PowerShell Core may not reliably preserve Unix permission bits (precedent in package.ps1).
+$executablesToMarkRunnable = @(
+    (Join-Path $optDir "CspAnalyzer.Desktop"),
+    (Join-Path $optDir "csp-backend" "csp-backend")
+)
+foreach ($executablePath in $executablesToMarkRunnable) {
+    if (Test-Path $executablePath) {
+        chmod +x $executablePath
+    }
+}
+
 $wrapperPath = Join-Path $binDir "csp-analyzer"
 Set-Content -Path $wrapperPath -Value @'
 #!/bin/sh
