@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 200" width="1280" height="200" fill="none" role="img" aria-label="CSP-Analyzer">
   <style>
-    .field, .el { opacity: 0; }
+    .field { opacity: 1; }
+    .el { opacity: 0; }
     .chosen, .ringO, .ringM, .ringI { transform-box: fill-box; transform-origin: center; }
     .axes  { stroke: #2E6BE6; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 120; }
     .bound { stroke: #2E6BE6; stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 80; }
@@ -8,52 +9,52 @@
     .ring  { stroke: #00A297; stroke-linecap: round; }
     .ringO { stroke-width: 2.5; } .ringM { stroke-width: 2.8; } .ringI { stroke-width: 3.1; }
 
-    .field    { animation: stageFade 4.6s linear infinite; }
-    .axes     { animation: axes     4.6s ease infinite; }
-    .inactive { animation: inactive 4.6s ease infinite; }
-    .bound    { animation: bound    4.6s ease infinite; }
-    .chosen   { animation: chosen   4.6s cubic-bezier(.5,0,.2,1) infinite; }
-    .ringO    { animation: ringO    4.6s cubic-bezier(.2,.7,.2,1) infinite; }
-    .ringM    { animation: ringM    4.6s cubic-bezier(.2,.7,.2,1) infinite; }
-    .ringI    { animation: ringI    4.6s cubic-bezier(.2,.7,.2,1) infinite; }
-    .wm       { animation: wmFade   4.6s ease infinite; }
+    /* play once, hold on the final mark */
+    .axes     { animation: axes     4.4s ease            forwards; }
+    .inactive { animation: inactive 4.4s ease            forwards; }
+    .bound    { animation: bound    4.4s ease            forwards; }
+    .chosen   { animation: chosen   4.4s cubic-bezier(.5,0,.2,1)  forwards; }
+    .ringO    { animation: ringO    4.4s cubic-bezier(.2,.7,.2,1) forwards; }
+    .ringM    { animation: ringM    4.4s cubic-bezier(.2,.7,.2,1) forwards; }
+    .ringI    { animation: ringI    4.4s cubic-bezier(.2,.7,.2,1) forwards; }
+    .wm       { animation: wmFade   4.4s ease            forwards; }
 
-    @keyframes stageFade { 0%{opacity:0} 6%{opacity:1} 92%{opacity:1} 100%{opacity:0} }
     @keyframes axes {
-      0%{opacity:0; stroke-dashoffset:120} 4%{opacity:.4} 17%{opacity:.4; stroke-dashoffset:0}
-      45%{opacity:.4} 55%{opacity:0} 100%{opacity:0}
+      0%{opacity:0; stroke-dashoffset:120} 4%{opacity:.4} 18%{opacity:.4; stroke-dashoffset:0}
+      47%{opacity:.4} 58%{opacity:0} 100%{opacity:0}
     }
     @keyframes inactive {
-      0%{opacity:0; transform:scale(0)} 12%{opacity:.9; transform:scale(1)}
-      45%{opacity:.9; transform:scale(1)} 55%{opacity:0; transform:scale(.35)} 100%{opacity:0}
+      0%{opacity:0; transform:scale(0)} 13%{opacity:.9; transform:scale(1)}
+      47%{opacity:.9; transform:scale(1)} 58%{opacity:0; transform:scale(.35)} 100%{opacity:0}
     }
     @keyframes bound {
-      0%,20%{opacity:0; stroke-dashoffset:80} 26%{opacity:.5} 39%{opacity:.5; stroke-dashoffset:0}
-      52%{opacity:.5} 62%{opacity:0} 100%{opacity:0}
+      0%,21%{opacity:0; stroke-dashoffset:80} 27%{opacity:.5} 41%{opacity:.5; stroke-dashoffset:0}
+      54%{opacity:.5} 64%{opacity:0} 100%{opacity:0}
     }
     @keyframes chosen {
       0%{opacity:0; transform:translate(0px,0px) scale(0); fill:#2E6BE6}
-      10%{opacity:1; transform:translate(0px,0px) scale(1); fill:#2E6BE6}
-      43%{transform:translate(0px,0px) scale(1); fill:#2E6BE6}
-      59%{transform:translate(-14px,16px) scale(1.4); fill:#00A297}
+      11%{opacity:1; transform:translate(0px,0px) scale(1); fill:#2E6BE6}
+      45%{transform:translate(0px,0px) scale(1); fill:#2E6BE6}
+      61%{transform:translate(-14px,16px) scale(1.4); fill:#00A297}
       100%{opacity:1; transform:translate(-14px,16px) scale(1.4); fill:#00A297}
     }
-    @keyframes ringO { 0%,55%{opacity:0; transform:scale(0)} 70%{opacity:.3; transform:scale(1)} 100%{opacity:.3; transform:scale(1)} }
-    @keyframes ringM { 0%,59%{opacity:0; transform:scale(0)} 74%{opacity:.55; transform:scale(1)} 100%{opacity:.55; transform:scale(1)} }
-    @keyframes ringI { 0%,63%{opacity:0; transform:scale(0)} 79%{opacity:1; transform:scale(1)} 100%{opacity:1; transform:scale(1)} }
-    @keyframes wmFade { 0%,60%{opacity:0} 74%{opacity:1} 92%{opacity:1} 100%{opacity:0} }
+    @keyframes ringO { 0%,57%{opacity:0; transform:scale(0)} 72%{opacity:.3; transform:scale(1)} 100%{opacity:.3; transform:scale(1)} }
+    @keyframes ringM { 0%,61%{opacity:0; transform:scale(0)} 76%{opacity:.55; transform:scale(1)} 100%{opacity:.55; transform:scale(1)} }
+    @keyframes ringI { 0%,65%{opacity:0; transform:scale(0)} 81%{opacity:1; transform:scale(1)} 100%{opacity:1; transform:scale(1)} }
+    @keyframes wmFade { 0%,62%{opacity:0} 78%{opacity:1} 100%{opacity:1} }
 
     @media (prefers-reduced-motion: reduce) {
-      .el,.field,.wm{ animation:none; opacity:1; }
+      .el,.wm{ animation:none; }
       .axes,.inactive,.bound{ opacity:0; }
       .ringO{opacity:.3} .ringM{opacity:.55} .ringI{opacity:1}
-      .chosen{ transform:translate(-14px,16px) scale(1.4); fill:#00A297; }
+      .wm{opacity:1}
+      .chosen{ opacity:1; transform:translate(-14px,16px) scale(1.4); fill:#00A297; }
     }
   </style>
 
   <g class="field">
-    <!-- animated mark (0..100 art), centred as a horizontal lockup -->
-    <g transform="translate(392,33) scale(1.34)">
+    <!-- animated mark (0..100 art), larger, as a centred horizontal lockup -->
+    <g transform="translate(352,14) scale(1.72)">
       <path class="el axes" d="M22 20 V80 H80"/>
       <circle class="el inactive" cx="32" cy="62" r="3"/>
       <circle class="el inactive" cx="44" cy="68" r="3"/>
@@ -72,8 +73,8 @@
 
     <!-- wordmark -->
     <g class="wm" font-family="'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif">
-      <text x="556" y="108" font-size="52" font-weight="700" letter-spacing="-1" fill="#2E6BE6">CSP<tspan fill="#8A93A8">-Analyzer</tspan></text>
-      <text x="559" y="137" font-size="15" font-weight="600" letter-spacing="5" fill="#8A93A8">NMR FRAGMENT SCREENING</text>
+      <text x="566" y="108" font-size="54" font-weight="700" letter-spacing="-1" fill="#2E6BE6">CSP<tspan fill="#8A93A8">-Analyzer</tspan></text>
+      <text x="569" y="138" font-size="15" font-weight="600" letter-spacing="5" fill="#8A93A8">NMR FRAGMENT SCREENING</text>
     </g>
   </g>
 </svg>
