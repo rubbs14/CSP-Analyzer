@@ -14,6 +14,7 @@ authors:
     orcid: "https://orcid.org/0000-0001-5323-4562"
   - family-names: "Byrne"
     given-names: "Ryan"
+    orcid: "https://orcid.org/0000-0003-2010-132X"
 version: "2.0.1"
 doi: "10.5281/zenodo.3618512"
 license: MIT
@@ -37,6 +38,7 @@ preferred-citation:
       orcid: "https://orcid.org/0000-0001-5323-4562"
     - family-names: "Byrne"
       given-names: "Ryan"
+      orcid: "https://orcid.org/0000-0003-2010-132X"
     - family-names: "Softley"
       given-names: "Claire A."
     - family-names: "Sattler"
