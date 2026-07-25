@@ -143,7 +143,9 @@ jobs:
       - name: Build rpm package
         if: matrix.os-name == 'linux'
         shell: pwsh
-        run: ./scripts/package/package-rpm.ps1 -Version ${{ env.RPM_VERSION }}
+        env:
+          RPM_VERSION: ${{ env.RPM_VERSION }}
+        run: ./scripts/package/package-rpm.ps1 -Version $env:RPM_VERSION
 
       - name: Verify rpm is well-formed
         if: matrix.os-name == 'linux'
