@@ -50,6 +50,12 @@ jobs:
       - name: Install python backend dependencies
         run: pip install -r backend/requirements.txt
 
+      - name: Resolve python interpreter path
+        shell: pwsh
+        run: |
+          $pythonPath = python -c "import sys; print(sys.executable)"
+          "CSP_ANALYZER_PYTHON=$pythonPath" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
@@ -62,12 +68,6 @@ jobs:
 
       - name: Test
         run: dotnet test dotnet/CspAnalyzer.sln --configuration Release --no-build
-        env:
-          # setup-python guarantees `python` on PATH pointing at the
-          # interpreter above, on all three OS runner images. Lets
-          # BackendEnvironment.PythonExecutable resolve a real interpreter
-          # in CI - see dotnet/BackendInterop/BackendEnvironment.cs.
-          CSP_ANALYZER_PYTHON: python
 
   package:
     if: github.event_name == 'workflow_dispatch'
