@@ -87,6 +87,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -118,3 +120,50 @@ jobs:
         with:
           name: CspAnalyzer-${{ matrix.os-name }}-${{ matrix.rid }}
           path: artifacts/CspAnalyzer-${{ matrix.os-name }}-${{ matrix.rid }}.zip
+
+      - name: Install rpm build tools
+        if: matrix.os-name == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
+          sudo gem install --no-document fpm
+
+      - name: Resolve rpm version
+        if: matrix.os-name == 'linux'
+        shell: bash
+        run: |
+          RAW_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0-dev")
+          # rpm's Version field can't contain "-" (reserved for the
+          # Version-Release separator) - replace with "." so a fallback
+          # "0.0.0-dev" or an annotated tag like "v2.0.1-rc1" both produce
+          # a valid rpm version string.
+          RPM_VERSION=$(echo "$RAW_VERSION" | sed 's/^v//' | tr '-' '.')
+          echo "RPM_VERSION=$RPM_VERSION" >> "$GITHUB_ENV"
+
+      - name: Build rpm package
+        if: matrix.os-name == 'linux'
+        shell: pwsh
+        run: ./scripts/package/package-rpm.ps1 -Version ${{ env.RPM_VERSION }}
+
+      - name: Verify rpm is well-formed
+        if: matrix.os-name == 'linux'
+        run: |
+          rpm -qlp artifacts/*.rpm
+          rpm -qip artifacts/*.rpm
+
+      - name: Verify rpm installs cleanly
+        if: matrix.os-name == 'linux'
+        run: |
+          docker run --rm -v ${{ github.workspace }}/artifacts:/artifacts rockylinux:9 bash -c "
+            rpm -i /artifacts/*.rpm &&
+            test -x /opt/csp-analyzer/CspAnalyzer.Desktop &&
+            test -x /usr/bin/csp-analyzer &&
+            test -f /usr/share/applications/csp-analyzer.desktop
+          "
+
+      - name: Upload rpm artifact
+        if: matrix.os-name == 'linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: CspAnalyzer-linux-rpm
+          path: artifacts/*.rpm
