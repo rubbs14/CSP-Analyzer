@@ -188,8 +188,8 @@ See `LICENSE` file for full details. Third-party dependency licenses are listed 
 
 ## Authors
 
-- **Roberto Fino** — Frontend development (C#) — [LinkedIn](https://www.linkedin.com/in/robertofino/)
-- **Ryan Byrne** — Backend development (Python ML pipeline) — [LinkedIn](https://www.linkedin.com/in/ryanjosephbyrne/)
+- **Roberto Fino** — Frontend development, Python integration, Python testing, ML integration, Validaation (C#, Python) — [LinkedIn](https://www.linkedin.com/in/robertofino/)
+- **Ryan Byrne** — Backend development, Python ML pipeline design — [LinkedIn](https://www.linkedin.com/in/ryanjosephbyrne/)
 
 ## Funding
 
