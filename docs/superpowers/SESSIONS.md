@@ -348,13 +348,40 @@ Target stack: .NET 8 + Avalonia UI (Linux/Windows/Mac), modern python backend
   identically on both case-insensitive OSes while passing on Linux is a
   strong signal to check for a case-colliding path in the repo, not to
   keep adjusting `sys.path`.
-- [ ] **S14** — Cross-platform packaging (Linux/Windows/Mac artifacts).
-  Blocked on a real design decision deferred from S11/S12:
-  `BackendEnvironment.FindRepoRoot()` requires a `.git` folder next to
-  `backend/`, which won't exist in a packaged install - needs a
-  packaged-mode repo-root/model-dir resolution strategy, plus a decision on
-  how the python backend itself ships (bundle a standalone python, or
-  require the user's own `csp_modern` conda env).
+- [x] **S14** — Cross-platform packaging (Linux/Windows/Mac artifacts).
+  Resolved the deferred repo-root/model-dir question by packaging the
+  PyInstaller-frozen `csp-backend` dist alongside the self-contained
+  `dotnet publish` output rather than requiring the user's own
+  `csp_modern` conda env - `scripts/package/package.ps1` assembles
+  `dotnet publish` + `backend/model_artifacts/` + the frozen backend +
+  `CSPv2/Demo-dataset/` into one directory per OS/rid, zipped, uploaded as
+  a `workflow_dispatch`-only CI artifact per OS. See
+  `docs/superpowers/specs/2026-07-24-sub-project-6-s14-cross-platform-packaging-design.md`.
+
+  Three follow-on sessions extended this same day: bundling the demo
+  dataset into the repo itself for onboarding + real-dataset CI coverage
+  (`docs/superpowers/specs/2026-07-25-bundle-demo-dataset-design.md`); an
+  fpm-based rpm package for Linux (`scripts/package/package-rpm.ps1`,
+  `/opt/csp-analyzer` + desktop menu entry, real `rockylinux:9`
+  install-check in CI - see
+  `docs/superpowers/specs/2026-07-25-rpm-packaging-design.md`); and a
+  per-user Inno Setup installer for Windows
+  (`scripts/package/package-installer.ps1`, no UAC, fixed AppId for
+  stable upgrades, real silent-install/uninstall verification against
+  `windows-latest` in CI - see
+  `docs/superpowers/specs/2026-07-25-windows-installer-design.md`). Both
+  packaging pipelines are additive alongside the existing zip and were
+  proven via real `workflow_dispatch` CI runs, not just code review. Final
+  whole-branch review on the rpm branch caught a real ICO-frame-selection
+  bug (`convert`'s `[0]` picked the smallest frame in this repo's `.ico`,
+  not the largest); the Windows installer's final review caught two bugs
+  invisible to CI by construction - a Start Menu shortcut pointing at a
+  build-machine-only icon path, and a missing `ignoreversion` flag that
+  would have let upgrades silently keep stale app binaries. Both fixed
+  before merge. All five release artifacts (3 zips + rpm + Windows
+  installer) rebuilt from `master` and uploaded (`--clobber`) onto the
+  existing `v2.0.1` GitHub release rather than cutting a new tag, since
+  only packaging changed, not app behavior.
 
 ## Notes
 
