@@ -171,3 +171,77 @@ jobs:
         with:
           name: CspAnalyzer-linux-rpm
           path: artifacts/*.rpm
+
+      - name: Resolve installer version
+        if: matrix.os-name == 'windows'
+        shell: pwsh
+        run: |
+          $rawVersion = git describe --tags --abbrev=0 2>$null
+          if (-not $rawVersion) { $rawVersion = "v0.0.0-dev" }
+          $global:LASTEXITCODE = 0
+          $installerVersion = $rawVersion -replace '^v', '' -replace '-', '.'
+          "INSTALLER_VERSION=$installerVersion" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Build Windows installer
+        if: matrix.os-name == 'windows'
+        shell: pwsh
+        env:
+          INSTALLER_VERSION: ${{ env.INSTALLER_VERSION }}
+        run: ./scripts/package/package-installer.ps1 -Version $env:INSTALLER_VERSION
+
+      - name: Verify installer installs cleanly
+        if: matrix.os-name == 'windows'
+        shell: pwsh
+        env:
+          INSTALLER_VERSION: ${{ env.INSTALLER_VERSION }}
+        run: |
+          $installerPath = "artifacts\CspAnalyzer-Setup-$env:INSTALLER_VERSION.exe"
+          $process = Start-Process -FilePath $installerPath -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "installer exited with code $($process.ExitCode)" }
+
+          $installDir = Join-Path $env:LOCALAPPDATA "CspAnalyzer"
+          if (-not (Test-Path (Join-Path $installDir "CspAnalyzer.Desktop.exe"))) {
+              throw "app exe missing after install"
+          }
+          if (-not (Test-Path (Join-Path $installDir "csp-backend\csp-backend.exe"))) {
+              throw "backend exe missing after install"
+          }
+          $shortcut = Join-Path $env:APPDATA "Microsoft\Windows\Start Menu\Programs\CSP Analyzer\CSP Analyzer.lnk"
+          if (-not (Test-Path $shortcut)) {
+              throw "Start Menu shortcut missing after install"
+          }
+          $uninstallKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\{D6B0EA6C-E5EC-4259-B860-3D199A86A829}_is1"
+          if (-not (Test-Path $uninstallKey)) {
+              throw "uninstall registry key missing after install"
+          }
+
+      - name: Verify installer uninstalls cleanly
+        if: matrix.os-name == 'windows'
+        shell: pwsh
+        run: |
+          $installDir = Join-Path $env:LOCALAPPDATA "CspAnalyzer"
+          $uninstaller = Join-Path $installDir "unins000.exe"
+          Start-Process -FilePath $uninstaller -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES" -Wait
+
+          # Inno's uninstaller copies itself to %TEMP% and relaunches so it
+          # can delete its own running exe - the original process (the one
+          # -Wait blocks on) can exit before that copy finishes deleting
+          # $installDir. Poll instead of trusting -Wait alone.
+          $deadline = (Get-Date).AddSeconds(30)
+          while ((Test-Path $installDir) -and (Get-Date) -lt $deadline) {
+              Start-Sleep -Seconds 1
+          }
+          if (Test-Path $installDir) {
+              throw "install dir still present after uninstall (timed out waiting)"
+          }
+          $uninstallKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\{D6B0EA6C-E5EC-4259-B860-3D199A86A829}_is1"
+          if (Test-Path $uninstallKey) {
+              throw "uninstall registry key still present after uninstall"
+          }
+
+      - name: Upload installer artifact
+        if: always() && matrix.os-name == 'windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: CspAnalyzer-windows-installer
+          path: artifacts/CspAnalyzer-Setup-*.exe
