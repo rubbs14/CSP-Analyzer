@@ -14,7 +14,7 @@
 
 A fast, machine-learning-based analyzer for multi-spectrum 2-D NMR Fragment Screening data.
 
-**Contents:** [Overview](#overview) · [Installation](#installation) · [How It Works](#how-it-works) · [Getting Started](#getting-started) · [Usage Tips](#usage-tips) · [Troubleshooting](#troubleshooting) · [Background](#background) · [Citation](#citation) · [License](#license)
+**Contents:** [Overview](#overview) · [Installation](#installation) · [How It Works](#how-it-works) · [Getting Started](#getting-started) · [Usage Tips](#usage-tips) · [Troubleshooting](#troubleshooting) · [Background](#background) · [Citation](#citation) · [Changelog](CHANGELOG.md) · [License](#license)
 
 ---
 
