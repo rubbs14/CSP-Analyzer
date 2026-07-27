@@ -10,7 +10,7 @@
 [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)](#installation)
 [![Published in CSBJ](https://img.shields.io/badge/published-CSBJ%202020-blueviolet)](#citation)
 [![Paper DOI](https://img.shields.io/badge/paper%20DOI-10.1016%2Fj.csbj.2020.02.015-blue)](https://doi.org/10.1016/j.csbj.2020.02.015)
-[![Software DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3618512.svg)](https://doi.org/10.5281/zenodo.3618512)
+[![Software DOI](https://img.shields.io/badge/software%20DOI-10.5281%2Fzenodo.3618512-blue)](https://doi.org/10.5281/zenodo.3618512)
 
 A fast, machine-learning-based analyzer for multi-spectrum 2-D NMR Fragment Screening data.
 
